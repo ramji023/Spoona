@@ -5,7 +5,12 @@ export default function Section_2() {
     <>
       <div className="mx-25 my-10 p-2 font-poppins flex-col space-y-10">
         <div>
-          <div className="text-2xl font-semibold">Discover Communities</div>
+          <div className="font-semibold flex justify-between items-center">
+            <h1 className="text-2xl">Discover Communities</h1>
+            <span className="text-gray-400 text-md cursor-pointer hover:text-orange-400">
+              See More
+            </span>
+          </div>
           <div className="text-lg text-gray-400 ">
             Join passionate cooks, bakers, and eaters sharing recipes and
             stories.
