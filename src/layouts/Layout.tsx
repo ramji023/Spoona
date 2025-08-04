@@ -1,16 +1,15 @@
 import FloatingButton from "../components/FloatingButton";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
-// import RecipeBox from "../components/RecipeBox";
-// import SavedRecipe from "../pages/SavedRecipePage/SavedRecipe";
-import PlannerPage from "../pages/plannerPage/PlannerPage";
+import { Outlet } from "react-router-dom";
 export default function Layout() {
+  
   return (
     <>
-      <div className="h-screen font-poppins">
+      <div className=" font-poppins">
         <Navbar />
         <FloatingButton />
-        <PlannerPage />
+        <Outlet />
         <Footer />
       </div>
     </>

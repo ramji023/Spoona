@@ -9,7 +9,7 @@ export default function PlannerPage() {
   const [calendarValue, setValue] = useState<Value>(new Date());
   return (
     <>
-      <div className="mx-20 p-10 flex gap-4">
+      <div className="mx-20 p-10 flex gap-4 my-10">
         {/* calendar div  */}
         <div className="flex-1/2 p-4">
           <CalendarComponent
