@@ -4,6 +4,7 @@ import LandingPage from "./pages/landingPage/LandingPage";
 import Home from "./pages/HomePage/Home";
 import PlannerPage from "./pages/plannerPage/PlannerPage";
 import SavedRecipe from "./pages/SavedRecipePage/SavedRecipe";
+import Profile from "./pages/profilePage/Profile";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="home" element={<Home />} />
             <Route path="planner" element={<PlannerPage />} />
             <Route path="saved" element={<SavedRecipe />} />
+            <Route path="account" element={<Profile/>}  />
           </Route>
         </Routes>
       </BrowserRouter>
