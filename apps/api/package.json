@@ -1,0 +1,21 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type" : "module",
+  "scripts": {
+    "build": "tsc -b",
+    "dev":"pnpm build && node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^5.0.3",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config" : "workspace:*"
+  }
+}
