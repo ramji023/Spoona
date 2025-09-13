@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 const app = express();
-
 // app.get("/", async function (req, res) {
  
 //   res.send("spoona server is running properly");
