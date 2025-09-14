@@ -15,4 +15,48 @@ model User {
   password     String
   bio          String?
   profileImage String?
+
+  // @relations between user and recipe
+  recipes Recipe[]
+}
+
+model Recipe {
+  id          String   @id @default(uuid())
+  title       String   @db.VarChar(50)
+  description String   @db.VarChar(200)
+  cookTime    String   @db.VarChar(20)
+  prepTime    String   @db.VarChar(20)
+  imageUrl    String
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  // @relations between user and recipe
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  // @relations between recipe and ingredients 
+  ingredients Ingredient[]
+
+  // @relations between recipe and instructions 
+  instructions Instruction[]
+}
+
+model Ingredient {
+  id       String @id @default(uuid())
+  name     String @db.VarChar(20)
+  quantity String @db.VarChar(20)
+
+  // @relations between recipe and ingredients 
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipeId String
+}
+
+model Instruction {
+  id   String @id @default(uuid())
+  step String
+
+  // @relations between recipe and instructions 
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipeId String
 }
