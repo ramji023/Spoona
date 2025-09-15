@@ -40,5 +40,5 @@ export const likeRecipeValidation = z.object({
 // check comment data
 export const commentRecipeValidation = z.object({
   recipeId: z.string().uuid("Valid recipe Id is required"),
-  content: z.string("Enter a valid comment"),
+  title: z.string("Enter a valid comment"),
 });

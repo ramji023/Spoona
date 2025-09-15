@@ -18,6 +18,12 @@ model User {
 
   // @relations between user and recipe
   recipes Recipe[]
+
+  // @relations between user and like
+  likes Like[]
+
+  // @relations between recipe and comment
+  comments Comment[]
 }
 
 model Recipe {
@@ -40,6 +46,12 @@ model Recipe {
 
   // @relations between recipe and instructions 
   instructions Instruction[]
+
+  // @relations between recipe and like
+  likes Like[]
+
+  // @relations between recipe and comment
+  comments Comment[]
 }
 
 model Ingredient {
@@ -59,4 +71,35 @@ model Instruction {
   // @relations between recipe and instructions 
   recipe   Recipe @relation(fields: [recipeId], references: [id])
   recipeId String
+}
+
+model Like {
+  id     String   @id @default(uuid())
+  status likeType
+
+  //@relation between user and like
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  //@relation between recipe and like
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipeId String
+}
+
+model Comment {
+  id    String @id @default(uuid())
+  title String
+
+  //@relation between user and like
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  //@relation between recipe and like
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipeId String
+}
+
+enum likeType {
+  like
+  dislike
 }
