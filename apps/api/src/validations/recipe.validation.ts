@@ -13,6 +13,7 @@ const instructionSchema = z.object({
 });
 
 export const createRecipeValidation = z.object({
+  userId: z.uuid("Invalid userId type"),
   title: z.string("Title is required").max(20, "Title is too long"),
   description: z
     .string("Description is required")
@@ -28,8 +29,7 @@ export const createRecipeValidation = z.object({
   ),
 });
 
-// update recipe data (all optional but same validation if provided)
-export const updateRecipeValidation = createRecipeValidation.partial();
+export type CreateRecipeInput = z.infer<typeof createRecipeValidation>;
 
 // check like data
 export const likeRecipeValidation = z.object({

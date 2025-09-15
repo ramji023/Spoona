@@ -2,9 +2,9 @@ import express from "express";
 import {
   getAllRecipe,
   createRecipe,
-  deleteRecipe,
+  deleteARecipe,
   updateRecipe,
-  getSingleRecipe,
+  getOneRecipe,
 } from "../controller/recipe.controller";
 const router: express.Router = express.Router();
 
@@ -12,6 +12,6 @@ router.route("/").get(getAllRecipe).post(createRecipe);
 router
   .route("/:id")
   .post(updateRecipe)
-  .delete(deleteRecipe)
-  .post(getSingleRecipe);
+  .delete(deleteARecipe)
+  .post(getOneRecipe);
 export default router;
