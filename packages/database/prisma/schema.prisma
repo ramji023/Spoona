@@ -27,6 +27,15 @@ model User {
 
   //@relations between user and saved recipe
   savedRecipes SavedRecipe[]
+
+  // @relations between user and community creator
+  Community Community[]
+
+  // relations between user and community member
+  CommunityMembers CommunityMembers[]
+
+  // relations between user and communityrecipe creator
+  CommunityRecipe CommunityRecipe[]
 }
 
 model Recipe {
@@ -54,10 +63,11 @@ model Recipe {
   likes Like[]
 
   // @relations between recipe and comment
-  comments    Comment[]
+  comments Comment[]
 
   //@relations between user and saved recipe
-  SavedRecipe SavedRecipe[]
+  SavedRecipes    SavedRecipe[]
+  CommunityRecipe CommunityRecipe[]
 }
 
 model Ingredient {
@@ -116,6 +126,55 @@ model SavedRecipe {
   recipe   Recipe @relation(fields: [recipeId], references: [id])
   recipeId String
 }
+
+model Community {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  coverImage  String
+  createdAt   DateTime @default(now())
+
+  // @relations between user and community creator 
+  user             User               @relation(fields: [creatorId], references: [id])
+  creatorId        String
+  // relation between community member and community
+  CommunityMembers CommunityMembers[]
+  CommunityRecipe  CommunityRecipe[]
+}
+
+model CommunityMembers {
+  id       String   @id @default(uuid())
+  joinedAt DateTime @default(now())
+
+  // relations between user and community member
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  // relation between community member and community
+  community   Community @relation(fields: [communityId], references: [id])
+  communityId String
+}
+
+model CommunityRecipe {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  // relations between community and community recipe
+  community   Community @relation(fields: [communityId], references: [id])
+  communityId String
+
+  //relations between recipe and community recipe
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipeId String @unique
+
+  //relation between user and community recipe
+  postedBy User   @relation(fields: [userId], references: [id])
+  userId   String
+}
+
+
+
+
 
 enum likeType {
   like
