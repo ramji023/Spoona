@@ -22,8 +22,11 @@ model User {
   // @relations between user and like
   likes Like[]
 
-  // @relations between recipe and comment
+  // @relations between user and comment
   comments Comment[]
+
+  //@relations between user and saved recipe
+  savedRecipes SavedRecipe[]
 }
 
 model Recipe {
@@ -51,7 +54,10 @@ model Recipe {
   likes Like[]
 
   // @relations between recipe and comment
-  comments Comment[]
+  comments    Comment[]
+
+  //@relations between user and saved recipe
+  SavedRecipe SavedRecipe[]
 }
 
 model Ingredient {
@@ -95,6 +101,18 @@ model Comment {
   userId String
 
   //@relation between recipe and like
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipeId String
+}
+
+model SavedRecipe {
+  id String @id @default(uuid())
+
+  //@relation between user and savedRecipe
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  //@relation between recipe and savedRecipe
   recipe   Recipe @relation(fields: [recipeId], references: [id])
   recipeId String
 }
