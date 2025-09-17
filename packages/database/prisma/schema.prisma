@@ -173,6 +173,7 @@ model CommunityRecipe {
   userId   String
 }
 
+// <--------------- not for now   --------------->
 model Planner {
   id String @id @default(uuid())
 

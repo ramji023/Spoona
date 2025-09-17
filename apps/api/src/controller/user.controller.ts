@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import {
   imageValidation,
   loggerValidation,
@@ -118,6 +119,32 @@ export const getProfileData = async (req: Request, res: Response) => {
   });
 };
 
-
 // delete account controller
 export const deleteAccount = (req: Request, res: Response) => {};
+
+// refreshed refreshToken and accessToken
+export const refreshedToken = async (req: Request, res: Response) => {
+  const token = req.cookies.refreshToken;
+  if (!token) {
+    //throw error
+    return;
+  }
+  const verifiedToken = jwt.verify(
+    token,
+    process.env.REFRESH_TOKEN_KEY!
+  ) as JwtPayload;
+  if (!verifiedToken) {
+    //throw error
+    return;
+  }
+
+  // find that user by id
+  const user = await findUserById(token.id);
+
+  if (!user) {
+    //throw error
+    return;
+  }
+
+  // create access and refresh token
+};
