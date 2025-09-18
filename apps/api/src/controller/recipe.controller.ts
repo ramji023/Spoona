@@ -7,12 +7,19 @@ import {
   updateNewRecipe,
 } from "../models/recipe.model";
 import { createRecipeValidation } from "../validations/recipe.validation";
+import {
+  cleanArray,
+  cleanArrayObjects,
+  removeExtraSpaces,
+} from "../utils/helper.functions";
+import { ApiError } from "../utils/customError";
 
 // fetch all the recipe controller
 export const getAllRecipe = async (req: Request, res: Response) => {
   const recipes = await getAllRecipes();
-  if (!recipes) {
+  if (recipes.length === 0) {
     // throw error
+    throw new ApiError("There is no recipes", 400);
   }
 
   return res.json({
@@ -23,12 +30,40 @@ export const getAllRecipe = async (req: Request, res: Response) => {
 
 // create Recipe controller
 export const createRecipe = async (req: Request, res: Response) => {
-  const body = req.body;
-  const parsedBodyObject = createRecipeValidation.safeParse(body);
+  //first normalize the request data
+  const title = removeExtraSpaces(req.body.title);
+  const description = removeExtraSpaces(req.body.description);
+  const ingredients = cleanArrayObjects(req.body.ingredients);
+  const instructions = cleanArrayObjects(req.body.instructions);
+  const cookTime = removeExtraSpaces(req.body.cookTime);
+  const prepTime = removeExtraSpaces(req.body.prepTime);
+  const imageUrl = removeExtraSpaces(req.body.imageUrl);
+  const tags = cleanArray(req.body.tags);
+  // console.log({
+  //   title,
+  //   description,
+  //   ingredients,
+  //   instructions,
+  //   cookTime,
+  //   prepTime,
+  //   imageUrl,
+  //   tags,
+  // });
+  const parsedBodyObject = createRecipeValidation.safeParse({
+    userId: req.user!,
+    title,
+    description,
+    ingredients,
+    instructions,
+    cookTime,
+    prepTime,
+    imageUrl,
+    tags,
+  });
 
   if (!parsedBodyObject.success) {
     //throw errors
-    return;
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 400);
   }
 
   // create the recipe
@@ -37,42 +72,74 @@ export const createRecipe = async (req: Request, res: Response) => {
   });
 
   if (!result) {
-    return;
     // throw error
+    throw new ApiError("Something is wrong while creating new recipe", 404);
   }
 
-  res.json({ msg: "new recipe has been created successfully" });
+  res.json({ data: result, msg: "new recipe has been created successfully" });
 };
 
 // delete a Recipe controller
 export const deleteARecipe = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  await deleteRecipe(id);
+  const id = req.params.recipeId;
+  console.log(id);
+  const deletedRecipe = await deleteRecipe(id);
+  console.log("deleted recipe data is : ", deletedRecipe);
 
   res.json({ msg: "recipe has been deleted successfully" });
 };
 
 // update recipe controller
 export const updateRecipe = async (req: Request, res: Response) => {
-  const body = req.body;
-  const parsedBodyObject = createRecipeValidation.safeParse(body);
+  //first normalize the request data
+  const title = removeExtraSpaces(req.body.title);
+  const description = removeExtraSpaces(req.body.description);
+  const ingredients = cleanArrayObjects(req.body.ingredients);
+  const instructions = cleanArrayObjects(req.body.instructions);
+  const cookTime = removeExtraSpaces(req.body.cookTime);
+  const prepTime = removeExtraSpaces(req.body.prepTime);
+  const imageUrl = removeExtraSpaces(req.body.imageUrl);
+  const tags = cleanArray(req.body.tags);
+  console.log({
+    userId: req.user,
+    recipeId: req.params.recipeId,
+    title,
+    description,
+    ingredients,
+    instructions,
+    cookTime,
+    prepTime,
+    imageUrl,
+    tags,
+  });
+  const parsedBodyObject = createRecipeValidation.safeParse({
+    recipeId: req.params.recipeId,
+    userId: req.user!,
+    title,
+    description,
+    ingredients,
+    instructions,
+    cookTime,
+    prepTime,
+    imageUrl,
+    tags,
+  });
 
   if (!parsedBodyObject.success) {
-    //throw errors
-    return;
+    //throw error
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 400);
   }
 
-  // create the recipe
+  // update the recipe
   const result = await updateNewRecipe({
     ...parsedBodyObject.data,
   });
 
-  if (!result) {
-    return;
-    // throw error
-  }
-
-  res.json({ msg: "Recipe has been updated successfully" });
+  // if (!result) {
+  //   return;
+  //   // throw error
+  // }
+  res.json({ data: result, msg: "Recipe has been updated successfully" });
 };
 
 // get single recipe controller
@@ -81,7 +148,7 @@ export const getOneRecipe = async (req: Request, res: Response) => {
   const recipe = await getSingleRecipe(id);
   if (!recipe) {
     //throw err
-    return;
+    throw new ApiError("RecipeId is Invalid", 400);
   }
 
   return res.json({ data: recipe, msg: "fetch recipe successfully" });

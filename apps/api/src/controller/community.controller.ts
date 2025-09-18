@@ -76,15 +76,15 @@ export const uploadOnCommunity = async (req: Request, res: Response) => {
     return;
   }
 
-  const communityRecipe = await addRecipe({
-    userId: req.user!,
-    communityId: req.params.communityId,
-    recipeId: result.id,
-  });
-  if (!communityRecipe) {
-    //process failed
-    return;
-  }
+  // const communityRecipe = await addRecipe({
+  //   userId: req.user!,
+  //   communityId: req.params.communityId,
+  //   recipeId: result.id,
+  // });
+  // if (!communityRecipe) {
+  //   //process failed
+  //   return;
+  // }
 
   return res.json({ msg: "Member has been added in community successfully" });
 };

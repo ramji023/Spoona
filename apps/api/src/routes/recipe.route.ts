@@ -6,9 +6,15 @@ import {
   updateRecipe,
   getOneRecipe,
 } from "../controller/recipe.controller";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
 const router: express.Router = express.Router();
 
-router.route("/").get(getAllRecipe).post(createRecipe);
-router.route("/:recipeId").post(updateRecipe).delete(deleteARecipe);
-router.route("/:recipeId").post(getOneRecipe);
+router.route("/").get(getAllRecipe).all(AuthMiddleware).post(createRecipe);
+router.route("/:recipeId").get(getOneRecipe);
+router
+  .route("/:recipeId")
+  .all(AuthMiddleware)
+  .put(updateRecipe)
+  .delete(deleteARecipe);
+
 export default router;

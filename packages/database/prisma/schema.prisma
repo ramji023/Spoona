@@ -77,7 +77,7 @@ model Ingredient {
   quantity String @db.VarChar(20)
 
   // @relations between recipe and ingredients 
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId String
 }
 
@@ -86,7 +86,7 @@ model Instruction {
   step String
 
   // @relations between recipe and instructions 
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId String
 }
 

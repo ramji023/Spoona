@@ -23,19 +23,14 @@ export const createNewRecipe = async (userData: CreateRecipeInput) => {
         })),
       },
     },
-    include: {
-      ingredients: true,
-      instructions: true,
-    },
   });
-
   return recipe;
 };
 
 // update the recipe
 export const updateNewRecipe = async (recipeData: CreateRecipeInput) => {
   const recipe = await prisma.recipe.update({
-    where: { id: recipeData.userId },
+    where: { id: recipeData.recipeId, userId: recipeData.userId },
     data: {
       title: recipeData.title,
       description: recipeData.description,
@@ -62,7 +57,7 @@ export const updateNewRecipe = async (recipeData: CreateRecipeInput) => {
       instructions: true,
     },
   });
-
+  // console.log("updated recipe data :", recipe);
   return recipe;
 };
 
@@ -77,9 +72,24 @@ export const deleteRecipe = async (recipeId: string) => {
 export const getSingleRecipe = async (recipeId: string) => {
   return await prisma.recipe.findUnique({
     where: { id: recipeId },
-    include: {
-      ingredients: true,
-      instructions: true,
+    select: {
+      title: true,
+      description: true,
+      cookTime: true,
+      prepTime: true,
+      imageUrl: true,
+      tags: true,
+      ingredients: {
+        select: {
+          name: true,
+          quantity: true,
+        },
+      },
+      instructions: {
+        select: {
+          step: true,
+        },
+      },
     },
   });
 };
@@ -87,9 +97,24 @@ export const getSingleRecipe = async (recipeId: string) => {
 // get all recipes
 export const getAllRecipes = async () => {
   return await prisma.recipe.findMany({
-    include: {
-      ingredients: true,
-      instructions: true,
+    select: {
+      title: true,
+      description: true,
+      cookTime: true,
+      prepTime: true,
+      imageUrl: true,
+      tags: true,
+      ingredients: {
+        select: {
+          name: true,
+          quantity: true,
+        },
+      },
+      instructions: {
+        select: {
+          step: true,
+        },
+      },
     },
   });
 };

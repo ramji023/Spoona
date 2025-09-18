@@ -2,18 +2,17 @@ import { z } from "zod";
 
 // check recipe data
 const ingredientsSchema = z.object({
-  id: z.number("Invalid or missing ingredient id"),
   name: z.string("Ingredient name is required"),
   quantity: z.string("Ingredient quantity is required"),
 });
 
 const instructionSchema = z.object({
-  id: z.number("Invalid or missing instruction id"),
   step: z.string("Instruction step is required"),
 });
 
 export const createRecipeValidation = z.object({
-  userId: z.uuid("Invalid userId type"),
+  recipeId: z.string().uuid("Invalid recipe Id type").optional(),
+  userId: z.string().uuid("Invalid user Id type"),
   title: z.string("Title is required").max(20, "Title is too long"),
   description: z
     .string("Description is required")
