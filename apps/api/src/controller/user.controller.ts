@@ -11,72 +11,115 @@ import {
   findUserById,
   updateUser,
 } from "../models/user.model";
+import { makeLowerCase, removeExtraSpaces } from "../utils/helper.functions";
+import { ApiError } from "../utils/customError";
+import { tokenGenerator } from "../utils/tokenGenerator";
 
-//signin controller
-export const signin = async (req: Request, res: Response) => {
-  const data = req.body;
-  const parsedBodyObject = loggerValidation.safeParse(data);
+//signup controller
+export const signup = async (req: Request, res: Response) => {
+  // before validation do normalize the json data
+  const email = makeLowerCase(req.body.email);
+  const password = removeExtraSpaces(req.body.password);
+  const parsedBodyObject = loggerValidation.safeParse({ email, password });
   if (!parsedBodyObject.success) {
     // throw error
-    return;
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 400);
   }
   // create new user in db
-  const result = await createNewUser({
+  await createNewUser({
     email: parsedBodyObject.data.email,
     password: parsedBodyObject.data.password,
   });
 
-  if (!result) {
-    // throw error
-    return;
-  }
-
   return res.json({ message: "User successfully registered" });
 };
 
-//signup controller
-export const signup = async (req: Request, res: Response) => {
-  const data = req.body;
-  const parsedBodyObject = loggerValidation.safeParse(data);
+//signin controller
+export const signin = async (req: Request, res: Response) => {
+  // before validation do normalize the json data
+  const email = makeLowerCase(req.body.email);
+  const password = removeExtraSpaces(req.body.password);
+  const parsedBodyObject = loggerValidation.safeParse({ email, password });
   if (!parsedBodyObject.success) {
     // throw error
-    return;
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 400);
   }
   // check if user exist or not
   const result = await findUser({ email: parsedBodyObject.data.email });
 
   if (!result) {
     // throw error
-    return;
+    throw new ApiError("User is not found", 404);
   }
 
-  // create token for user
-  return res.json({ message: "User successfully logged in" });
+  // match password
+  if (result.password !== password) {
+    //throw error
+    throw new ApiError("Password is wrong", 400);
+  }
+
+  const { accessToken, refreshToken } = tokenGenerator({
+    id: result.id,
+    email: result.email,
+  });
+
+  // secure cookie
+  const options = {
+    secure: true,
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  };
+
+  res.cookie("refreshToken", refreshToken, options);
+  return res.json({
+    data: accessToken,
+    message: "User successfully logged in",
+  });
+};
+
+// get profile data controller
+export const getProfileData = async (req: Request, res: Response) => {
+  const existedUser = await findUserById({ id: req.user! });
+  if (!existedUser) {
+    //throw error
+    throw new ApiError("User does not exist", 400);
+  }
+  const payload = {
+    username: existedUser.username,
+    email: existedUser.email,
+    bio: existedUser.bio,
+    profileImage: existedUser.profileImage,
+  };
+  return res.json({
+    data: payload,
+    message: "fetch user profile data successfully",
+  });
 };
 
 // update profile controller
 export const updateProfile = async (req: Request, res: Response) => {
-  const data = req.body;
-  const parsedBodyObject = profileDataValidation.safeParse(data);
-
+  // before validation do normalize the json data
+  const username = req.body.username
+    ? removeExtraSpaces(req.body.username)
+    : undefined;
+  const bio = req.body.bio ? removeExtraSpaces(req.body.bio) : undefined;
+  const parsedBodyObject = profileDataValidation.safeParse({
+    username,
+    bio,
+    profileImage: req.body.profileImage ? req.body.profileImage : undefined,
+  });
   if (!parsedBodyObject.success) {
     //throw error
-    return;
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 400);
   }
 
   //update profile data
-
   const result = await updateUser({
     userId: req.user!,
     username: parsedBodyObject.data.username,
     bio: parsedBodyObject.data.bio,
     profileImage: parsedBodyObject.data.profileImage,
   });
-
-  if (!result) {
-    //throw error
-    return;
-  }
 
   return res.json({ message: "user updated profile data successfully" });
 };
@@ -88,7 +131,7 @@ export const changeAvatar = async (req: Request, res: Response) => {
 
   if (!parsedBodyObject.success) {
     //throw error
-    return;
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 400);
   }
 
   //update profile avatar
@@ -97,26 +140,12 @@ export const changeAvatar = async (req: Request, res: Response) => {
     profileImage: parsedBodyObject.data.profileImage,
   });
 
-  if (!result) {
+  if (!result.profileImage) {
     //throw error
-    return;
+    throw new ApiError("Something went wrong while changing Avatar", 500);
   }
 
   return res.json({ message: "user updated his avatar successfully" });
-};
-
-// get profile data controller
-export const getProfileData = async (req: Request, res: Response) => {
-  const existedUser = await findUserById({ id: req.user! });
-  if (!existedUser) {
-    //throw error
-    return;
-  }
-
-  return res.json({
-    data: existedUser,
-    message: "fetch user profile data successfully",
-  });
 };
 
 // delete account controller

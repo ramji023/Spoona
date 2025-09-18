@@ -1,25 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { ApiError } from "../utils/customError";
 export const AuthMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
+  // console.log(token)
   if (!token) {
     //throw error
-    return;
+    throw new ApiError("User do not have token", 401);
   }
 
-  const verifiedToken = jwt.verify(
-    token,
-    process.env.ACCESS_SECRET_KEY!
-  ) as JwtPayload;
+  try {
+    const verifiedToken = jwt.verify(
+      token,
+      process.env.ACCESS_SECRET_KEY!
+    ) as JwtPayload;
 
-  if (!verifiedToken) {
-    //throw error
-    return;
+    req.user = verifiedToken.id;
+    next();
+  } catch (err) {
+    // throw error
+    throw new ApiError("Invalid Token", 401);
   }
-  req.user = verifiedToken.userId;
-  next();
 };

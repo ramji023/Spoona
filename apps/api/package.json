@@ -25,6 +25,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/cors": "^2.8.19",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^22.15.3"
+    "@types/node": "^22.15.3",
+    "dotenv": "^17.2.2"
   }
 }

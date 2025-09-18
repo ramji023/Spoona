@@ -36,17 +36,19 @@ export const updateUser = async (userData: {
   profileImage?: string;
   username?: string;
 }) => {
+  console.log(userData);
   const updateData = removeUndefined({
     username: userData.username,
     bio: userData.bio,
     profileImage: userData.profileImage,
   });
 
+  console.log("updatedData : ", updateData);
   const updatedUser = await prisma.user.update({
     where: { id: userData.userId },
     data: updateData,
   });
-
+  console.log("result : ", updatedUser);
   return updatedUser;
 };
 
