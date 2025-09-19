@@ -1,18 +1,21 @@
 import { CameraIcon } from "../icons/CameraIcon";
 
 import React from "react";
+import { CrossIcon } from "../icons/CrossIcon";
 
 /* ---------------- InputBox ---------------- */
 type InputBoxProps = React.InputHTMLAttributes<HTMLInputElement> & {
   text: string;
   boxSize: string;
   error?: string;
+  onRemove?: () => void;
+  index?: number;
 };
 
 export const InputBox = React.forwardRef<HTMLInputElement, InputBoxProps>(
-  ({ text, placeholder, error, boxSize, ...rest }, ref) => {
+  ({ text, placeholder, error, onRemove, index, boxSize, ...rest }, ref) => {
     return (
-      <div className="flex justify-center mt-10">
+      <div className="flex justify-center mt-10 relative">
         <div className="flex flex-col">
           <label className="text-lg font-semibold mb-2">{text}</label>
           <input
@@ -25,6 +28,13 @@ export const InputBox = React.forwardRef<HTMLInputElement, InputBoxProps>(
             {error ?? ""}
           </span>
         </div>
+        {onRemove && index !== 0 && (
+          <div className="absolute top-2 right-50 z-10">
+            <div onClick={onRemove} className="cursor-pointer text-gray-400">
+              <CrossIcon />
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -62,8 +72,9 @@ export const TextAreaBox = React.forwardRef<
 });
 TextAreaBox.displayName = "TextAreaBox";
 
-/* ---------------- InputBoxVariant ---------------- */
 
+
+/* ---------------- Box ---------------- */
 
 export const Box = () => {
   return (

@@ -3,16 +3,13 @@ import { Box, InputBox, TextAreaBox } from "@repo/ui/components/InputBox";
 import { InputBoxVariant } from "./InputBoxVariant";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useFieldArray } from "react-hook-form";
 import { PlusIcon } from "@repo/ui/icons/PlusIcon";
-import { CrossIcon } from "@repo/ui/icons/CrossIcon";
 type RecipeForm = {
   title: string;
   description: string;
-  ingredients: {
-    name: string;
-    quantity: string;
-  };
-  instruction: string;
+  ingredients: { name: string; quantity: string }[];
+  instruction: { steps: string }[];
   prepHours: string;
   prepMinutes: string;
   cookHours: string;
@@ -21,7 +18,6 @@ type RecipeForm = {
 
 const AddRecipe = () => {
   const navigate = useNavigate();
-
   //initialize react hook form
   const {
     register,
@@ -32,16 +28,33 @@ const AddRecipe = () => {
     defaultValues: {
       title: "",
       description: "",
-      ingredients: {
-        name: "",
-        quantity: "",
-      },
-      instruction: "",
+      ingredients: [{ name: "", quantity: "" }],
+      instruction: [{ steps: "" }],
       prepHours: "",
       prepMinutes: "",
       cookHours: "",
       cookMinutes: "",
     },
+  });
+
+  // useFieldArray for dynamic ingredients
+  const {
+    fields: ingredientFields,
+    append: appendIngredient,
+    remove: removeIngredient,
+  } = useFieldArray({
+    control,
+    name: "ingredients",
+  });
+
+  // useFieldArray for dynamic instructions
+  const {
+    fields: instructionFields,
+    append: appendInstruction,
+    remove: removeInstruction,
+  } = useFieldArray({
+    control,
+    name: "instruction",
   });
 
   const onSubmit = (data: RecipeForm) => {
@@ -94,46 +107,61 @@ const AddRecipe = () => {
               })}
               error={errors.description?.message as string}
             />
-            <InputBoxVariant
-              text="Ingredients"
-              size="w-[600px]"
-              firstField={register("ingredients.name", {
-                required: "Name is required",
-                minLength: {
-                  value: 2,
-                  message: "Name must be at least 2 characters",
-                },
-              })}
-              secondField={register("ingredients.quantity", {
-                required: "Quantity is required",
-                min: { value: 0, message: "Quantity cannot be negative" },
-              })}
-              firstError={errors.ingredients?.name?.message}
-              secondError={errors.ingredients?.quantity?.message}
-              firstLabel="Name"
-              secondLabel="Quantity"
-              firstPlaceholder="0"
-              secondPlaceholder="0"
-            />
+            {ingredientFields.map((field, index) => (
+              <InputBoxVariant
+                key={field.id}
+                index={index}
+                text={`Ingredient ${index + 1}`}
+                size="w-[600px]"
+                firstField={register(`ingredients.${index}.name`, {
+                  required: "Name is required",
+                  minLength: {
+                    value: 2,
+                    message: "Name must be at least 2 characters",
+                  },
+                })}
+                secondField={register(`ingredients.${index}.quantity`, {
+                  required: "Quantity is required",
+                  min: { value: 0, message: "Quantity cannot be negative" },
+                })}
+                firstError={errors.ingredients?.[index]?.name?.message}
+                secondError={errors.ingredients?.[index]?.quantity?.message}
+                firstLabel="Name"
+                secondLabel="Quantity"
+                firstPlaceholder="0"
+                secondPlaceholder="0"
+                onRemove={() => removeIngredient(index)}
+              />
+            ))}
             <div className="flex flex-row-reverse">
               <div className="w-[250px]">
-                <div className="w-8 h-8 rounded-full text-white bg-orange-400 flex justify-center items-center font-semibold cursor-pointer">
+                <div
+                  className="w-8 h-8 rounded-full text-white bg-orange-400 flex justify-center items-center font-semibold cursor-pointer"
+                  onClick={() => appendIngredient({ name: "", quantity: "" })}
+                >
                   <PlusIcon />
                 </div>
               </div>
             </div>
-            <InputBox
-              text="Instruction"
-              placeholder="Add instruction"
-              boxSize="w-[600px]"
-              {...register("instruction", {
-                required: "Ingredients is Required",
-              })}
-              error={errors.instruction?.message as string}
-            />
+            {instructionFields.map((field, index) => (
+              <InputBox
+                index={index}
+                text={`Instruction ${index + 1}`}
+                boxSize="w-[600px]"
+                placeholder="Add instruction"
+                {...register(`instruction.${index}.steps`, {
+                  required: "Instruction is Required",
+                })}
+                error={errors.instruction?.[index]?.steps?.message as string}
+                onRemove={() => removeInstruction(index)}
+              />
+            ))}
             <div className="flex flex-row-reverse">
               <div className="w-[250px]">
-                <div className="w-8 h-8 rounded-full text-white bg-orange-400 flex justify-center items-center font-semibold cursor-pointer">
+                <div
+                  className="w-8 h-8 rounded-full text-white bg-orange-400 flex justify-center items-center font-semibold cursor-pointer"
+                  onClick={() => appendInstruction({ steps: "" })}
+                >
                   <PlusIcon />
                 </div>
               </div>

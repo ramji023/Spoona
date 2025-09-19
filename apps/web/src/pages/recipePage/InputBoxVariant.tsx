@@ -1,4 +1,5 @@
 import type { UseFormRegisterReturn } from "react-hook-form";
+import { CrossIcon } from "@repo/ui/icons/CrossIcon";
 
 type InputBoxVariantProps = {
   text: string;
@@ -11,6 +12,8 @@ type InputBoxVariantProps = {
   secondLabel: string;
   firstPlaceholder: string;
   secondPlaceholder: string;
+  onRemove?: () => void;
+  index?: number;
 };
 
 export function InputBoxVariant({
@@ -24,9 +27,11 @@ export function InputBoxVariant({
   secondLabel,
   firstPlaceholder,
   secondPlaceholder,
+  onRemove,
+  index,
 }: InputBoxVariantProps) {
   return (
-    <div className="flex justify-center mt-10">
+    <div className="flex justify-center mt-10 relative">
       <div className={`${size} flex flex-col`}>
         <label className="text-lg font-semibold mb-4">{text}</label>
         <div className="flex justify-between gap-4">
@@ -66,6 +71,13 @@ export function InputBoxVariant({
           </div>
         </div>
       </div>
+      {onRemove && index !== 0 && (
+        <div className="absolute top-2 right-50 z-10">
+          <div onClick={onRemove} className="cursor-pointer text-gray-400">
+            <CrossIcon />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
