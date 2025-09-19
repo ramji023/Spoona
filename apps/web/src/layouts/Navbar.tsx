@@ -1,7 +1,11 @@
 import Button from "@repo/ui/components/Button";
 import Logo from "@repo/ui/components/Logo";
 import { Link } from "react-router-dom";
-export default function Navbar() {
+interface NavbarProp {
+  signin: React.Dispatch<React.SetStateAction<boolean>>;
+  signup: React.Dispatch<React.SetStateAction<boolean>>;
+}
+export default function Navbar({ signin, signup }: NavbarProp) {
   return (
     <>
       <div className="flex justify-around items-center p-3">
@@ -28,8 +32,21 @@ export default function Navbar() {
           </ul>
         </div>
         <div>
-          <Button>login</Button>
-          <span className="cursor-pointer outline-1 outline-gray-400 px-5 py-2 rounded-3xl hover:outline-orange-400">
+          <Button
+            onClick={() => {
+              signup(false);
+              signin(true);
+            }}
+          >
+            login
+          </Button>
+          <span
+            onClick={() => {
+              signin(false);
+              signup(true);
+            }}
+            className="cursor-pointer outline-1 outline-gray-400 px-5 py-2 rounded-3xl hover:outline-orange-400"
+          >
             Signup
           </span>
         </div>

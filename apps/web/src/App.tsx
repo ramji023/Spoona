@@ -6,7 +6,7 @@ import PlannerPage from "./pages/plannerPage/PlannerPage";
 import SavedRecipe from "./pages/SavedRecipePage/SavedRecipe";
 import Profile from "./pages/profilePage/Profile";
 import CommunityPage from "./pages/communityPage/CommunityPage";
-
+import AddRecipe from "./pages/recipePage/AddRecipe"
 function App() {
   return (
     <>
@@ -19,6 +19,7 @@ function App() {
             <Route path="saved" element={<SavedRecipe />} />
             <Route path="account" element={<Profile />} />
             <Route path="communities" element={<CommunityPage />} />
+            <Route path="add-recipe" element={<AddRecipe/>} />
           </Route>
         </Routes>
       </BrowserRouter>

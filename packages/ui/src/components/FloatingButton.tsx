@@ -1,7 +1,8 @@
-export default function FloatingButton() {
+export default function FloatingButton({ onClick }: { onClick: () => void }) {
   return (
     <div className="fixed overflow-hidden bottom-5 right-5 z-20">
       <button
+        onClick={onClick}
         className={`text-white font-bold rounded-3xl px-6 py-2 cursor-pointer bg-orange-400 transition-all duration-300 ease-out hover:text-xl
         `}
       >

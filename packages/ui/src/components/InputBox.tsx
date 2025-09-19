@@ -1,98 +1,69 @@
 import { CameraIcon } from "../icons/CameraIcon";
 
-export function InputBox({
-  text,
-  placeholder,
-  size,
-}: {
-  text: string;
-  placeholder: string;
-  size: string;
-}) {
-  return (
-    <>
-      <div className="flex justify-center mt-10">
-        <div className="flex flex-col ">
-          <label className="text-lg font-semibold mb-2">{text}</label>
-          <input
-            type="text"
-            placeholder={placeholder}
-            className={`${size} px-5 py-3 outline-1 outline-gray-300 rounded bg-gray-200 focus:outline-orange-400`}
-          />
-        </div>
-      </div>
-    </>
-  );
-}
+import React from "react";
 
-export function TextAreaBox({
-  size,
-  placeholder,
-  text,
-}: {
-  size: string;
-  placeholder: string;
+/* ---------------- InputBox ---------------- */
+type InputBoxProps = React.InputHTMLAttributes<HTMLInputElement> & {
   text: string;
-}) {
-  return (
-    <>
+  boxSize: string;
+  error?: string;
+};
+
+export const InputBox = React.forwardRef<HTMLInputElement, InputBoxProps>(
+  ({ text, placeholder, error, boxSize, ...rest }, ref) => {
+    return (
       <div className="flex justify-center mt-10">
         <div className="flex flex-col">
           <label className="text-lg font-semibold mb-2">{text}</label>
-          <textarea
-            rows={3}
+          <input
+            ref={ref}
             placeholder={placeholder}
-            className={`${size} px-5 py-3 outline-1 outline-gray-300 rounded bg-gray-200 focus:outline-orange-400`}
+            className={`${boxSize} px-5 py-3 outline-1 outline-gray-300 rounded bg-gray-200 focus:outline-orange-400`}
+            {...rest}
           />
+          <span className="text-red-500 text-xs min-h-[16px] flex flex-row-reverse">
+            {error ?? ""}
+          </span>
         </div>
       </div>
-    </>
-  );
-}
+    );
+  }
+);
+InputBox.displayName = "InputBox";
 
-export function InputBoxVariant({
-  text,
-  placeholder,
-  size,
-}: {
+/* ---------------- TextAreaBox ---------------- */
+type TextAreaBoxProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   text: string;
-  placeholder: string;
-  size: string;
-}) {
+  boxSize: string;
+  error?: string;
+};
+
+export const TextAreaBox = React.forwardRef<
+  HTMLTextAreaElement,
+  TextAreaBoxProps
+>(({ text, placeholder, error, boxSize, ...rest }, ref) => {
   return (
-    <>
-      <div className="flex justify-center mt-10">
-        <div className={`${size} flex flex-col`}>
-          <label className="text-lg font-semibold mb-4">{text}</label>
-
-          <div className="flex justify-between gap-4">
-            <div className="flex items-center w-1/2 bg-gray-200 rounded  outline-1 outline-gray-300 px-3 focus-within:outline-orange-400">
-              <label className="text-lg text-gray-500 mr-2 whitespace-nowrap">
-                Hours
-              </label>
-              <input
-                type="text"
-                placeholder={placeholder}
-                className="w-full py-3 text-lg bg-gray-200 outline-none text-black"
-              />
-            </div>
-
-            <div className="flex items-center w-1/2 bg-gray-200 rounded  outline-1 outline-gray-300 px-3 focus-within:outline-orange-400">
-              <label className="text-lg text-gray-500 mr-2 whitespace-nowrap">
-                Minutes
-              </label>
-              <input
-                type="text"
-                placeholder={placeholder}
-                className="w-full py-3 text-lg bg-gray-200 outline-none text-black"
-              />
-            </div>
-          </div>
-        </div>
+    <div className="flex justify-center mt-10">
+      <div className="flex flex-col">
+        <label className="text-lg font-semibold mb-2">{text}</label>
+        <textarea
+          ref={ref}
+          placeholder={placeholder}
+          rows={3}
+          className={`${boxSize} px-5 py-3 outline-1 outline-gray-300 rounded bg-gray-200 focus:outline-orange-400`}
+          {...rest}
+        />
+        <span className="text-red-500 text-xs min-h-[16px] flex flex-row-reverse">
+          {error ?? ""}
+        </span>
       </div>
-    </>
+    </div>
   );
-}
+});
+TextAreaBox.displayName = "TextAreaBox";
+
+/* ---------------- InputBoxVariant ---------------- */
+
 
 export const Box = () => {
   return (
