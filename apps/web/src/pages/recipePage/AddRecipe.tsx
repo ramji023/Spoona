@@ -147,6 +147,7 @@ const AddRecipe = () => {
             </div>
             {instructionFields.map((field, index) => (
               <InputBox
+                key={field.id}
                 index={index}
                 text={`Instruction ${index + 1}`}
                 boxSize="w-[600px]"
