@@ -72,26 +72,3 @@ export const TextAreaBox = React.forwardRef<
 });
 TextAreaBox.displayName = "TextAreaBox";
 
-
-
-/* ---------------- Box ---------------- */
-
-export const Box = () => {
-  return (
-    <>
-      <div className="flex justify-center mt-10">
-        <div className="relative w-[600px] h-[200px] bg-gray-200 rounded  outline-1 outline-gray-300 flex justify-center items-center cursor-pointer">
-          <input
-            type="file"
-            className="absolute inset-0 opacity-0 cursor-pointer"
-          />
-
-          <label className="flex flex-col justify-center items-center pointer-events-none">
-            <CameraIcon />
-            <div className="text-sm text-gray-600">Add Images / Videos</div>
-          </label>
-        </div>
-      </div>
-    </>
-  );
-};

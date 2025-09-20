@@ -1,8 +1,8 @@
 import { LeftArrowIcon } from "@repo/ui/icons/LeftArrowIcon";
-import { Box, InputBox, TextAreaBox } from "@repo/ui/components/InputBox";
-import { InputBoxVariant } from "./InputBoxVariant";
+import { InputBox, TextAreaBox } from "@repo/ui/components/InputBox";
+import { InputBoxVariant, Box } from "./InputBoxVariant";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useFieldArray } from "react-hook-form";
 import { PlusIcon } from "@repo/ui/icons/PlusIcon";
 type RecipeForm = {
@@ -14,6 +14,7 @@ type RecipeForm = {
   prepMinutes: string;
   cookHours: string;
   cookMinutes: string;
+  image?: string;
 };
 
 const AddRecipe = () => {
@@ -34,6 +35,7 @@ const AddRecipe = () => {
       prepMinutes: "",
       cookHours: "",
       cookMinutes: "",
+      image: "",
     },
   });
 
@@ -208,7 +210,17 @@ const AddRecipe = () => {
               firstPlaceholder="0"
               secondPlaceholder="0"
             />
-            <Box />
+            <Controller
+              name="image"
+              control={control}
+              rules={{ required: "Image is required" }}
+              render={({ field }) => (
+                <Box
+                  {...field} // gives value + onChange
+                  error={errors.image?.message}
+                />
+              )}
+            />
           </div>
         </form>
       </div>

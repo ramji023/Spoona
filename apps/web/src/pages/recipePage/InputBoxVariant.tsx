@@ -81,3 +81,68 @@ export function InputBoxVariant({
     </div>
   );
 }
+
+// <---------------- Box ---------------- */
+import React, { useState } from "react";
+import { CameraIcon } from "@repo/ui/icons/CameraIcon";
+import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
+
+type BoxProps = {
+  label?: string;
+  error?: string;
+  onChange?: (value: string) => void;
+  value?: string;
+};
+
+export const Box = React.forwardRef<HTMLInputElement, BoxProps>(
+  (
+    { label = "Add Images / Videos", error, onChange, value, ...props },
+    ref
+  ) => {
+    const [loading, setLoading] = useState(false);
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      setLoading(true);
+      const { url, err } = await uploadToCloudinary(file, "Spoona/recipes");
+
+      if (url) {
+        onChange?.(url);
+      } else {
+        console.log(err);
+      }
+      setLoading(false);
+    };
+
+    return (
+      <div className="flex flex-col items-center justify-center mt-10">
+        {value && !loading && (
+          <div className="mb-4">
+            <img src={value} alt="Preview" className="w-100 object-contain" />
+          </div>
+        )}
+        <div className="relative w-[600px] h-[200px] bg-gray-200 rounded outline-1 outline-gray-300 flex justify-center items-center cursor-pointer">
+          <input
+            type="file"
+            accept="image/*"
+            ref={ref}
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            {...props}
+            onChange={handleFileChange}
+          />
+          <label className="flex flex-col justify-center items-center pointer-events-none">
+            <CameraIcon />
+            <div className="text-sm text-gray-600">{label}</div>
+          </label>
+        </div>
+        <span className="text-red-500 text-xs min-h-[16px] flex">
+          {error ?? ""}
+        </span>
+      </div>
+    );
+  }
+);
+
+Box.displayName = "Box";
