@@ -15,6 +15,9 @@ type RecipeForm = {
   cookHours: string;
   cookMinutes: string;
   image?: string;
+  cuisines: string;
+  categories: string;
+  tags: string;
 };
 
 const AddRecipe = () => {
@@ -36,6 +39,9 @@ const AddRecipe = () => {
       cookHours: "",
       cookMinutes: "",
       image: "",
+      cuisines: "",
+      categories: "",
+      tags: "",
     },
   });
 
@@ -68,11 +74,13 @@ const AddRecipe = () => {
       <div className="m-15 px-15 py-4">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex justify-between items-center">
-            <div
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-1 cursor-pointer"
-            >
-              <LeftArrowIcon />
+            <div className="flex items-center gap-1 ">
+              <div
+                onClick={() => navigate(-1)}
+                className="w-10 h-10 rounded-full cursor-pointer hover:bg-gray-100 flex justify-center items-center font-semibold"
+              >
+                <LeftArrowIcon />
+              </div>
               <h1 className="text-2xl font-semibold">Add Recipe</h1>
             </div>
             <button
@@ -108,6 +116,27 @@ const AddRecipe = () => {
                 },
               })}
               error={errors.description?.message as string}
+            />
+            <InputBox
+              text="Cuisines"
+              placeholder="Indian, Italian, Mexican"
+              boxSize="w-[600px]"
+              {...register("cuisines")}
+              note="* Make your recipe more discoverable by adding cuisines"
+            />
+            <InputBox
+              text="Categories"
+              placeholder="Main Course, Dessert, Appetizer"
+              boxSize="w-[600px]"
+              {...register("categories")}
+              note="* Make your recipe more discoverable by adding categories"
+            />
+            <InputBox
+              text="Tags"
+              placeholder="Gluten-Free, Vegan, Quick & Easy"
+              boxSize="w-[600px]"
+              {...register("tags")}
+              note="* Make your recipe more discoverable by adding tags"
             />
             {ingredientFields.map((field, index) => (
               <InputBoxVariant
@@ -217,7 +246,7 @@ const AddRecipe = () => {
               rules={{ required: "Image is required" }}
               render={({ field }) => (
                 <Box
-                  {...field} // gives value + onChange
+                  {...field} 
                   error={errors.image?.message}
                 />
               )}

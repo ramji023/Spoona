@@ -7,7 +7,7 @@ export const LeftArrowIcon = () => {
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        className="size-9"
+        className="size-7"
       >
         <path
           stroke-linecap="round"

@@ -1,5 +1,3 @@
-import { CameraIcon } from "../icons/CameraIcon";
-
 import React from "react";
 import { CrossIcon } from "../icons/CrossIcon";
 
@@ -10,10 +8,14 @@ type InputBoxProps = React.InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
   onRemove?: () => void;
   index?: number;
+  note?: string;
 };
 
-export const InputBox = React.forwardRef<HTMLInputElement, InputBoxProps>(
-  ({ text, placeholder, error, onRemove, index, boxSize, ...rest }, ref) => {
+export const InputBox =React.memo( React.forwardRef<HTMLInputElement, InputBoxProps>(
+  (
+    { text, placeholder, error, onRemove, index, boxSize, note, ...rest },
+    ref
+  ) => {
     return (
       <div className="flex justify-center mt-10 relative">
         <div className="flex flex-col">
@@ -27,6 +29,11 @@ export const InputBox = React.forwardRef<HTMLInputElement, InputBoxProps>(
           <span className="text-red-500 text-xs min-h-[16px] flex flex-row-reverse">
             {error ?? ""}
           </span>
+          {note && (
+            <span className="text-gray-500 text-xs min-h-[10px] flex flex-row-reverse">
+              {note ?? ""}
+            </span>
+          )}
         </div>
         {onRemove && index !== 0 && (
           <div className="absolute top-2 right-50 z-10">
@@ -38,7 +45,7 @@ export const InputBox = React.forwardRef<HTMLInputElement, InputBoxProps>(
       </div>
     );
   }
-);
+));
 InputBox.displayName = "InputBox";
 
 /* ---------------- TextAreaBox ---------------- */
@@ -71,4 +78,3 @@ export const TextAreaBox = React.forwardRef<
   );
 });
 TextAreaBox.displayName = "TextAreaBox";
-
