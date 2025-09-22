@@ -51,7 +51,7 @@ model Recipe {
   updatedAt   DateTime @default(now())
 
   // @relations between user and recipe
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   // @relations between recipe and ingredients 

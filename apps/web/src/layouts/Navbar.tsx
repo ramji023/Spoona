@@ -1,11 +1,11 @@
 import Button from "@repo/ui/components/Button";
 import Logo from "@repo/ui/components/Logo";
-import { Link } from "react-router-dom";
-interface NavbarProp {
-  signin: React.Dispatch<React.SetStateAction<boolean>>;
-  signup: React.Dispatch<React.SetStateAction<boolean>>;
-}
-export default function Navbar({ signin, signup }: NavbarProp) {
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
+import { UserIcon } from "@repo/ui/icons/UserIcon";
+export default function Navbar() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const navigate = useNavigate();
   return (
     <>
       <div className="flex justify-around items-center p-3">
@@ -31,25 +31,37 @@ export default function Navbar({ signin, signup }: NavbarProp) {
             </Link>
           </ul>
         </div>
-        <div>
-          <Button
-            onClick={() => {
-              signup(false);
-              signin(true);
-            }}
-          >
-            login
-          </Button>
-          <span
-            onClick={() => {
-              signin(false);
-              signup(true);
-            }}
-            className="cursor-pointer outline-1 outline-gray-400 px-5 py-2 rounded-3xl hover:outline-orange-400"
-          >
-            Signup
-          </span>
-        </div>
+        {isAuthenticated ? (
+          <div className="flex gap-7 items-center cursor-pointer">
+            <div className="w-10 h-10 rounded-full bg-orange-400 flex justify-center items-center">
+              <UserIcon />
+            </div>
+            <span
+              onClick={() => {}}
+              className="cursor-pointer outline-1 outline-gray-400 px-5 py-2 rounded-3xl hover:outline-orange-400"
+            >
+              Logout
+            </span>
+          </div>
+        ) : (
+          <div>
+            <Button
+              onClick={() => {
+                navigate("/auth/signin");
+              }}
+            >
+              login
+            </Button>
+            <span
+              onClick={() => {
+                navigate("/auth/signup");
+              }}
+              className="cursor-pointer outline-1 outline-gray-400 px-5 py-2 rounded-3xl hover:outline-orange-400"
+            >
+              Signup
+            </span>
+          </div>
+        )}
       </div>
     </>
   );

@@ -6,20 +6,53 @@ import PlannerPage from "./pages/plannerPage/PlannerPage";
 import SavedRecipe from "./pages/SavedRecipePage/SavedRecipe";
 import Profile from "./pages/profilePage/Profile";
 import CommunityPage from "./pages/communityPage/CommunityPage";
-import AddRecipe from "./pages/recipePage/AddRecipe"
+import AddRecipe from "./pages/recipePage/AddRecipe";
+import { useAuthStore } from "./stores/authStore";
+import { useEffect } from "react";
+import Signup from "./pages/auth/Signup";
+import Signin from "./pages/auth/Signin";
+import axios from "axios";
 function App() {
+  useEffect(() => {
+    const refreshAuth = async () => {
+      try {
+        const storedToken = await axios.post(
+          "http://localhost:3000/api/v1/user/refresh",
+          null,
+          { withCredentials: true }
+        );
+        useAuthStore.setState({
+          token: storedToken.data.accessToken,
+          isAuthenticated: true,
+        });
+      } catch (err) {
+        useAuthStore.setState({
+          token: null,
+          isAuthenticated: false,
+        });
+        return;
+      }
+    };
+    refreshAuth();
+  }, []);
+  console.log("App rendered");
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<LandingPage />} />
+            <Route path="/auth" element={<LandingPage />}>
+              <Route path="signup" element={<Signup />} />
+              <Route path="signin" element={<Signin />} />
+            </Route>
+
             <Route path="home" element={<Home />} />
             <Route path="planner" element={<PlannerPage />} />
             <Route path="saved" element={<SavedRecipe />} />
             <Route path="account" element={<Profile />} />
             <Route path="communities" element={<CommunityPage />} />
-            <Route path="add-recipe" element={<AddRecipe/>} />
+            <Route path="add-recipe" element={<AddRecipe />} />
           </Route>
         </Routes>
       </BrowserRouter>

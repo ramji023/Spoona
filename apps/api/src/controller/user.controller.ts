@@ -68,11 +68,12 @@ export const signin = async (req: Request, res: Response) => {
     secure: true,
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
+    sameSite: "none" as const,
   };
 
   res.cookie("refreshToken", refreshToken, options);
   return res.json({
-    data: accessToken,
+    data: { accessToken, name: result.username },
     message: "User successfully logged in",
   });
 };
@@ -153,27 +154,48 @@ export const deleteAccount = (req: Request, res: Response) => {};
 
 // refreshed refreshToken and accessToken
 export const refreshedToken = async (req: Request, res: Response) => {
+  console.log("Cookies from client:", req.cookies);
   const token = req.cookies.refreshToken;
+  console.log("token : ", token);
   if (!token) {
     //throw error
-    return;
+    throw new ApiError("Refresh token is missing", 404);
   }
   const verifiedToken = jwt.verify(
     token,
     process.env.REFRESH_TOKEN_KEY!
   ) as JwtPayload;
+  console.log("verified token : ", verifiedToken);
   if (!verifiedToken) {
     //throw error
-    return;
+    throw new ApiError("Invalid refresh token", 404);
   }
 
   // find that user by id
-  const user = await findUserById(token.id);
-
+  const user = await findUserById({ id: verifiedToken.id });
+  console.log("user from refreshed token : ", user);
   if (!user) {
     //throw error
-    return;
+    throw new ApiError("User not found", 404);
   }
 
   // create access and refresh token
+  const { accessToken, refreshToken } = tokenGenerator({
+    id: user.id,
+    email: user.email,
+  });
+
+  // secure cookie
+  const options = {
+    secure: true,
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    sameSite: "none" as const,
+  };
+
+  res.cookie("refreshToken", refreshToken, options);
+  return res.json({
+    data: accessToken,
+    message: "User successfully refreshed the token",
+  });
 };

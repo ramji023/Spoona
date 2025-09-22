@@ -1,3 +1,4 @@
+import { Outlet } from "react-router-dom";
 import Section_1 from "./Section_1";
 import Section_2 from "./Section_2";
 import Section_3 from "./Section_3";
@@ -12,6 +13,7 @@ export default function LandingPage() {
       <Section_2 />
       <Section_3 />
       <Section_4 />
+      <Outlet />
     </>
   );
 }
