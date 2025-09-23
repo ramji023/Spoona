@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../utils/axiosInstance";
 import { UserProfile } from "../types/user";
-
+import { Recipe } from "../types/recipe";
 //fetch user profile
 export const useProfile = () => {
   return useQuery<UserProfile>({
@@ -15,11 +15,11 @@ export const useProfile = () => {
 
 // fetch single recipe data
 export const useRecipe = (recipeId: string) => {
-  return useQuery({
+  return useQuery<Recipe>({
     queryKey: ["recipeData"],
     queryFn: async () => {
       const response = await api.get(`/api/v1/recipe/${recipeId}`);
-      return response.data;
+      return response.data.data;
     },
   });
 };

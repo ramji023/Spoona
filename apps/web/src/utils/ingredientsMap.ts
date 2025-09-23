@@ -1,176 +1,178 @@
 export const ingredientsMap: Record<string, string> = {
-  Carrot:
+  carrot:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558487/Carrot_v6akzy.jpg",
-  Onion:
+  onion:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558487/Onion_tmxayy.jpg",
-  Garlic:
+  garlic:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558487/Garlic_inqez9.jpg",
-  Ginger:
+  ginger:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558482/Ginger_ngupyz.jpg",
-  Potato:
+  potato:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558482/Potato_ylymcc.jpg",
-  Tomato:
+  tomato:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558481/Tomato_mrt731.jpg",
-  Bell_pepper:
+  bell_pepper:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558481/Bell_pepper_zfbpgb.jpg",
-  Spinach:
+  spinach:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558480/Spinach_eaiexy.jpg",
-  Lettuce:
+  lettuce:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558477/Lettuce_wafw9q.jpg",
-  Kale: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558477/Kale_ywsfis.jpg",
-  Cucumber:
+  kale: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558477/Kale_ywsfis.jpg",
+  cucumber:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558476/Cucumber_dnw9ql.jpg",
-  Broccoli:
+  broccoli:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558476/Broccoli_spcnmq.jpg",
-  Cauliflower:
+  cauliflower:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558476/Cauliflower_kuwv1b.jpg",
-  Cabbage:
+  cabbage:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558473/Cabbage_gmgais.jpg",
-  Zucchini:
+  zucchini:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558472/Zucchini_vosxzm.jpg",
-  Aubergine:
+  aubergine:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558609/Aubergine_wqvplb.jpg",
-  Green_beans:
+  green_beans:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558471/Green_beans_a1ajya.jpg",
-  Peas: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558471/Peas_v0m2nn.jpg",
-  Corn: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558469/Corn_przu3b.jpg",
-  Apple:
+  peas: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558471/Peas_v0m2nn.jpg",
+  corn: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558469/Corn_przu3b.jpg",
+  apple:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558468/Apple_pwnigb.jpg",
-  Banana:
+  banana:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558467/Banana_kgmu24.jpg",
-  Orange:
+  orange:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558467/Orange_e4ilu9.jpg",
-  Lemon:
+  lemon:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558466/Lemon_fjuhrf.jpg",
-  Lime: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558464/Lime_mujfab.jpg",
-  Strawberry:
+  lime: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558464/Lime_mujfab.jpg",
+  strawberry:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558463/Strawberry_qpzjo5.jpg",
-  Blueberry:
+  blueberry:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558463/Blueberry_siswy0.jpg",
-  Raspberry:
+  raspberry:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558463/Raspberry_n3rwu4.jpg",
-  Mango:
+  mango:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558462/Mango_vx7ool.jpg",
-  Pineapple:
+  pineapple:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558460/Pineapple_kcfvqj.jpg",
-  Watermelon:
+  watermelon:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558459/Watermelon_mvam7d.jpg",
-  Grapes:
+  grapes:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558459/Grapes_ifn1wy.jpg",
-  Pomegranate:
+  pomegranate:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558458/Pomegranate_eowirm.jpg",
-  Pear: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558456/Pear_dv0ifc.jpg",
-  Kiwi: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558455/Kiwi_teopmb.jpg",
-  Avocado:
+  pear: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558456/Pear_dv0ifc.jpg",
+  kiwi: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558455/Kiwi_teopmb.jpg",
+  avocado:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558455/Avocado_epqumn.jpg",
-  Rice: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558455/Rice_hsvs4a.jpg",
-  Quinoa:
+  rice: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558455/Rice_hsvs4a.jpg",
+  quinoa:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558453/Quinoa_rk1i1m.jpg",
-  Oats: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558452/Oats_n4dsw1.jpg",
-  Wheat:
+  oats: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558452/Oats_n4dsw1.jpg",
+  wheat:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558452/Wheat_okhah1.jpg",
-  Barley:
+  barley:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558449/Barley_leznaa.jpg",
-  Lentils:
+  lentils:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558452/Lentils_sq2ubk.jpg",
-  Chickpeas:
+  chickpeas:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558451/Chickpeas_zfjc8j.jpg",
-  Black_beans:
+  black_beans:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558447/Black_beans_aprjho.jpg",
-  Kidney_beans:
+  kidney_beans:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558448/Kidney_beans_pkjouj.jpg",
-  Peanuts:
+  peanuts:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558446/Peanuts_qolly5.jpg",
-  Soybeans:
+  soybeans:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558445/Soybeans_nbpnjv.jpg",
-  Milk: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558445/Milk_iwqctj.jpg",
-  Cheese:
+  milk: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558445/Milk_iwqctj.jpg",
+  cheese:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558445/Cheese_daqn8q.jpg",
-  Yogurt:
+  yogurt:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558444/Yogurt_l9agvv.jpg",
-  Butter:
+  butter:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558442/Butter_kprwnn.jpg",
-  Cream:
+  cream:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558442/Cream_mwmlq8.jpg",
-  Eggs: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558441/Eggs_gcuukz.jpg",
-  Chicken:
+  eggs: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558441/Eggs_gcuukz.jpg",
+  chicken:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558440/Chicken_xklbeo.jpg",
-  Beef: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558440/Beef_j50rev.jpg",
-  Pork: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558438/Pork_fjvi9w.jpg",
-  Lamb: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558437/Lamb_yvqmmg.jpg",
-  Fish: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558436/Fish_u4j23f.jpg",
-  Shrimp:
+  beef: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558440/Beef_j50rev.jpg",
+  pork: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558438/Pork_fjvi9w.jpg",
+  lamb: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558437/Lamb_yvqmmg.jpg",
+  fish: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558436/Fish_u4j23f.jpg",
+  shrimp:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558436/Shrimp_mi1sss.jpg",
-  Crab: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558436/Crab_wj6vzq.jpg",
-  Lobster:
+  crab: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558436/Crab_wj6vzq.jpg",
+  lobster:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558433/Lobster_qjndok.jpg",
-  Basil:
+  basil:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558433/Basil_b5lqgw.jpg",
-  Oregano:
+  oregano:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558432/Oregano_otvkcy.jpg",
-  Thyme:
+  thyme:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558432/Thyme_a3azzs.jpg",
-  Rosemary:
+  rosemary:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558432/Rosemary_aq4g3u.jpg",
-  Coriander:
+  coriander:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558429/Coriander_e5nzhq.jpg",
-  Parsley:
+  parsley:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558429/Parsley_ti7es3.jpg",
-  Mint: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558429/Mint_uzunp6.jpg",
-  Dill: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558428/Dill_ojogqj.jpg",
-  Cinnamon:
+  mint: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558429/Mint_uzunp6.jpg",
+  dill: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558428/Dill_ojogqj.jpg",
+  cinnamon:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558426/Cinnamon_bfaxqv.jpg",
-  Nutmeg:
+  nutmeg:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558426/Nutmeg_vxosuf.jpg",
-  Cloves:
+  cloves:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558425/Cloves_e5m9lh.jpg",
-  Turmeric:
+  turmeric:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558425/Turmeric_wc8ec7.jpg",
-  Cumin:
+  cumin:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558425/Cumin_ipw5pf.jpg",
-  Paprika:
+  paprika:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558422/Paprika_eaxcd3.jpg",
-  Black_pepper:
+  black_pepper:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558422/Black_pepper_eoezrc.jpg",
-  Chili_powder:
+  chili_powder:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558421/Chili_powder_egs9cf.jpg",
-  Olive_oil:
+  olive_oil:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558421/Olive_oil_eaywh0.jpg",
-  Vegetable_oil:
+  vegetable_oil:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558420/Vegetable__oil_yh9fgq.jpg",
-  Coconut_oil:
+  coconut_oil:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558418/Coconut_oil_n6kyyh.jpg",
-  Soy_sauce:
+  soy_sauce:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558418/Soy_sauce_gqj2kg.jpg",
-  Vinegar:
+  vinegar:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558417/Vinegar_kbvvme.jpg",
-  Mustard:
+  mustard:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558417/Mustard_tkspw1.jpg",
-  Ketchup:
+  ketchup:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558417/Ketchup_wb3lpr.jpg",
-  Mayonnaise:
+  mayonnaise:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558416/Mayonnaise_ebs51e.jpg",
-  Honey:
+  honey:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558414/Honey_czz6gk.jpg",
-  Maple_syrup:
+  maple_syrup:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558414/Maple_syrup_vybvi9.jpg",
-  Salt: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558413/Salt_ez8qto.jpg",
-  Sugar:
+  salt: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558413/Salt_ez8qto.jpg",
+  sugar:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558413/Sugar_y4nrju.jpg",
-  Almonds:
+  almonds:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558413/Almonds_drfigd.jpg",
-  Cashews:
+  cashews:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558413/Cashews_z6qmlv.jpg",
-  Walnuts:
+  walnuts:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558412/Walnuts_aeluql.jpg",
-  Pecans:
+  pecans:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558412/Pecans_e8damh.jpg",
-  Sunflower_seeds:
+  sunflower_seeds:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558413/Sunflower_seeds_nbkxv1.jpg",
-  Pumpkin_seeds:
+  pumpkin_seeds:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558413/Pumpkin_seeds_jqcmbt.jpg",
-  Chia_seeds:
+  chia_seeds:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558412/Chia_seeds_rnjamv.jpg",
-  Flax_seeds:
+  flax_seeds:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758558412/Flax_seeds_whknls.jpg",
+  others:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758638352/405493444_b7360155-6f42-425a-b6d9-ee07274fbf7c_1_knpvdx.jpg",
 };
