@@ -10,6 +10,7 @@ import { createRecipeValidation } from "../validations/recipe.validation";
 import {
   cleanArray,
   cleanArrayObjects,
+  cleanString,
   removeExtraSpaces,
 } from "../utils/helper.functions";
 import { ApiError } from "../utils/customError";
@@ -30,35 +31,33 @@ export const getAllRecipe = async (req: Request, res: Response) => {
 
 // create Recipe controller
 export const createRecipe = async (req: Request, res: Response) => {
+  console.log("recipe data : ", req.body);
   //first normalize the request data
   const title = removeExtraSpaces(req.body.title);
   const description = removeExtraSpaces(req.body.description);
   const ingredients = cleanArrayObjects(req.body.ingredients);
   const instructions = cleanArrayObjects(req.body.instructions);
-  const cookTime = removeExtraSpaces(req.body.cookTime);
-  const prepTime = removeExtraSpaces(req.body.prepTime);
+  const prepHours = removeExtraSpaces(req.body.prepHours);
+  const prepMinutes = removeExtraSpaces(req.body.prepMinutes);
+  const cookHours = removeExtraSpaces(req.body.cookHours);
+  const cookMinutes = removeExtraSpaces(req.body.cookMinutes);
   const imageUrl = removeExtraSpaces(req.body.imageUrl);
-  const tags = cleanArray(req.body.tags);
-  // console.log({
-  //   title,
-  //   description,
-  //   ingredients,
-  //   instructions,
-  //   cookTime,
-  //   prepTime,
-  //   imageUrl,
-  //   tags,
-  // });
+  const tags = cleanString(req.body.tags);
+  const cuisines = cleanString(req.body.cuisines);
+  const categories = cleanString(req.body.categories);
+
   const parsedBodyObject = createRecipeValidation.safeParse({
     userId: req.user!,
     title,
     description,
     ingredients,
     instructions,
-    cookTime,
-    prepTime,
+    cookTime: String(parseInt(cookHours) * 60 + parseInt(cookMinutes)),
+    prepTime: String(parseInt(prepHours) * 60 + parseInt(prepMinutes)),
     imageUrl,
     tags,
+    cuisines,
+    categories,
   });
 
   if (!parsedBodyObject.success) {
@@ -144,12 +143,11 @@ export const updateRecipe = async (req: Request, res: Response) => {
 
 // get single recipe controller
 export const getOneRecipe = async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const id = req.params.recipeId;
   const recipe = await getSingleRecipe(id);
   if (!recipe) {
     //throw err
     throw new ApiError("RecipeId is Invalid", 400);
   }
-
   return res.json({ data: recipe, msg: "fetch recipe successfully" });
 };

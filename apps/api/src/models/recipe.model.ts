@@ -11,6 +11,8 @@ export const createNewRecipe = async (userData: CreateRecipeInput) => {
       prepTime: userData.prepTime,
       imageUrl: userData.imageUrl,
       tags: userData.tags,
+      cuisines: userData.cuisines,
+      categories: userData.categories,
       ingredients: {
         create: userData.ingredients.map((ingredient) => ({
           name: ingredient.name,
@@ -78,7 +80,6 @@ export const getSingleRecipe = async (recipeId: string) => {
       cookTime: true,
       prepTime: true,
       imageUrl: true,
-      tags: true,
       ingredients: {
         select: {
           name: true,
@@ -88,6 +89,12 @@ export const getSingleRecipe = async (recipeId: string) => {
       instructions: {
         select: {
           step: true,
+        },
+      },
+      user: {
+        select: {
+          username: true,
+          profileImage: true,
         },
       },
     },

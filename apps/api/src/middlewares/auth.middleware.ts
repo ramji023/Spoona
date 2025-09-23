@@ -6,8 +6,10 @@ export const AuthMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req.headers);
+  console.log(req.header("Authorization"));
   const token = req.header("Authorization")?.replace("Bearer ", "");
-  // console.log(token)
+  console.log(token);
   if (!token) {
     //throw error
     throw new ApiError("User do not have token", 401);
@@ -19,6 +21,7 @@ export const AuthMiddleware = (
       process.env.ACCESS_SECRET_KEY!
     ) as JwtPayload;
 
+    console.log(verifiedToken);
     req.user = verifiedToken.id;
     next();
   } catch (err) {

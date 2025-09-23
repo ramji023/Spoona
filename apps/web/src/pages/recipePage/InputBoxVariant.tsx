@@ -1,6 +1,6 @@
 import type { UseFormRegisterReturn } from "react-hook-form";
 import { CrossIcon } from "@repo/ui/icons/CrossIcon";
-
+import React, { useState } from "react";
 type InputBoxVariantProps = {
   text: string;
   size: string;
@@ -16,7 +16,7 @@ type InputBoxVariantProps = {
   index?: number;
 };
 
-export function InputBoxVariant({
+export const  InputBoxVariant = React.memo(({
   text,
   size,
   firstField,
@@ -29,7 +29,7 @@ export function InputBoxVariant({
   secondPlaceholder,
   onRemove,
   index,
-}: InputBoxVariantProps) {
+}: InputBoxVariantProps)=> {
   return (
     <div className="flex justify-center mt-10 relative">
       <div className={`${size} flex flex-col`}>
@@ -80,10 +80,9 @@ export function InputBoxVariant({
       )}
     </div>
   );
-}
+})
 
 // <---------------- Box ---------------- */
-import React, { useState } from "react";
 import { CameraIcon } from "@repo/ui/icons/CameraIcon";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
 
@@ -94,7 +93,7 @@ type BoxProps = {
   value?: string;
 };
 
-export const Box = React.forwardRef<HTMLInputElement, BoxProps>(
+export const Box =React.memo(React.forwardRef<HTMLInputElement, BoxProps>(
   (
     { label = "Add Images / Videos", error, onChange, value, ...props },
     ref
@@ -143,6 +142,6 @@ export const Box = React.forwardRef<HTMLInputElement, BoxProps>(
       </div>
     );
   }
-);
+));
 
 Box.displayName = "Box";

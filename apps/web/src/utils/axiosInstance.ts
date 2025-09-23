@@ -30,7 +30,7 @@ api.interceptors.response.use(
           withCredentials: true,
         });
         useAuthStore.setState({
-          token: storedToken.data.accessToken,
+          token: storedToken.data.data,
           isAuthenticated: true,
         });
         originalRequest.headers.Authorization = `Bearer ${storedToken.data.accessToken}`;

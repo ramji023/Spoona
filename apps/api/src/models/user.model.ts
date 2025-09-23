@@ -54,7 +54,7 @@ export const updateUser = async (userData: {
 
 // find unique user
 export const findUserById = async (userData: { id: string }) => {
-  console.log("userData : ", userData);
+  // console.log("userData : ", userData);
   const user = await prisma.user.findUnique({
     where: { id: userData.id },
   });

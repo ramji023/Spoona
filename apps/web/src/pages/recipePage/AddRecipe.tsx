@@ -5,40 +5,63 @@ import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useFieldArray } from "react-hook-form";
 import { PlusIcon } from "@repo/ui/icons/PlusIcon";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "../../utils/axiosInstance";
 type RecipeForm = {
   title: string;
   description: string;
   ingredients: { name: string; quantity: string }[];
-  instruction: { steps: string }[];
+  instructions: { step: string }[];
   prepHours: string;
   prepMinutes: string;
   cookHours: string;
   cookMinutes: string;
-  image?: string;
-  cuisines: string;
-  categories: string;
-  tags: string;
+  imageUrl?: string;
+  cuisines?: string;
+  categories?: string;
+  tags?: string;
 };
 
 const AddRecipe = () => {
   const navigate = useNavigate();
+  console.log("Add recipe component re-rendered ");
+  // const token = useAuthStore((s) => s.token);
+  // console.log(token);
+
+  //mutate recipe data to backend
+  const recipeMutation = useMutation({
+    mutationFn: async (data: RecipeForm) => {
+      const response = await api.post("/api/v1/recipe", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("Recipe added successfully", data);
+      reset();
+      navigate(-1);
+    },
+    onError: (err) => {
+      console.log("Error adding recipe", err);
+    },
+  });
+
   //initialize react hook form
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm<RecipeForm>({
     defaultValues: {
       title: "",
       description: "",
       ingredients: [{ name: "", quantity: "" }],
-      instruction: [{ steps: "" }],
+      instructions: [{ step: "" }],
       prepHours: "",
       prepMinutes: "",
       cookHours: "",
       cookMinutes: "",
-      image: "",
+      imageUrl: "",
       cuisines: "",
       categories: "",
       tags: "",
@@ -62,11 +85,12 @@ const AddRecipe = () => {
     remove: removeInstruction,
   } = useFieldArray({
     control,
-    name: "instruction",
+    name: "instructions",
   });
 
   const onSubmit = (data: RecipeForm) => {
     console.log("Recipe Data:", data);
+    recipeMutation.mutate(data);
   };
 
   return (
@@ -181,10 +205,10 @@ const AddRecipe = () => {
                 text={`Instruction ${index + 1}`}
                 boxSize="w-[600px]"
                 placeholder="Add instruction"
-                {...register(`instruction.${index}.steps`, {
+                {...register(`instructions.${index}.step`, {
                   required: "Instruction is Required",
                 })}
-                error={errors.instruction?.[index]?.steps?.message as string}
+                error={errors.instructions?.[index]?.step?.message as string}
                 onRemove={() => removeInstruction(index)}
               />
             ))}
@@ -192,7 +216,7 @@ const AddRecipe = () => {
               <div className="w-[250px]">
                 <div
                   className="w-8 h-8 rounded-full text-white bg-orange-400 flex justify-center items-center font-semibold cursor-pointer"
-                  onClick={() => appendInstruction({ steps: "" })}
+                  onClick={() => appendInstruction({ step: "" })}
                 >
                   <PlusIcon />
                 </div>
@@ -241,14 +265,11 @@ const AddRecipe = () => {
               secondPlaceholder="0"
             />
             <Controller
-              name="image"
+              name="imageUrl"
               control={control}
               rules={{ required: "Image is required" }}
               render={({ field }) => (
-                <Box
-                  {...field} 
-                  error={errors.image?.message}
-                />
+                <Box {...field} error={errors.imageUrl?.message} />
               )}
             />
           </div>

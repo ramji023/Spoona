@@ -14,6 +14,7 @@ import {
 import { makeLowerCase, removeExtraSpaces } from "../utils/helper.functions";
 import { ApiError } from "../utils/customError";
 import { tokenGenerator } from "../utils/tokenGenerator";
+import { resolve } from "path";
 
 //signup controller
 export const signup = async (req: Request, res: Response) => {
@@ -76,6 +77,12 @@ export const signin = async (req: Request, res: Response) => {
     data: { accessToken, name: result.username },
     message: "User successfully logged in",
   });
+};
+
+//signout controller
+export const signout = async (req: Request, res: Response) => {
+  res.clearCookie("refreshToken");
+  return res.json({ message: "User successfully logged out" });
 };
 
 // get profile data controller
@@ -154,9 +161,9 @@ export const deleteAccount = (req: Request, res: Response) => {};
 
 // refreshed refreshToken and accessToken
 export const refreshedToken = async (req: Request, res: Response) => {
-  console.log("Cookies from client:", req.cookies);
+  // console.log("Cookies from client:", req.cookies);
   const token = req.cookies.refreshToken;
-  console.log("token : ", token);
+  // console.log("token : ", token);
   if (!token) {
     //throw error
     throw new ApiError("Refresh token is missing", 404);
@@ -165,7 +172,7 @@ export const refreshedToken = async (req: Request, res: Response) => {
     token,
     process.env.REFRESH_TOKEN_KEY!
   ) as JwtPayload;
-  console.log("verified token : ", verifiedToken);
+  // console.log("verified token : ", verifiedToken);
   if (!verifiedToken) {
     //throw error
     throw new ApiError("Invalid refresh token", 404);
@@ -173,7 +180,7 @@ export const refreshedToken = async (req: Request, res: Response) => {
 
   // find that user by id
   const user = await findUserById({ id: verifiedToken.id });
-  console.log("user from refreshed token : ", user);
+  // console.log("user from refreshed token : ", user);
   if (!user) {
     //throw error
     throw new ApiError("User not found", 404);

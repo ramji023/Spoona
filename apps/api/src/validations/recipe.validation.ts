@@ -13,10 +13,10 @@ const instructionSchema = z.object({
 export const createRecipeValidation = z.object({
   recipeId: z.string().uuid("Invalid recipe Id type").optional(),
   userId: z.string().uuid("Invalid user Id type"),
-  title: z.string("Title is required").max(20, "Title is too long"),
+  title: z.string("Title is required").max(50, "Title is too long"),
   description: z
     .string("Description is required")
-    .max(50, "Description is too long"),
+    .max(100, "Description is too long"),
   ingredients: z.array(ingredientsSchema, "Ingredients object is not valid"),
   instructions: z.array(instructionSchema, "Instruction object is not valid"),
   cookTime: z.string("Cook time is required").max(10, "Cook time is too long"),
@@ -25,6 +25,14 @@ export const createRecipeValidation = z.object({
   tags: z.array(
     z.string("Tag must be a string"),
     "Tags must be an array of strings"
+  ),
+  cuisines: z.array(
+    z.string("Cuisine must be a string"),
+    "Cuisines must be an array of strings"
+  ),
+  categories: z.array(
+    z.string("Category must be a string"),
+    "Categories must be an array of strings"
   ),
 });
 

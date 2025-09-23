@@ -1,4 +1,4 @@
-import { DislikeSolidIcon, LikeSolidIcon } from "../icons/LikeIcon";
+import { DislikeSolidIcon, LikeSolidIcon } from "@repo/ui/icons/LikeIcon";
 
 interface CommentType {
   avatar: string;

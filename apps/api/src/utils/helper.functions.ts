@@ -49,3 +49,11 @@ export function cleanArray(tags: string[]) {
   if (!Array.isArray(tags)) return [];
   return tags.map((tag) => tag.trim()).filter((tag) => tag.length > 0);
 }
+
+export function cleanString(s: string) {
+  if (!s) return [];
+  return s
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter((tag) => tag.length > 0);
+}

@@ -1,10 +1,11 @@
-import { EditIcon } from "../icons/EditIcon";
-import { EllipseIcon } from "../icons/EllipseIcon";
-import { PrinterIcon } from "../icons/PrinterIcon";
-import { SaveIcon } from "../icons/SaveIcon";
-import { ShareIcon } from "../icons/ShareIcon";
-import {NoteInput, NotesSection} from "./NotesSection";
-
+import { EditIcon } from "@repo/ui/icons/EditIcon";
+import { EllipseIcon } from "@repo/ui/icons/EllipseIcon";
+import { PrinterIcon } from "@repo/ui/icons/PrinterIcon";
+import { SaveIcon } from "@repo/ui/icons/SaveIcon";
+import { ShareIcon } from "@repo/ui/icons/ShareIcon";
+import { NotesSection, NoteInput } from "./NotesSection";
+import { useRecipe } from "../../react_queries/queries";
+import { Recipe } from "../../types/recipe";
 interface IngredientsType {
   icon: string;
   name: string;
@@ -90,6 +91,22 @@ const sampleRecipe: RecipeType = {
 };
 
 const RecipeBox = () => {
+  const { data, isLoading, error } = useRecipe(
+    "74b75485-bc16-4d12-a40b-6d7c92585de7"
+  );
+
+  if (isLoading) {
+    console.log("recipe is loading");
+  }
+
+  if (error) {
+    console.log("recipe fetching error" + error);
+  }
+
+  if (data) {
+    console.log("successfully fetch recipe data : ", data);
+  }
+
   return (
     <>
       <div className="m-5 px-5 py-4">
@@ -198,7 +215,7 @@ const RecipeBox = () => {
         {/* third section - notes section  */}
         <div className="border-solid border-t-1 border-gray-400 p-5">
           <NotesSection />
-          <NoteInput/>
+          <NoteInput />
         </div>
       </div>
     </>
