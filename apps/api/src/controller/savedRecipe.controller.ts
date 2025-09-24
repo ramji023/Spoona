@@ -5,6 +5,7 @@ import {
   deleteBookMarkedRecipe,
   findBookmarkRecipe,
 } from "../models/savedRecipe.model";
+import { ApiError } from "../utils/customError";
 
 export const toggleBookMarkRecipe = async (req: Request, res: Response) => {
   const recipeId = req.params.recipeId;
@@ -15,7 +16,7 @@ export const toggleBookMarkRecipe = async (req: Request, res: Response) => {
 
   if (!parsedBodyObject.success) {
     //throw error
-    return;
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 404);
   }
 
   const likeDoc = await findBookmarkRecipe({
@@ -38,8 +39,9 @@ export const toggleBookMarkRecipe = async (req: Request, res: Response) => {
 
   if (!result) {
     //throw error
-    return;
+    throw new ApiError("something went wrong while bookmark the recipe", 404);
   }
 
   // return response
+  return res.json({ msg: "User successfully Bookmarked recipe" });
 };

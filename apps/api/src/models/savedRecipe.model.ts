@@ -15,7 +15,7 @@ export const createBookmarkRecipe = async (recipeData: recipeData) => {
 };
 
 export const findBookmarkRecipe = async (recipeData: recipeData) => {
-  return await prisma.like.findFirst({
+  return await prisma.savedRecipe.findFirst({
     where: { userId: recipeData.userId, recipeId: recipeData.recipeId },
   });
 };

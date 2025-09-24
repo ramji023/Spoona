@@ -25,7 +25,7 @@ export default function SuccessMessage({
   if (!open) return null;
 
   return (
-    <div className="fixed top-5 right-5 w-[300px] bg-green-100 border border-green-400 text-green-700 rounded-lg shadow-lg p-4 flex items-start gap-2 z-[9999]">
+    <div className="fixed top-20 right-5 w-[300px] bg-green-100 border border-green-400 text-green-700 rounded-lg shadow-2xl p-4 flex items-start gap-2 z-[9999]">
       <p className="flex-1 text-sm">{msg}</p>
       <button onClick={onClose} className="text-green-700 hover:text-green-900">
         <X size={18} />

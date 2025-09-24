@@ -7,6 +7,8 @@ import {
   getOneRecipe,
 } from "../controller/recipe.controller";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { makeNote } from "../controller/note.controller";
+import { toggleBookMarkRecipe } from "../controller/savedRecipe.controller";
 const router: express.Router = express.Router();
 
 router.route("/").get(getAllRecipe).all(AuthMiddleware).post(createRecipe);
@@ -17,4 +19,9 @@ router
   .put(updateRecipe)
   .delete(deleteARecipe);
 
+router.route("/:recipeId/note").all(AuthMiddleware).post(makeNote); // when user make a note
+router
+  .route("/:recipeId/saved-recipe")
+  .all(AuthMiddleware)
+  .post(toggleBookMarkRecipe); // when user save a recipe
 export default router;

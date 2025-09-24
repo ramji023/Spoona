@@ -38,14 +38,11 @@ export const createRecipeValidation = z.object({
 
 export type CreateRecipeInput = z.infer<typeof createRecipeValidation>;
 
-// check like data
-export const likeRecipeValidation = z.object({
+export const noteValidation = z.object({
+  userId: z.string().uuid("Valid recipe Id is required"),
   recipeId: z.string().uuid("Valid recipe Id is required"),
   status: z.enum(["like", "dislike"], "Must be 'like' or 'dislike'"),
+  note: z.string("Enter a valid Note").optional(),
 });
 
-// check comment data
-export const commentRecipeValidation = z.object({
-  recipeId: z.string().uuid("Valid recipe Id is required"),
-  title: z.string("Enter a valid comment"),
-});
+export type NoteInput = z.infer<typeof noteValidation>;

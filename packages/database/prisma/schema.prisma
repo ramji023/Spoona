@@ -19,11 +19,8 @@ model User {
   // @relations between user and recipe
   recipes      Recipe[]
 
-  // @relations between user and like
-  likes Like[]
-
-  // @relations between user and comment
-  comments Comment[]
+  //relations between user and note
+  notes Note[]
 
   //@relations between user and saved recipe
   savedRecipes SavedRecipe[]
@@ -62,12 +59,8 @@ model Recipe {
   // @relations between recipe and instructions 
   instructions Instruction[]
 
-  // @relations between recipe and like
-  likes Like[]
-
-  // @relations between recipe and comment
-  comments Comment[]
-
+  //@relations between recipe and note
+  notes           Note[]
   //@relations between user and saved recipe
   SavedRecipes    SavedRecipe[]
   CommunityRecipe CommunityRecipe[]
@@ -92,41 +85,30 @@ model Instruction {
   recipeId String
 }
 
-model Like {
-  id     String   @id @default(uuid())
-  status likeType
+model Note {
+  id        String   @id @default(uuid())
+  status    likeType
+  note      String?  @db.VarChar(300)
+  createdAt DateTime @default(now())
 
-  //@relation between user and like
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  //@relation between recipe and like
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  //relations with recipe model
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId String
-}
 
-model Comment {
-  id    String @id @default(uuid())
-  title String
-
-  //@relation between user and like
-  user   User   @relation(fields: [userId], references: [id])
+  //relations with recipe user
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
-
-  //@relation between recipe and like
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
-  recipeId String
 }
 
 model SavedRecipe {
   id String @id @default(uuid())
 
   //@relation between user and savedRecipe
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   //@relation between recipe and savedRecipe
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId String
 }
 

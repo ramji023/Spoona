@@ -1,0 +1,83 @@
+interface IngredientsType {
+  icon: string;
+  name: string;
+  subText: string;
+}
+interface InstructionType {
+  index: number;
+  text: string;
+}
+interface RecipeType {
+  imageUrl: string;
+  title: string;
+  description: string;
+  ingredients: IngredientsType[];
+  instruction: InstructionType[];
+  prepTime: string;
+  cookTime: string;
+  creatorName: string;
+  avatar: string;
+  createdAt: Date;
+}
+const sampleRecipe: RecipeType = {
+  imageUrl:
+    "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80", // Creamy tomato pasta
+  title: "Creamy Tomato Basil Pasta",
+  description:
+    "A comforting and creamy tomato basil pasta made with fresh ingredients, a hint of garlic and spice, and fresh basil. Perfect for a cozy dinner with family or friends.",
+  ingredients: [
+    {
+      icon: "🍅",
+      name: "Tomatoes",
+      subText: "4 large ripe tomatoes, finely chopped",
+    },
+    { icon: "🧄", name: "Garlic", subText: "3 cloves, minced" },
+    { icon: "🥛", name: "Heavy Cream", subText: "1 cup for rich creaminess" },
+    {
+      icon: "🌿",
+      name: "Fresh Basil",
+      subText: "Handful of chopped basil leaves",
+    },
+    {
+      icon: "🍝",
+      name: "Pasta",
+      subText: "250g penne or fusilli, cooked al dente",
+    },
+    { icon: "🧈", name: "Butter", subText: "2 tablespoons for sautéing" },
+    { icon: "🧀", name: "Parmesan", subText: "Grated, for serving" },
+    { icon: "🧂", name: "Salt & Pepper", subText: "To taste" },
+  ],
+  instruction: [
+    {
+      index: 1,
+      text: "Boil pasta in salted water until al dente. Drain and set aside.",
+    },
+    {
+      index: 2,
+      text: "In a pan, melt butter and sauté garlic until fragrant.",
+    },
+    {
+      index: 3,
+      text: "Add chopped tomatoes and cook for 7–8 minutes until softened.",
+    },
+    {
+      index: 4,
+      text: "Stir in heavy cream and simmer gently for 2–3 minutes.",
+    },
+    {
+      index: 5,
+      text: "Add chopped basil, salt, and pepper. Simmer another 5 minutes.",
+    },
+    { index: 6, text: "Toss in cooked pasta and stir to coat evenly." },
+    {
+      index: 7,
+      text: "Serve hot with freshly grated Parmesan and basil leaves.",
+    },
+  ],
+  prepTime: "15 mins",
+  cookTime: "25 mins",
+  creatorName: "Aarav Sharma",
+  avatar:
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png", // generic profile
+  createdAt: new Date("2025-07-20T18:35:00"),
+};

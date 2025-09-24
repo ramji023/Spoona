@@ -6,8 +6,8 @@ export const AuthMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(req.headers);
-  console.log(req.header("Authorization"));
+  // console.log(req.headers);
+  // console.log(req.header("Authorization"));
   const token = req.header("Authorization")?.replace("Bearer ", "");
   console.log(token);
   if (!token) {
