@@ -4,11 +4,35 @@ import { PrinterIcon } from "@repo/ui/icons/PrinterIcon";
 import { SaveIcon } from "@repo/ui/icons/SaveIcon";
 import { ShareIcon } from "@repo/ui/icons/ShareIcon";
 import { ProfileIcon } from "@repo/ui/icons/profileIcon";
-import { NotesSection, NoteInput } from "./NotesSection";
+import { NotesSection } from "./NotesSection";
 import { useRecipe } from "../../react_queries/queries";
 import { ingredientsMap } from "../../utils/ingredientsMap";
+import { api } from "../../utils/axiosInstance";
+import { useMutation } from "@tanstack/react-query";
+import { useRef } from "react";
 
 const RecipeBox = () => {
+  //react query for savedRecipe
+  const savedRecipeMutation = useMutation({
+    mutationFn: async () => {
+      const response = await api.post(
+        `/api/v1/recipe/74b75485-bc16-4d12-a40b-6d7c92585de7/saved-recipe`,
+        null
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("saved recipe response : ", data);
+    },
+    onError: (err) => {
+      console.log("error : ", err);
+    },
+  });
+  function sendSavedRecipe() {
+    savedRecipeMutation.mutate();
+  }
+
+  // fetch recipe
   const { data, isLoading, error } = useRecipe(
     "74b75485-bc16-4d12-a40b-6d7c92585de7"
   );
@@ -50,7 +74,10 @@ const RecipeBox = () => {
                     <button className="text-lg font-semibold bg-orange-400 cursor-pointer text-white  rounded-3xl px-6 py-2 mx-3 ">
                       Plan
                     </button>
-                    <button className="text-lg font-semibold  cursor-pointer text-gray-800 outline-gray-400 outline  rounded-3xl px-6 py-2 mx-3 ">
+                    <button
+                      onClick={sendSavedRecipe}
+                      className="text-lg font-semibold  cursor-pointer text-gray-800 outline-gray-400 outline  rounded-3xl px-6 py-2 mx-3 "
+                    >
                       Save
                     </button>
                   </div>

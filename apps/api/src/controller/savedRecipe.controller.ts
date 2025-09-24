@@ -25,10 +25,13 @@ export const toggleBookMarkRecipe = async (req: Request, res: Response) => {
   });
   if (likeDoc?.id) {
     // update the like status
-    const result = await deleteBookMarkedRecipe({
-      userId: req.user!,
-      recipeId: recipeId,
-    });
+    const result = await deleteBookMarkedRecipe(likeDoc?.id);
+    if (!result) {
+      //throw error
+      throw new ApiError("something went wrong while deleting the recipe", 404);
+    }
+    // return response
+    return res.json({ msg: "User successfully Bookmarked recipe" });
   }
 
   //create the like status

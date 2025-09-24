@@ -47,6 +47,7 @@ const comments: CommentType[] = [
 
 export function NotesSection() {
   const [noteOpen, setNoteOpen] = useState(false);
+
   return (
     <>
       <div>
@@ -137,6 +138,7 @@ function NoteBox({
   const noteRef = useRef<HTMLTextAreaElement>(null);
   const [error, setError] = useState("");
   const recipeId = "74b75485-bc16-4d12-a40b-6d7c92585de7";
+
   // create react query for note
   const sendNoteMutation = useMutation({
     mutationFn: async (data: NoteDataType) => {
@@ -177,7 +179,7 @@ function NoteBox({
       note: noteRef.current?.value,
     });
   }
-  console.log(error);
+
   if (open) {
     return (
       <>
@@ -240,24 +242,24 @@ function NoteBox({
   }
 }
 
-export function NoteInput() {
-  return (
-    <>
-      <div className="p-3 flex justify-center items-center gap-3">
-        <img
-          src={comments[0].avatar}
-          alt=""
-          className="w-13 h-13 rounded-full mr-2"
-        />
-        <input
-          type="text"
-          placeholder="Enter Your Note"
-          className="bg-gray-200 rounded-4xl w-[800px] h-[50px] px-2"
-        />
-        <button className="text-lg font-semibold  cursor-pointer bg-orange-400 text-white outline-gray-400 outline  rounded-3xl px-6 py-2 mx-3 ">
-          Save
-        </button>
-      </div>
-    </>
-  );
-}
+// export function NoteInput() {
+//   return (
+//     <>
+//       <div className="p-3 flex justify-center items-center gap-3">
+//         <img
+//           src={comments[0].avatar}
+//           alt=""
+//           className="w-13 h-13 rounded-full mr-2"
+//         />
+//         <input
+//           type="text"
+//           placeholder="Enter Your Note"
+//           className="bg-gray-200 rounded-4xl w-[800px] h-[50px] px-2"
+//         />
+//         <button className="text-lg font-semibold  cursor-pointer bg-orange-400 text-white outline-gray-400 outline  rounded-3xl px-6 py-2 mx-3 ">
+//           Save
+//         </button>
+//       </div>
+//     </>
+//   );
+// }

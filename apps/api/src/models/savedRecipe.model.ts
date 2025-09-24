@@ -20,6 +20,6 @@ export const findBookmarkRecipe = async (recipeData: recipeData) => {
   });
 };
 
-export const deleteBookMarkedRecipe = async (recipeData: recipeData) => {
-  await prisma.savedRecipe.delete({ where: { id: recipeData.id } });
+export const deleteBookMarkedRecipe = async (id: string) => {
+  return await prisma.savedRecipe.delete({ where: { id: id } });
 };
