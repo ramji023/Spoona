@@ -109,21 +109,17 @@ export const getSingleRecipe = async (recipeId: string) => {
 export const getAllRecipes = async () => {
   return await prisma.recipe.findMany({
     select: {
+      id: true,
       title: true,
-      description: true,
       cookTime: true,
-      prepTime: true,
       imageUrl: true,
       tags: true,
-      ingredients: {
+      cuisines: true,
+      categories: true,
+      user: {
         select: {
-          name: true,
-          quantity: true,
-        },
-      },
-      instructions: {
-        select: {
-          step: true,
+          username: true,
+          profileImage: true,
         },
       },
     },

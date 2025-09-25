@@ -16,3 +16,17 @@ export interface Recipe {
     profileImage: string | null;
   };
 }
+
+export interface Recipes {
+  id: string;
+  title: string;
+  cookTime: string;
+  imageUrl: string;
+  tags: string[];
+  cuisines: string[];
+  categories: string[];
+  user: {
+    username: string;
+    profileImage: string | null;
+  };
+}

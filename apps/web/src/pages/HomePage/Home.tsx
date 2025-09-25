@@ -1,6 +1,7 @@
 import LeftSection from "./LeftSection";
 import RightSection from "./RightSection";
 const Home = () => {
+
   return (
     <>
       <div className="mx-4 my-4 flex">

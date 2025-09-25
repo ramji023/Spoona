@@ -1,6 +1,15 @@
-import Recipes from "@repo/ui/components/Recipes";
-
+import Recipes from "./Recipes";
+import { useRecipes } from "../../react_queries/queries";
 const LeftSection = () => {
+  const { data, isLoading, error } = useRecipes();
+  if (isLoading) {
+    console.log("recipe is loading");
+  }
+
+  if (!data || error) {
+    console.log("recipe fetching error" + error);
+    return <div className="text-6xl">Something is messedup</div>;
+  }
   return (
     <>
       <div className="flex flex-col gap-6">
@@ -23,7 +32,7 @@ const LeftSection = () => {
           </div>
         </div>
         <div>
-          <Recipes />
+          <Recipes recipes={data}/>
         </div>
       </div>
     </>
