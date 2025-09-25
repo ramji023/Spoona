@@ -81,3 +81,43 @@ const sampleRecipe: RecipeType = {
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png", // generic profile
   createdAt: new Date("2025-07-20T18:35:00"),
 };
+
+interface CommentType {
+  avatar: string;
+  creatorName: string;
+  content: string;
+  like: boolean;
+}
+
+const comments: CommentType[] = [
+  {
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    creatorName: "Aman Sharma",
+    content: "This article was super helpful, thanks a lot!",
+    like: true,
+  },
+  {
+    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    creatorName: "Priya Singh",
+    content: "I have a doubt about the third paragraph, can someone explain?",
+    like: false,
+  },
+  {
+    avatar: "https://randomuser.me/api/portraits/men/85.jpg",
+    creatorName: "Ravi Patel",
+    content: "Amazing breakdown. This should be more widely shared!",
+    like: true,
+  },
+  {
+    avatar: "https://randomuser.me/api/portraits/women/12.jpg",
+    creatorName: "Sneha Desai",
+    content: "It would be great if you could cover more real-world examples.",
+    like: false,
+  },
+  {
+    avatar: "https://randomuser.me/api/portraits/men/48.jpg",
+    creatorName: "Karan Verma",
+    content: "I tried this out and it worked perfectly. Kudos!",
+    like: true,
+  },
+];

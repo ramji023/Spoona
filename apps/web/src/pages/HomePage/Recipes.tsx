@@ -2,11 +2,15 @@ import { LikeIcon } from "@repo/ui/icons/LikeIcon";
 import { SaveIcon } from "@repo/ui/icons/SaveIcon";
 import { CircleIcon } from "@repo/ui/icons/CircleIcon";
 import { ProfileIcon } from "@repo/ui/icons/profileIcon";
-
+import { useNavigate } from "react-router-dom";
 const RecipeCard = ({ recipe }: { recipe: Recipes }) => {
+  const navigate = useNavigate();
   return (
     <>
-      <div className="flex-col items-center w-[250px] cursor-pointer hover:text-orange-400">
+      <div
+        onClick={() => navigate(`/recipe/${recipe.id}`)}
+        className="flex-col items-center w-[250px] cursor-pointer hover:text-orange-400"
+      >
         <div className="relative w-full h-[300px] overflow-hidden rounded-2xl group">
           <div className="absolute left-2 top-2 flex items-center gap-1 text-white z-10">
             <LikeIcon className="size-7 stroke-2" />

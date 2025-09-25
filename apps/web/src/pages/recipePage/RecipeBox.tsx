@@ -9,13 +9,22 @@ import { useRecipe } from "../../react_queries/queries";
 import { ingredientsMap } from "../../utils/ingredientsMap";
 import { api } from "../../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 
 const RecipeBox = () => {
+  const { recipeId } = useParams();
+  if (!recipeId) {
+    return (
+      <div className="text-8xl h-screen flex items-center justify-center">
+        404 page
+      </div>
+    );
+  }
   //react query for savedRecipe
   const savedRecipeMutation = useMutation({
     mutationFn: async () => {
       const response = await api.post(
-        `/api/v1/recipe/74b75485-bc16-4d12-a40b-6d7c92585de7/saved-recipe`,
+        `/api/v1/recipe/${recipeId}/saved-recipe`,
         null
       );
       return response.data;
@@ -32,9 +41,7 @@ const RecipeBox = () => {
   }
 
   // fetch recipe
-  const { data, isLoading, error } = useRecipe(
-    "74b75485-bc16-4d12-a40b-6d7c92585de7"
-  );
+  const { data, isLoading, error } = useRecipe(recipeId);
 
   if (isLoading) {
     console.log("recipe is loading");

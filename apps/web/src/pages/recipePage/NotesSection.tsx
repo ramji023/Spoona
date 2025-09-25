@@ -2,115 +2,129 @@ import { DislikeSolidIcon, LikeSolidIcon } from "@repo/ui/icons/LikeIcon";
 import React, { useState, SetStateAction, useRef } from "react";
 import { CrossIcon } from "@repo/ui/icons/CrossIcon";
 import Button from "@repo/ui/components/Button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInstance";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
-interface CommentType {
-  avatar: string;
-  creatorName: string;
-  content: string;
-  like: boolean;
-}
-
-const comments: CommentType[] = [
-  {
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    creatorName: "Aman Sharma",
-    content: "This article was super helpful, thanks a lot!",
-    like: true,
-  },
-  {
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    creatorName: "Priya Singh",
-    content: "I have a doubt about the third paragraph, can someone explain?",
-    like: false,
-  },
-  {
-    avatar: "https://randomuser.me/api/portraits/men/85.jpg",
-    creatorName: "Ravi Patel",
-    content: "Amazing breakdown. This should be more widely shared!",
-    like: true,
-  },
-  {
-    avatar: "https://randomuser.me/api/portraits/women/12.jpg",
-    creatorName: "Sneha Desai",
-    content: "It would be great if you could cover more real-world examples.",
-    like: false,
-  },
-  {
-    avatar: "https://randomuser.me/api/portraits/men/48.jpg",
-    creatorName: "Karan Verma",
-    content: "I tried this out and it worked perfectly. Kudos!",
-    like: true,
-  },
-];
+import { useNotes } from "../../react_queries/queries";
+import { useParams } from "react-router-dom";
+import { ProfileIcon } from "@repo/ui/icons/profileIcon";
 
 export function NotesSection() {
   const [noteOpen, setNoteOpen] = useState(false);
+
+  const { recipeId } = useParams();
+
+  console.log("recipe id is : ", recipeId);
+  if (!recipeId) {
+    return (
+      <div className="h-screen text-8xl flex justify-center items-center">
+        404 Error Page
+      </div>
+    );
+  }
+
+  const [noteSection, setNoteSection] = useState(false);
+  const { data, isLoading, error } = useNotes(recipeId, {
+    enabled: noteSection && !!recipeId,
+  });
+
+  if (isLoading) {
+    console.log("notes are fetching");
+  }
+
+  if (error) {
+    console.log("error in note fetching : ", error);
+  }
+
+  // //calculate likes
+  // const likeCount = data.notes.filter((note) => note.status === "like").length;
+  // const disLikeCount = data.notes.length - likeCount;
 
   return (
     <>
       <div>
         {/* first div  */}
-        <div className="relative flex justify-between">
-          <h1 className="text-2xl font-semibold">Notes</h1>
-          <button
-            onClick={() => setNoteOpen(true)}
-            className="text-lg font-semibold bg-orange-400 cursor-pointer text-white  rounded-3xl px-6 py-2 mx-3 "
-          >
-            Leave Note
-          </button>
-        </div>
-        {/* second DIv  */}
-        <div className="flex gap-6">
-          <span className="flex items-center gap-2">
-            <span className="text-green-500 ">
-              {" "}
-              <LikeSolidIcon className="size-6" />
-            </span>
-            1722 liked
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="text-red-500">
-              <DislikeSolidIcon className="size-6" />
-            </span>
-            435 disliked
-          </span>
-        </div>
-        {/* third div  */}
-        <div className="p-4">
-          {comments.map((sampleComment, index) => (
-            <div key={index} className="p-2">
-              <div className="flex gap-2 items-center py-2">
-                <div className="relative w-13 h-13">
-                  <img
-                    src={sampleComment.avatar}
-                    className="w-full h-full rounded-full"
-                  />
-                  {sampleComment.like ? (
-                    <div className="text-green-500 absolute -bottom-2 -right-1">
-                      <LikeSolidIcon className="size-6" />
-                    </div>
-                  ) : (
-                    <div className="text-red-500 absolute -bottom-2 -right-1">
-                      <DislikeSolidIcon className="size-6" />
-                    </div>
-                  )}
-                </div>
-                <div className="text-lg font-semibold hover:text-orange-400 cursor-pointer">
-                  {sampleComment.creatorName}
-                </div>
-              </div>
-              <div className="p-1">{sampleComment.content}</div>
-            </div>
-          ))}
-        </div>
         <div className="text-center text-gray-400 font-semibold  py-3 px-3">
-          <span className="hover:text-orange-400 cursor-pointer">
+          <span
+            onClick={() => {
+              setNoteSection(true);
+            }}
+            className="hover:text-orange-400 cursor-pointer"
+          >
             {" "}
-            See All 200 Notes
+            Click to See User Reviews
           </span>
         </div>
+        {data && (
+          <>
+            {/* first div  */}
+            <div className="relative flex justify-between">
+              <h1 className="text-2xl font-semibold">Notes</h1>
+              <button
+                onClick={() => setNoteOpen(true)}
+                className="text-lg font-semibold bg-orange-400 cursor-pointer text-white  rounded-3xl px-6 py-2 mx-3 "
+              >
+                Leave Note
+              </button>
+            </div>
+            {/* second DIv  */}
+            <div className="flex gap-6">
+              <span className="flex items-center gap-2">
+                <span className="text-green-500 ">
+                  {" "}
+                  <LikeSolidIcon className="size-6" />
+                </span>
+                {data.notes.filter((note) => note.status === "like").length}{" "}
+                liked
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="text-red-500">
+                  <DislikeSolidIcon className="size-6" />
+                </span>
+                {data.notes.filter((note) => note.status === "dislike").length}{" "}
+                disliked
+              </span>
+            </div>
+            {/* third div  */}
+            <div className="p-4">
+              {data.notes.map((note, index) => (
+                <div key={index} className="p-2">
+                  <div className="flex gap-2 items-center py-2">
+                    <div className="relative w-13 h-13">
+                      {note.user.profileImage ? (
+                        <>
+                          <img
+                            src={note.user.profileImage}
+                            className="w-full h-full rounded-full"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-full h-full rounded-full">
+                            <ProfileIcon />
+                          </div>
+                        </>
+                      )}
+                      {note.status === "like" ? (
+                        <div className="text-green-500 absolute -bottom-1 -right-1">
+                          <LikeSolidIcon className="size-6" />
+                        </div>
+                      ) : (
+                        <div className="text-red-500 absolute -bottom-2 -right-1">
+                          <DislikeSolidIcon className="size-6" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-lg font-semibold hover:text-orange-400 cursor-pointer">
+                      {note.user.username}
+                    </div>
+                  </div>
+                  <div className="p-1">{note.note}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
         {noteOpen && <NoteBox open={noteOpen} close={setNoteOpen} />}
       </div>
     </>
@@ -137,7 +151,9 @@ function NoteBox({
   const [isDisLike, setIsDisliked] = useState(false);
   const noteRef = useRef<HTMLTextAreaElement>(null);
   const [error, setError] = useState("");
-  const recipeId = "74b75485-bc16-4d12-a40b-6d7c92585de7";
+  const { recipeId } = useParams();
+
+  const queryClient = useQueryClient();
 
   // create react query for note
   const sendNoteMutation = useMutation({
@@ -152,6 +168,9 @@ function NoteBox({
       setSuccessMsg(
         "Thanks for sharing! Your note is now saved and visible to others exploring this recipe."
       );
+      queryClient.invalidateQueries({
+        queryKey: ["notes", recipeId],
+      });
     },
     onError: (err: any) => {
       console.log("error : ", err);
@@ -241,25 +260,3 @@ function NoteBox({
     );
   }
 }
-
-// export function NoteInput() {
-//   return (
-//     <>
-//       <div className="p-3 flex justify-center items-center gap-3">
-//         <img
-//           src={comments[0].avatar}
-//           alt=""
-//           className="w-13 h-13 rounded-full mr-2"
-//         />
-//         <input
-//           type="text"
-//           placeholder="Enter Your Note"
-//           className="bg-gray-200 rounded-4xl w-[800px] h-[50px] px-2"
-//         />
-//         <button className="text-lg font-semibold  cursor-pointer bg-orange-400 text-white outline-gray-400 outline  rounded-3xl px-6 py-2 mx-3 ">
-//           Save
-//         </button>
-//       </div>
-//     </>
-//   );
-// }

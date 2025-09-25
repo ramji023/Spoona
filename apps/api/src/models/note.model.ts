@@ -17,3 +17,27 @@ export async function checkNote(recipeId: string, userId: string) {
     where: { recipeId: recipeId, userId: userId },
   });
 }
+
+export async function getAllNotes(recipeId: string) {
+  try {
+    return await prisma.recipe.findUnique({
+      where: { id: recipeId },
+      select: {
+        notes: {
+          select: {
+            status: true,
+            note: true,
+            user: {
+              select: {
+                username: true,
+                profileImage: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
