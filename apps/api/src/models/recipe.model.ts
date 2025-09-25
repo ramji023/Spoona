@@ -2,31 +2,35 @@ import { prisma } from "@repo/database";
 import { CreateRecipeInput } from "../validations/recipe.validation";
 
 export const createNewRecipe = async (userData: CreateRecipeInput) => {
-  const recipe = await prisma.recipe.create({
-    data: {
-      userId: userData.userId,
-      title: userData.title,
-      description: userData.description,
-      cookTime: userData.cookTime,
-      prepTime: userData.prepTime,
-      imageUrl: userData.imageUrl,
-      tags: userData.tags,
-      cuisines: userData.cuisines,
-      categories: userData.categories,
-      ingredients: {
-        create: userData.ingredients.map((ingredient) => ({
-          name: ingredient.name,
-          quantity: ingredient.quantity,
-        })),
+  try {
+    const recipe = await prisma.recipe.create({
+      data: {
+        userId: userData.userId,
+        title: userData.title,
+        description: userData.description,
+        cookTime: userData.cookTime,
+        prepTime: userData.prepTime,
+        imageUrl: userData.imageUrl,
+        tags: userData.tags,
+        cuisines: userData.cuisines,
+        categories: userData.categories,
+        ingredients: {
+          create: userData.ingredients.map((ingredient) => ({
+            name: ingredient.name,
+            quantity: ingredient.quantity,
+          })),
+        },
+        instructions: {
+          create: userData.instructions.map((instruction) => ({
+            step: instruction.step,
+          })),
+        },
       },
-      instructions: {
-        create: userData.instructions.map((instruction) => ({
-          step: instruction.step,
-        })),
-      },
-    },
-  });
-  return recipe;
+    });
+    return recipe;
+  } catch (err) {
+    console.log("err : ", err);
+  }
 };
 
 // update the recipe

@@ -68,8 +68,8 @@ model Recipe {
 
 model Ingredient {
   id       String @id @default(uuid())
-  name     String @db.VarChar(20)
-  quantity String @db.VarChar(20)
+  name     String @db.VarChar(50)
+  quantity String @db.VarChar(50)
 
   // @relations between recipe and ingredients 
   recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)

@@ -46,6 +46,7 @@ export const createRecipe = async (req: Request, res: Response) => {
   const cuisines = cleanString(req.body.cuisines);
   const categories = cleanString(req.body.categories);
 
+  console.log("after cleaning recipe data : ",{title,description,ingredients,instructions,prepHours,cookHours,cookMinutes,imageUrl,tags,cuisines,categories})
   const parsedBodyObject = createRecipeValidation.safeParse({
     userId: req.user!,
     title,
@@ -59,7 +60,7 @@ export const createRecipe = async (req: Request, res: Response) => {
     cuisines,
     categories,
   });
-
+   console.log(parsedBodyObject.data)
   if (!parsedBodyObject.success) {
     //throw errors
     throw new ApiError(parsedBodyObject.error.issues[0].message, 400);

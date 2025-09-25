@@ -9,7 +9,6 @@ import { useRecipe } from "../../react_queries/queries";
 import { ingredientsMap } from "../../utils/ingredientsMap";
 import { api } from "../../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
-import { useRef } from "react";
 
 const RecipeBox = () => {
   //react query for savedRecipe
