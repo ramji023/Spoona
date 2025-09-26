@@ -8,15 +8,17 @@ import Profile from "./pages/profilePage/Profile";
 import CommunityPage from "./pages/communityPage/CommunityPage";
 import AddRecipe from "./pages/recipePage/AddRecipe";
 import { useAuthStore } from "./stores/authStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Signup from "./pages/auth/Signup";
 import Signin from "./pages/auth/Signin";
 import axios from "axios";
 import RecipeBox from "./pages/recipePage/RecipeBox";
 function App() {
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const refreshAuth = async () => {
       try {
+        // console.log("refresh token request is gone")
         const storedToken = await axios.post(
           "http://localhost:3000/api/v1/user/refresh",
           null,
@@ -26,17 +28,25 @@ function App() {
           token: storedToken.data.data,
           isAuthenticated: true,
         });
+        // console.log("refresh token request is passed");
       } catch (err) {
+        console.log("refresh token request is failed");
         useAuthStore.setState({
           token: null,
           isAuthenticated: false,
         });
         return;
+      } finally {
+        setLoading(false);
       }
     };
     refreshAuth();
   }, []);
   console.log("App rendered");
+
+  if (loading) {
+    return <div>Spoona is reloading...</div>;
+  }
   return (
     <>
       <BrowserRouter>

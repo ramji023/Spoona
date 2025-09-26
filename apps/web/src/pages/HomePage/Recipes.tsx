@@ -33,7 +33,7 @@ const RecipeCard = ({ recipe }: { recipe: Recipes }) => {
               />
             ) : (
               <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
-                <ProfileIcon />
+                <ProfileIcon className="w-10 h-10" />
               </div>
             )}
             <span className="pl-2 text-md text-white font-semibold">

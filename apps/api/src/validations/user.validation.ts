@@ -11,9 +11,12 @@ export const loggerValidation = z.object({
 
 // check profile data
 export const profileDataValidation = z.object({
-  username: z.string().max(10,"Username is too long").min(5,"Username is too sort").optional(),
-  profileImage: z.string().url("Invalid profile image url").optional(),
-  bio: z.string().max(200,"Bio is too long").optional(),
+  username: z
+    .string()
+    .max(50, "Username is too long")
+    .min(5, "Username is too sort")
+    .optional(),
+  bio: z.string().max(300, "Bio is too long").optional(),
 });
 
 // check profile image

@@ -10,8 +10,10 @@ export const useProfile = () => {
     queryKey: ["profile"],
     queryFn: async () => {
       const response = await api.get("/api/v1/user");
-      return response.data;
+      return response.data.data;
     },
+    staleTime: 1000 * 60 * 5, // data is fresh for 5 minutes
+    refetchOnMount: false,
   });
 };
 

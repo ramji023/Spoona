@@ -56,7 +56,10 @@ export default function Navbar() {
         </div>
         {isAuthenticated ? (
           <div className="flex gap-7 items-center cursor-pointer">
-            <div className="w-10 h-10 rounded-full bg-orange-400 flex justify-center items-center">
+            <div
+              onClick={() => navigate("account")}
+              className="w-10 h-10 rounded-full bg-orange-400 flex justify-center items-center"
+            >
               <UserIcon />
             </div>
             <span

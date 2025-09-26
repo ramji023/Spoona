@@ -1,9 +1,9 @@
-export function ProfileIcon() {
+export function ProfileIcon(props:any) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 90 90"
-      className="w-12 h-12"
+      className={props.className}
     >
       <path
         d="M45 88c-11.049 0-21.18-2.003-29.021-8.634C6.212 71.105 0 58.764 0 45 0 20.187 20.187 0 45 0c24.813 0 45 20.187 45 45 0 13.765-6.212 26.105-15.979 34.366C66.181 85.998 56.049 88 45 88z"

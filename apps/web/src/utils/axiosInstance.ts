@@ -11,6 +11,7 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log("axios core request is gone");
     return config;
   },
   (error) => {
@@ -29,6 +30,7 @@ api.interceptors.response.use(
         const storedToken = await axios.post("/api/v1/user/refresh", {
           withCredentials: true,
         });
+        console.log("axios refres token request");
         useAuthStore.setState({
           token: storedToken.data.data,
           isAuthenticated: true,

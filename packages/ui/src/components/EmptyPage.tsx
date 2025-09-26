@@ -1,4 +1,4 @@
-export default function EmptyPage(props) {
+export default function EmptyPage(props: any) {
   return (
     <>
       <div className="flex flex-col justify-center items-center gap-6">
@@ -11,7 +11,10 @@ export default function EmptyPage(props) {
         <div className="text-2xl font-semibold break-words">
           {props.message}
         </div>
-        <button className=" bg-orange-400 text-white font-semibold rounded-3xl px-6 py-2 cursor-pointer">
+        <button
+          onClick={props.onClick}
+          className=" bg-orange-400 text-white font-semibold rounded-3xl px-6 py-2 cursor-pointer"
+        >
           {props.button}
         </button>
       </div>

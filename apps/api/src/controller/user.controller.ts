@@ -14,7 +14,6 @@ import {
 import { makeLowerCase, removeExtraSpaces } from "../utils/helper.functions";
 import { ApiError } from "../utils/customError";
 import { tokenGenerator } from "../utils/tokenGenerator";
-import { resolve } from "path";
 
 //signup controller
 export const signup = async (req: Request, res: Response) => {
@@ -114,7 +113,6 @@ export const updateProfile = async (req: Request, res: Response) => {
   const parsedBodyObject = profileDataValidation.safeParse({
     username,
     bio,
-    profileImage: req.body.profileImage ? req.body.profileImage : undefined,
   });
   if (!parsedBodyObject.success) {
     //throw error
@@ -126,7 +124,6 @@ export const updateProfile = async (req: Request, res: Response) => {
     userId: req.user!,
     username: parsedBodyObject.data.username,
     bio: parsedBodyObject.data.bio,
-    profileImage: parsedBodyObject.data.profileImage,
   });
 
   return res.json({ message: "user updated profile data successfully" });
@@ -163,7 +160,7 @@ export const deleteAccount = (req: Request, res: Response) => {};
 export const refreshedToken = async (req: Request, res: Response) => {
   // console.log("Cookies from client:", req.cookies);
   const token = req.cookies.refreshToken;
-  // console.log("token : ", token);
+  console.log("refresh token : ", token);
   if (!token) {
     //throw error
     throw new ApiError("Refresh token is missing", 404);

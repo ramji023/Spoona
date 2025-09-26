@@ -96,7 +96,7 @@ const RecipeBox = () => {
                         className="w-12 h-12 rounded-full"
                       />
                     ) : (
-                      <ProfileIcon />
+                      <ProfileIcon className="w-12 h-12"/>
                     )}
                   </div>
                   <div className="flex gap-1">
