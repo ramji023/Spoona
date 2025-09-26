@@ -5,7 +5,7 @@ import Home from "./pages/HomePage/Home";
 import PlannerPage from "./pages/plannerPage/PlannerPage";
 import SavedRecipe from "./pages/SavedRecipePage/SavedRecipe";
 import Profile from "./pages/profilePage/Profile";
-import CommunityPage from "./pages/communityPage/CommunityPage";
+import CommunityPage from "./pages/communityPage/CommunitiesPage";
 import AddRecipe from "./pages/recipePage/AddRecipe";
 import { useAuthStore } from "./stores/authStore";
 import { useEffect, useState } from "react";

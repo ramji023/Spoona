@@ -30,3 +30,7 @@ export interface Recipes {
     profileImage: string | null;
   };
 }
+
+export interface SavedRecipe {
+  recipe : Recipes
+}

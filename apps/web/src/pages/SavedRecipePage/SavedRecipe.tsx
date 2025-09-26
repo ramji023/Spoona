@@ -2,8 +2,18 @@ import EmptyPage from "@repo/ui/components/EmptyPage";
 import { DownArrowIcon } from "@repo/ui/icons/ChevronIcon";
 import { FilterIcon } from "@repo/ui/icons/FilterIcon";
 import { LeftArrowIcon } from "@repo/ui/icons/LeftArrowIcon";
+import { useSavedRecipes } from "../../react_queries/queries";
+import Recipes from "../HomePage/Recipes";
 
 const SavedRecipe = () => {
+  const { data, isLoading, error } = useSavedRecipes();
+  if (error) {
+    console.log("something is messedup : ", error);
+  }
+
+  if (isLoading) {
+    console.log("profile data is coming...");
+  }
   return (
     <>
       <div className="mx-20 p-10  flex flex-col gap-4">
@@ -41,12 +51,29 @@ const SavedRecipe = () => {
           </div>
         </div>
         {/* forth div  */}
-        <div>
-          <EmptyPage
-            message="Save recipes from anywhere to your personal recipe box!"
-            button="Save Recipe"
-          />
-        </div>
+        {data ? (
+          <>
+            <Recipes
+              recipes={data.map((s) => ({
+                id: s.recipe.id,
+                title: s.recipe.title,
+                cookTime: s.recipe.cookTime,
+                imageUrl: s.recipe.imageUrl,
+                tags: s.recipe.tags,
+                cuisines: s.recipe.cuisines,
+                categories: s.recipe.categories,
+                user: s.recipe.user,
+              }))}
+            />
+          </>
+        ) : (
+          <div>
+            <EmptyPage
+              message="Save recipes from anywhere to your personal recipe box!"
+              button="Save Recipe"
+            />
+          </div>
+        )}
       </div>
     </>
   );

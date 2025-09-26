@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   createBookmarkRecipe,
   deleteBookMarkedRecipe,
+  fetchAllBookmarkRecipe,
   findBookmarkRecipe,
 } from "../models/savedRecipe.model";
 import { ApiError } from "../utils/customError";
@@ -47,4 +48,14 @@ export const toggleBookMarkRecipe = async (req: Request, res: Response) => {
 
   // return response
   return res.json({ msg: "User successfully Bookmarked recipe" });
+};
+
+export const getAllSavedRecipe = async (req: Request, res: Response) => {
+  console.log("all saved recipe controller hit");
+  const savedRecipes = await fetchAllBookmarkRecipe(req.user as string);
+
+  return res.json({
+    data: savedRecipes,
+    message: "user fetch all saved recipe",
+  });
 };

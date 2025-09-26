@@ -144,6 +144,7 @@ export const updateRecipe = async (req: Request, res: Response) => {
 
 // get single recipe controller
 export const getOneRecipe = async (req: Request, res: Response) => {
+  console.log("get one recipe controller hit")
   const id = req.params.recipeId;
   const recipe = await getSingleRecipe(id);
   if (!recipe) {

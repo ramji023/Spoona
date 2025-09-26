@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { UseQueryOptions } from "@tanstack/react-query";
 import { api } from "../utils/axiosInstance";
 import { UserProfile } from "../types/user";
-import { Recipe, Recipes } from "../types/recipe";
+import { Recipe, Recipes, SavedRecipe } from "../types/recipe";
 import { NoteType } from "../types/notes";
 //fetch user profile
 export const useProfile = () => {
@@ -46,10 +46,7 @@ export const useRecipes = () => {
 // fetch notes for a recipe
 export const useNotes = (
   recipeId: string,
-  queryOptions?: Omit<
-    UseQueryOptions<NoteType, Error>,
-    "queryKey" | "queryFn"
-  >
+  queryOptions?: Omit<UseQueryOptions<NoteType, Error>, "queryKey" | "queryFn">
 ) => {
   return useQuery({
     queryKey: ["notes", recipeId],
@@ -60,5 +57,18 @@ export const useNotes = (
     staleTime: 1000 * 60 * 5, // data is fresh for 5 minutes
     refetchOnMount: false,
     ...queryOptions,
+  });
+};
+
+//fetch all saved recipes
+export const useSavedRecipes = () => {
+  return useQuery<SavedRecipe[]>({
+    queryKey: ["savedRecipe"],
+    queryFn: async () => {
+      const response = await api.get("/api/v1/recipe/savedRecipe");
+      return response.data.data;
+    },
+    staleTime: 1000 * 60 * 5,
+    refetchOnMount: false,
   });
 };

@@ -8,10 +8,13 @@ import {
 } from "../controller/recipe.controller";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { getAllNote, makeNote } from "../controller/note.controller";
-import { toggleBookMarkRecipe } from "../controller/savedRecipe.controller";
+import {
+  getAllSavedRecipe,
+  toggleBookMarkRecipe,
+} from "../controller/savedRecipe.controller";
 const router: express.Router = express.Router();
 
-router.route("/").get(getAllRecipe).all(AuthMiddleware).post(createRecipe);
+router.route("/savedRecipe").all(AuthMiddleware).get(getAllSavedRecipe);
 router.route("/:recipeId").get(getOneRecipe);
 router
   .route("/:recipeId")
@@ -28,4 +31,6 @@ router
   .route("/:recipeId/saved-recipe")
   .all(AuthMiddleware)
   .post(toggleBookMarkRecipe); // when user save a recipe
+
+router.route("/").get(getAllRecipe).all(AuthMiddleware).post(createRecipe);
 export default router;

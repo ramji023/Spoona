@@ -23,3 +23,28 @@ export const findBookmarkRecipe = async (recipeData: recipeData) => {
 export const deleteBookMarkedRecipe = async (id: string) => {
   return await prisma.savedRecipe.delete({ where: { id: id } });
 };
+
+export const fetchAllBookmarkRecipe = async (id: string) => {
+  return await prisma.savedRecipe.findMany({
+    where: { userId: id },
+    select: {
+      recipe: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          imageUrl: true,
+          tags: true,
+          cuisines: true,
+          categories: true,
+          user: {
+            select: {
+              username: true,
+              profileImage: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
