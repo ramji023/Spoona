@@ -25,7 +25,7 @@ export interface Recipes {
   tags: string[];
   cuisines: string[];
   categories: string[];
-  user: {
+  user : {
     username: string;
     profileImage: string | null;
   };

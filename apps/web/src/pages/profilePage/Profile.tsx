@@ -8,12 +8,42 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInstance";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { Edit } from "lucide-react";
+import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
+import Recipes from "../HomePage/Recipes";
 export default function Profile() {
   const navigate = useNavigate();
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
 
   const [err, setError] = useState("");
   const queryClient = useQueryClient();
+  //write mutation for updating profile image
+  const updateProfileImageMutation = useMutation({
+    mutationFn: async (data: { profileImage: string }) => {
+      const response = await api.post("/api/v1/user/avatar", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("after updating data : ", data);
+      setSuccessMsg("waoo! You have updated your profile picture successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["profile"],
+      });
+    },
+    onError: (err: any) => {
+      console.log("something went wrong while updating profile data", err);
+      setError(`${err}`);
+      if (err.response) {
+        setError(
+          err.response.data?.message || JSON.stringify(err.response.data)
+        );
+      } else if (err.request) {
+        setError("No response from server. Please try again.");
+      } else {
+        setError(err.message || "An unexpected error occurred");
+      }
+    },
+  });
+
   // write mutation for updating profile data
   const updateProfileMutation = useMutation({
     mutationFn: async (data: { username: string; bio: string }) => {
@@ -62,11 +92,18 @@ export default function Profile() {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       console.log("Selected file:", file);
       // TODO: upload file to backend here
+      if (!file) return;
+      const { url, err } = await uploadToCloudinary(file, "Spoona/avatar");
+      if (url) {
+        updateProfileImageMutation.mutate({ profileImage: url });
+      } else {
+        console.log(err);
+      }
     }
   };
   if (data) {
@@ -80,7 +117,7 @@ export default function Profile() {
                 {data.profileImage ? (
                   <>
                     <img
-                      src="https://i.pravatar.cc/150?u=F"
+                      src={data.profileImage}
                       alt=""
                       className="w-30 h-30 rounded-full"
                     />
@@ -148,13 +185,19 @@ export default function Profile() {
           </div>
           <div className="border-gray-300 border-t-2 py-5"></div>
           {/* second div  */}
-          <div>
-            <EmptyPage
-              onClick={() => navigate("/add-recipe")}
-              message="Keep track of recipes you made and share your food experience"
-              button="Add Recipe"
-            />
-          </div>
+          {data.recipes.length !== 0 ? (
+            <div>
+              <Recipes recipes={data.recipes} />
+            </div>
+          ) : (
+            <div>
+              <EmptyPage
+                onClick={() => navigate("/add-recipe")}
+                message="Keep track of recipes you made and share your food experience"
+                button="Add Recipe"
+              />
+            </div>
+          )}
         </div>
       </>
     );

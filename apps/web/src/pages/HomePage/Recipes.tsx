@@ -24,22 +24,24 @@ const RecipeCard = ({ recipe }: { recipe: Recipes }) => {
             alt={recipe.title}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110 ease-in-out z-0"
           />
-          <div className="absolute bottom-1 left-1 flex items-center z-10">
-            {recipe.user.profileImage ? (
-              <img
-                src={recipe.user.profileImage}
-                alt={recipe.user.username}
-                className="w-10 h-10 rounded-full border-2 border-white object-cover"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
-                <ProfileIcon className="w-10 h-10" />
-              </div>
-            )}
-            <span className="pl-2 text-md text-white font-semibold">
-              {recipe.user.username}
-            </span>
-          </div>
+          {recipe.user && (
+            <div className="absolute bottom-1 left-1 flex items-center z-10">
+              {recipe.user.profileImage ? (
+                <img
+                  src={recipe.user.profileImage}
+                  alt={recipe.user.username}
+                  className="w-10 h-10 rounded-full border-2 border-white object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
+                  <ProfileIcon className="w-10 h-10" />
+                </div>
+              )}
+              <span className="pl-2 text-md text-white font-semibold">
+                {recipe.user.username}
+              </span>
+            </div>
+          )}
           <div className="absolute right-2 bottom-2 z-10">
             <CircleIcon />
           </div>
@@ -61,7 +63,7 @@ export interface Recipes {
   tags: string[];
   cuisines: string[];
   categories: string[];
-  user: {
+  user?: {
     username: string;
     profileImage: string | null;
   };

@@ -91,14 +91,9 @@ export const getProfileData = async (req: Request, res: Response) => {
     //throw error
     throw new ApiError("User does not exist", 400);
   }
-  const payload = {
-    username: existedUser.username,
-    email: existedUser.email,
-    bio: existedUser.bio,
-    profileImage: existedUser.profileImage,
-  };
+
   return res.json({
-    data: payload,
+    data: existedUser,
     message: "fetch user profile data successfully",
   });
 };
