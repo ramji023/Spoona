@@ -16,8 +16,8 @@ export default function Section_2() {
             stories.
           </div>
         </div>
-        <div>
-          <CommunitySection />
+        <div className="flex flex-row justify-center">
+          <CommunitySection width="w-[150px]" height="h-[150px]"/>
         </div>
         <div className="border border-gray-200"></div>
       </div>

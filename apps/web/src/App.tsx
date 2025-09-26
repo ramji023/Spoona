@@ -13,6 +13,7 @@ import Signup from "./pages/auth/Signup";
 import Signin from "./pages/auth/Signin";
 import axios from "axios";
 import RecipeBox from "./pages/recipePage/RecipeBox";
+import Community from "./pages/communityPage/Community";
 function App() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -63,6 +64,7 @@ function App() {
             <Route path="saved" element={<SavedRecipe />} />
             <Route path="account" element={<Profile />} />
             <Route path="communities" element={<CommunityPage />} />
+            <Route path="community" element={<Community />} />
             <Route path="add-recipe" element={<AddRecipe />} />
             <Route path="recipe/:recipeId" element={<RecipeBox />} />
           </Route>
