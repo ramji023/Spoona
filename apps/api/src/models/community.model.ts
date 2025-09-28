@@ -14,8 +14,36 @@ export const createNewCommunity = async (communityData: {
       description: communityData.description,
       coverImage: communityData.coverImage,
     },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      coverImage: true,
+      user: {
+        select: {
+          username: true,
+          profileImage: true,
+        },
+      },
+    },
   });
 };
+
+export const getAllCommunities = async()=>{
+  return await prisma.community.findMany({
+    select:{
+      id:true,
+      name:true,
+      coverImage:true
+    }
+  })
+}
+
+
+
+
+
+
 
 // add members on a new community
 export const addMember = async (communityData: {

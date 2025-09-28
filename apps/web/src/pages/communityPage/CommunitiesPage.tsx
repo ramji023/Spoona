@@ -1,9 +1,34 @@
 import { CommunitySection } from "@repo/ui/components/CommunitySection";
-
+import { LeftArrowIcon } from "@repo/ui/icons/LeftArrowIcon";
+import Button from "@repo/ui/components/Button";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import CommunityForm from "./CommunityForm";
 export default function CommunitiesPage() {
+  const [formOpen,setFormClose] = useState(false)
   return (
     <>
       <div className="mx-40 my-10 p-2">
+        {/* main div  */}
+        <div className="flex justify-between items-center py-8">
+          <div className="flex items-center gap-1 ">
+            <div
+              onClick={() => {}}
+              className="w-10 h-10 rounded-full cursor-pointer hover:bg-gray-100 flex justify-center items-center font-semibold"
+            >
+              <LeftArrowIcon />
+            </div>
+            <h1 className="text-3xl font-semibold">Communities</h1>
+          </div>
+          <div>
+            <Button onClick={() => setFormClose(true)}>
+              <div className="flex items-center gap-1 font-normal">
+                <Plus />
+                <span>Create Your Community</span>
+              </div>
+            </Button>
+          </div>
+        </div>
         {/* first div  */}
         <div className="font-poppins flex-col space-y-10 py-4">
           <div>
@@ -59,6 +84,9 @@ export default function CommunitiesPage() {
             <CommunitySection width="w-[200px]" height="h-[250px]" />
           </div>
         </div>
+
+        {/* open popup model */}
+        {formOpen && <CommunityForm open={formOpen} close={()=>setFormClose(false)}/>}
       </div>
     </>
   );

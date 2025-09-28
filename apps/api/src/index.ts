@@ -22,8 +22,11 @@ app.use("/api/v1/user", userRoute);
 
 //handle recipe operation
 import recipeRoute from "./routes/recipe.route";
-
 app.use("/api/v1/recipe", recipeRoute);
+
+//handle community operation
+import communityRoute from "./routes/community.route";
+app.use("/api/v1/community", communityRoute);
 
 //export error middleware
 import { errorHandler } from "./middlewares/error.middleware";

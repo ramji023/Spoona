@@ -3,11 +3,12 @@ import { z } from "zod";
 import { createCommunityValidation } from "../validations/community.validation";
 import {
   addMember,
-  addRecipe,
   createNewCommunity,
+  getAllCommunities,
 } from "../models/community.model";
 import { createRecipeValidation } from "../validations/recipe.validation";
 import { createNewRecipe } from "../models/recipe.model";
+import { ApiError } from "../utils/customError";
 
 //create a community
 export const createCommunity = async (req: Request, res: Response) => {
@@ -15,7 +16,7 @@ export const createCommunity = async (req: Request, res: Response) => {
 
   if (!parsedBodyObject.success) {
     //throw error
-    return;
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 404);
   }
 
   //create new community
@@ -29,7 +30,26 @@ export const createCommunity = async (req: Request, res: Response) => {
     return;
   }
 
-  return res.json({ msg: "user have created community successfully" });
+  return res.json({
+    data: result,
+    msg: "user have created community successfully",
+  });
+};
+
+export const fetchAllCommunities = async (req: Request, res: Response) => {
+  const communities = await getAllCommunities();
+
+  if (!communities) {
+    throw new ApiError(
+      "something went wrong while fetching all communities",
+      404
+    );
+  }
+
+  return res.json({
+    data: communities,
+    message: "Fetched All Communities successfully",
+  });
 };
 
 // add member to a community

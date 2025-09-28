@@ -269,7 +269,7 @@ const AddRecipe = () => {
               control={control}
               rules={{ required: "Image is required" }}
               render={({ field }) => (
-                <Box {...field} error={errors.imageUrl?.message} />
+                <Box {...field} error={errors.imageUrl?.message} folder="recipes" boxSize="w-[600px] h-[200px]"/>
               )}
             />
           </div>
