@@ -3,12 +3,20 @@ import { z } from "zod";
 import { createCommunityValidation } from "../validations/community.validation";
 import {
   addMember,
+  addRecipe,
   createNewCommunity,
   getAllCommunities,
+  getCommunity,
 } from "../models/community.model";
 import { createRecipeValidation } from "../validations/recipe.validation";
 import { createNewRecipe } from "../models/recipe.model";
 import { ApiError } from "../utils/customError";
+import { prisma } from "@repo/database";
+import {
+  cleanArrayObjects,
+  cleanString,
+  removeExtraSpaces,
+} from "../utils/helper.functions";
 
 //create a community
 export const createCommunity = async (req: Request, res: Response) => {
@@ -60,7 +68,7 @@ export const AddMembersOnCommunity = async (req: Request, res: Response) => {
 
   if (!parsedBodyObject.success) {
     //throw error
-    return;
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 404);
   }
 
   // add member on community
@@ -71,7 +79,10 @@ export const AddMembersOnCommunity = async (req: Request, res: Response) => {
 
   if (!result) {
     //throw error
-    return;
+    throw new ApiError(
+      "Something went wrong while adding members to a community",
+      404
+    );
   }
 
   return res.json({ msg: "Member has been added in community successfully" });
@@ -79,32 +90,81 @@ export const AddMembersOnCommunity = async (req: Request, res: Response) => {
 
 // upload a recipe on community
 export const uploadOnCommunity = async (req: Request, res: Response) => {
-  const parsedBodyObject = createRecipeValidation.safeParse(req.body);
+  console.log("hit this route");
+  const title = removeExtraSpaces(req.body.title);
+  const description = removeExtraSpaces(req.body.description);
+  const ingredients = cleanArrayObjects(req.body.ingredients);
+  const instructions = cleanArrayObjects(req.body.instructions);
+  const prepHours = removeExtraSpaces(req.body.prepHours);
+  const prepMinutes = removeExtraSpaces(req.body.prepMinutes);
+  const cookHours = removeExtraSpaces(req.body.cookHours);
+  const cookMinutes = removeExtraSpaces(req.body.cookMinutes);
+  const imageUrl = removeExtraSpaces(req.body.imageUrl);
+  const tags = cleanString(req.body.tags);
+  const cuisines = cleanString(req.body.cuisines);
+  const categories = cleanString(req.body.categories);
 
+  console.log("after cleaning recipe data : ", {
+    title,
+    description,
+    ingredients,
+    instructions,
+    prepHours,
+    cookHours,
+    cookMinutes,
+    imageUrl,
+    tags,
+    cuisines,
+    categories,
+  });
+  const parsedBodyObject = createRecipeValidation.safeParse({
+    userId: req.user!,
+    title,
+    description,
+    ingredients,
+    instructions,
+    cookTime: String(parseInt(cookHours) * 60 + parseInt(cookMinutes)),
+    prepTime: String(parseInt(prepHours) * 60 + parseInt(prepMinutes)),
+    imageUrl,
+    tags,
+    cuisines,
+    categories,
+  });
   if (!parsedBodyObject.success) {
     //throw error
-    return;
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 404);
   }
 
-  const result = await createNewRecipe({
-    ...parsedBodyObject.data,
-    userId: req.user!,
+  console.log(parsedBodyObject.data);
+  const result = await prisma.$transaction(async (tx) => {
+    const recipe = await createNewRecipe(
+      { ...parsedBodyObject.data, userId: req.user! },
+      tx
+    );
+    console.log("recipe is : ", recipe);
+    const communityRecipe = await addRecipe(
+      {
+        userId: req.user!,
+        communityId: req.params.communityId,
+        recipeId: recipe.id,
+      },
+      tx
+    );
+    console.log("community rcipe is  : ", communityRecipe);
+    return { recipe, communityRecipe };
   });
+  // console.log(result);
+  return res.json({ msg: "Recipe has been added in community successfully" });
+};
 
-  if (!result) {
-    //throw error
-    return;
-  }
+//fetch single community data
+export const fetchSingleCommunity = async (req: Request, res: Response) => {
+  const communityId = req.params.communityId;
 
-  // const communityRecipe = await addRecipe({
-  //   userId: req.user!,
-  //   communityId: req.params.communityId,
-  //   recipeId: result.id,
-  // });
-  // if (!communityRecipe) {
-  //   //process failed
-  //   return;
-  // }
+  const result = await getCommunity(communityId);
 
-  return res.json({ msg: "Member has been added in community successfully" });
+  return res.json({
+    data: result,
+    message: "fetch single community successfully",
+  });
 };

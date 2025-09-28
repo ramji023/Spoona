@@ -1,9 +1,44 @@
-import { prisma } from "@repo/database";
+import { Prisma, prisma, PrismaClient } from "@repo/database";
 import { CreateRecipeInput } from "../validations/recipe.validation";
 
-export const createNewRecipe = async (userData: CreateRecipeInput) => {
+// export const createNewRecipe = async (userData: CreateRecipeInput) => {
+//   try {
+//     const recipe = await prisma.recipe.create({
+//       data: {
+//         userId: userData.userId,
+//         title: userData.title,
+//         description: userData.description,
+//         cookTime: userData.cookTime,
+//         prepTime: userData.prepTime,
+//         imageUrl: userData.imageUrl,
+//         tags: userData.tags,
+//         cuisines: userData.cuisines,
+//         categories: userData.categories,
+//         ingredients: {
+//           create: userData.ingredients.map((ingredient) => ({
+//             name: ingredient.name,
+//             quantity: ingredient.quantity,
+//           })),
+//         },
+//         instructions: {
+//           create: userData.instructions.map((instruction) => ({
+//             step: instruction.step,
+//           })),
+//         },
+//       },
+//     });
+//     return recipe;
+//   } catch (err) {
+//     console.log("err : ", err);
+//   }
+// };
+
+export const createNewRecipe = async (
+  userData: CreateRecipeInput,
+  client: Prisma.TransactionClient | PrismaClient = prisma
+) => {
   try {
-    const recipe = await prisma.recipe.create({
+    return client.recipe.create({
       data: {
         userId: userData.userId,
         title: userData.title,
@@ -27,12 +62,11 @@ export const createNewRecipe = async (userData: CreateRecipeInput) => {
         },
       },
     });
-    return recipe;
   } catch (err) {
-    console.log("err : ", err);
+    console.log(err);
+    throw err;
   }
 };
-
 // update the recipe
 export const updateNewRecipe = async (recipeData: CreateRecipeInput) => {
   const recipe = await prisma.recipe.update({

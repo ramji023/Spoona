@@ -11,8 +11,11 @@ const instructionSchema = z.object({
 });
 
 export const createRecipeValidation = z.object({
-  recipeId: z.string().uuid("Invalid recipe Id type").optional(),
-  userId: z.string().uuid("Invalid user Id type"),
+  recipeId: z
+    .string("invalid recipe id")
+    .uuid("Invalid recipe Id type")
+    .optional(),
+  userId: z.string("Invalid User id").uuid("Invalid user Id type"),
   title: z.string("Title is required").max(50, "Title is too long"),
   description: z
     .string("Description is required")
