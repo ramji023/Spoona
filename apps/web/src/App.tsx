@@ -64,7 +64,7 @@ function App() {
             <Route path="saved" element={<SavedRecipe />} />
             <Route path="account" element={<Profile />} />
             <Route path="communities" element={<CommunityPage />} />
-            <Route path="community" element={<Community />} />
+            <Route path="communities/:communityId" element={<Community />} />
             <Route path="add-recipe" element={<AddRecipe />} />
             <Route path="recipe/:recipeId" element={<RecipeBox />} />
           </Route>

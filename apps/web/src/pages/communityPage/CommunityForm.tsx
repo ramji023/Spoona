@@ -4,6 +4,7 @@ import { Box } from "../recipePage/InputBoxVariant";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInstance";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
+import { useNavigate } from "react-router-dom";
 interface CommunityFormType {
   open: boolean;
   close: () => void;
@@ -17,7 +18,7 @@ interface FormStateType {
 
 export default function CommunityForm({ open, close }: CommunityFormType) {
   if (!open) return null;
-
+  const navigate = useNavigate();
   // success msg
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
 
@@ -28,7 +29,9 @@ export default function CommunityForm({ open, close }: CommunityFormType) {
     },
     onSuccess: (data) => {
       console.log("response data : ", data);
-      setSuccessMsg("hurrah! You have create community successfully");
+      setSuccessMsg("hurrah! You have created community successfully");
+      close();
+      navigate(`${data.data.id}`);
     },
     onError: (err) => {
       console.log("Error to create communnity : ", err);
@@ -80,7 +83,7 @@ export default function CommunityForm({ open, close }: CommunityFormType) {
               <input
                 type="text"
                 placeholder="Write your community name"
-                className="focus-within:outline-orange-400 outline-1 outline-gray-300 rounded p-2 w-[400px]"
+                className="focus-within:outline-orange-400 outline-1 outline-gray-500 rounded p-2 w-[400px]"
                 {...register("name", {
                   required: "Name is required",
                   minLength: {
@@ -101,7 +104,7 @@ export default function CommunityForm({ open, close }: CommunityFormType) {
               <label className="font-medium">Description</label>
               <textarea
                 placeholder="What is this community all about ?"
-                className="focus-within:outline-orange-400 outline-1 outline-gray-300  rounded p-2 w-[400px] h-[100px] resize-none"
+                className="focus-within:outline-orange-400 outline-1 outline-gray-500  rounded p-2 w-[400px] h-[100px] resize-none"
                 {...register("description", {
                   required: "Description is required",
                   minLength: {
@@ -127,11 +130,12 @@ export default function CommunityForm({ open, close }: CommunityFormType) {
                   folder="community_cover_image"
                   label="Upload Community cover image"
                   boxSize="w-[400px] h-[100px]"
+                  className="outline-gray-500"
                 />
               )}
             />
 
-            <div className="flex justify-end gap-x-6 w-full">
+            <div className="flex justify-end gap-x-6 w-full mr-10">
               <button
                 onClick={close}
                 className="px-3 py-2 outline-1 rounded-3xl cursor-pointer"

@@ -4,6 +4,7 @@ import { api } from "../utils/axiosInstance";
 import { UserProfile } from "../types/user";
 import { Recipe, Recipes, SavedRecipe } from "../types/recipe";
 import { NoteType } from "../types/notes";
+import { CommunitiesType } from "../types/community";
 //fetch user profile
 export const useProfile = () => {
   return useQuery<UserProfile>({
@@ -66,6 +67,32 @@ export const useSavedRecipes = () => {
     queryKey: ["savedRecipe"],
     queryFn: async () => {
       const response = await api.get("/api/v1/recipe/savedRecipe");
+      return response.data.data;
+    },
+    staleTime: 1000 * 60 * 5,
+    refetchOnMount: false,
+  });
+};
+
+//fetch single community data
+export const useCommunity = (communityId: string) => {
+  return useQuery({
+    queryKey: ["community", communityId],
+    queryFn: async () => {
+      const response = await api.get(`/api/v1/community/${communityId}`);
+      return response.data.data;
+    },
+    staleTime: 1000 * 60 * 5,
+    refetchOnMount: false,
+  });
+};
+
+// fetch all communities
+export const useAllCommunities = () => {
+  return useQuery<CommunitiesType[]>({
+    queryKey: ["communities"],
+    queryFn: async () => {
+      const response = await api.get("/api/v1/community");
       return response.data.data;
     },
     staleTime: 1000 * 60 * 5,

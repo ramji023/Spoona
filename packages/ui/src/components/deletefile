@@ -90,3 +90,56 @@ import recipe_5 from "../../public/recipes/recipe_5.jpg";
 import recipe_6 from "../../public/recipes/recipe_6.jpg";
 import recipe_7 from "../../public/recipes/recipe_7.jpg";
 import saladImage from "../../public/recipe_categories/salad.jpeg";
+
+
+
+
+
+const users = [
+  { name: "SavoryWithSara", avatar: "https://i.pravatar.cc/150?u=A" },
+  { name: "The Wholesome Spoon", avatar: "https://i.pravatar.cc/150?u=B" },
+  { name: "Chef Aryan", avatar: "https://i.pravatar.cc/150?u=C" },
+  { name: "Bakeology by Nia", avatar: "https://i.pravatar.cc/150?u=D" },
+  { name: "VeganVibes", avatar: "https://i.pravatar.cc/150?u=E" },
+  { name: "Zassicca", avatar: "https://i.pravatar.cc/150?u=F" },
+];
+
+const communitiesArray = [
+  {
+    imagePath: com_1,
+    communityName: "Vegetarian Recipe",
+    followers: users,
+  },
+  {
+    imagePath: com_2,
+    communityName: "Take Care Of Your Microbiome / Microbiota",
+    followers: users,
+  },
+  {
+    imagePath: com_3,
+    communityName: "Keto & Low-Carb Club",
+    followers: users,
+  },
+  {
+    imagePath: com_4,
+    communityName: "Holistic Healing Hub",
+    followers: users,
+  },
+  {
+    imagePath: com_5,
+    communityName: "There is no Break",
+    followers: users,
+  },
+  {
+    imagePath: com_6,
+    communityName: "Fitness Tribe",
+    followers: users,
+  },
+];
+
+import com_1 from "../../public/communities/com_01.jpg";
+import com_2 from "../../public/communities/com_02.jpg";
+import com_3 from "../../public/communities/com_03.jpg";
+import com_4 from "../../public/communities/com_04.jpg";
+import com_5 from "../../public/communities/com_05.jpg";
+import com_6 from "../../public/communities/com_06.jpg";

@@ -86,6 +86,7 @@ export const getCommunity = async (id: string) => {
       select: {
         id: true,
         name: true,
+        description:true,
         coverImage: true,
         CommunityMembers: {
           select: {

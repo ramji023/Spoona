@@ -93,11 +93,12 @@ type BoxProps = {
   value?: string;
   folder:string;
   boxSize:string;
+  className:string;
 };
 
 export const Box =React.memo(React.forwardRef<HTMLInputElement, BoxProps>(
   (
-    { label = "Add Images / Videos",boxSize, error, onChange, value,folder, ...props },
+    { label = "Add Images / Videos",boxSize,className, error, onChange, value,folder, ...props },
     ref
   ) => {
     const [loading, setLoading] = useState(false);
@@ -124,7 +125,7 @@ export const Box =React.memo(React.forwardRef<HTMLInputElement, BoxProps>(
             <img src={value} alt="Preview" className="w-100 object-contain" />
           </div>
         )}
-        <div className={`relative ${boxSize} bg-gray-200 rounded outline-1 outline-gray-300 flex justify-center items-center cursor-pointer`}>
+        <div className={`relative ${boxSize} bg-gray-200 rounded outline-1 ${className} flex justify-center items-center cursor-pointer`}>
           <input
             type="file"
             accept="image/*"
