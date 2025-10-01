@@ -4,6 +4,7 @@ export interface CommunitiesType {
   coverImage: string;
   CommunityMembers: {
     user: {
+      id:string;
       profileImage: string | null;
     };
   }[];

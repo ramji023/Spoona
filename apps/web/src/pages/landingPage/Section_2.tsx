@@ -1,6 +1,20 @@
 import { CommunitySection } from "@repo/ui/components/CommunitySection";
+import { useAllCommunities } from "../../react_queries/queries";
+import { useNavigate } from "react-router-dom";
 
 export default function Section_2() {
+  const navigate = useNavigate();
+  function moveToCommunity(path: string) {
+    navigate(path);
+  }
+  const { data, isLoading, error } = useAllCommunities();
+  if (isLoading) {
+    console.log("communities is loading");
+  }
+  if (!data || error) {
+    console.log("communities fetching error" + error);
+    return <div className="text-6xl">Something is messedup</div>;
+  }
   return (
     <>
       <div className="mx-25 my-10 p-2 font-poppins flex-col space-y-10">
@@ -17,7 +31,12 @@ export default function Section_2() {
           </div>
         </div>
         <div className="flex flex-row justify-center">
-          <CommunitySection width="w-[150px]" height="h-[150px]"/>
+          <CommunitySection
+            width="w-[150px]"
+            height="h-[150px]"
+            data={data}
+            onMove={moveToCommunity}
+          />
         </div>
         <div className="border border-gray-200"></div>
       </div>

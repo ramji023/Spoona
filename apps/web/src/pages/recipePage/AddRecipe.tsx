@@ -7,7 +7,12 @@ import { useFieldArray } from "react-hook-form";
 import { PlusIcon } from "@repo/ui/icons/PlusIcon";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInstance";
+import { DropDown } from "./DropDown";
+import { useAllCommunities } from "../../react_queries/queries";
+import { useAuthStore } from "../../stores/authStore";
+import { useEffect, useState } from "react";
 type RecipeForm = {
+  community: string;
   title: string;
   description: string;
   ingredients: { name: string; quantity: string }[];
@@ -24,14 +29,37 @@ type RecipeForm = {
 
 const AddRecipe = () => {
   const navigate = useNavigate();
+  const id = useAuthStore((s) => s.id);
   console.log("Add recipe component re-rendered ");
-  // const token = useAuthStore((s) => s.token);
-  // console.log(token);
-
+  const [communities, setCommuties] = useState<
+    {
+      id: string;
+      name: string;
+    }[]
+  >([]);
   //mutate recipe data to backend
   const recipeMutation = useMutation({
     mutationFn: async (data: RecipeForm) => {
       const response = await api.post("/api/v1/recipe", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("Recipe added successfully", data);
+      reset();
+      navigate(-1);
+    },
+    onError: (err) => {
+      console.log("Error adding recipe", err);
+    },
+  });
+
+  // mutate community recipe data to backend
+  const communityRecipeMutation = useMutation({
+    mutationFn: async (data: RecipeForm) => {
+      const response = await api.post(
+        `/api/v1/community/${data.community}`,
+        data
+      );
       return response.data;
     },
     onSuccess: (data) => {
@@ -53,6 +81,7 @@ const AddRecipe = () => {
     reset,
   } = useForm<RecipeForm>({
     defaultValues: {
+      community: "everyone",
       title: "",
       description: "",
       ingredients: [{ name: "", quantity: "" }],
@@ -90,9 +119,40 @@ const AddRecipe = () => {
 
   const onSubmit = (data: RecipeForm) => {
     console.log("Recipe Data:", data);
-    recipeMutation.mutate(data);
+    if (data.community !== "everyone") {
+      communityRecipeMutation.mutate(data);
+    } else {
+      recipeMutation.mutate(data);
+    }
   };
 
+  const { data, isLoading, error } = useAllCommunities();
+  useEffect(() => {
+    if (data) {
+      const communities = filteredCommunity();
+      setCommuties(communities);
+    }
+  }, [data]);
+  const filteredCommunity = () => {
+    if (!data) return [];
+
+    return data
+      .filter((community) =>
+        community.CommunityMembers.some((member) => member.user.id === id)
+      )
+      .map((community) => ({
+        id: community.id,
+        name: community.name,
+      }));
+  };
+
+  if (isLoading) {
+    console.log("communities is loading");
+  }
+  if (!data || error) {
+    console.log("communities fetching error" + error);
+    return <div className="text-6xl">Something is messedup</div>;
+  }
   return (
     <>
       <div className="m-15 px-15 py-4">
@@ -115,6 +175,16 @@ const AddRecipe = () => {
             </button>
           </div>
           <div className="flex-col items-center justify-center">
+            <DropDown
+              text="Community"
+              boxSize="w-[600px]"
+              communities={communities}
+              {...register("community", {
+                required: "Please select a community or choose Everyone",
+              })}
+              error={errors.community?.message}
+            />
+
             <InputBox
               text="Title"
               placeholder="Give your Recipe a name"
@@ -269,7 +339,13 @@ const AddRecipe = () => {
               control={control}
               rules={{ required: "Image is required" }}
               render={({ field }) => (
-                <Box {...field} error={errors.imageUrl?.message} folder="recipes" boxSize="w-[600px] h-[200px]" className="outline-gray-300"/>
+                <Box
+                  {...field}
+                  error={errors.imageUrl?.message}
+                  folder="recipes"
+                  boxSize="w-[600px] h-[200px]"
+                  className="outline-gray-300"
+                />
               )}
             />
           </div>

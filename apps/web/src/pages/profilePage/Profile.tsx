@@ -10,10 +10,12 @@ import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { Edit } from "lucide-react";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
 import Recipes from "../HomePage/Recipes";
+import { useAuthStore } from "../../stores/authStore";
 export default function Profile() {
   const navigate = useNavigate();
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
-
+  const token = useAuthStore((s)=>s.token)
+  const id = useAuthStore((s)=>s.id)
   const [err, setError] = useState("");
   const queryClient = useQueryClient();
   //write mutation for updating profile image

@@ -21,7 +21,7 @@ export default function Navbar() {
     onSuccess: (data) => {
       console.log("Logout successful:", data);
       setIsAuthenticated(false);
-      setToken("");
+      setToken("","");
       navigate("/");
     },
     onError: (err) => {

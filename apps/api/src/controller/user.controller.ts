@@ -73,7 +73,7 @@ export const signin = async (req: Request, res: Response) => {
 
   res.cookie("refreshToken", refreshToken, options);
   return res.json({
-    data: { accessToken, name: result.username },
+    data: { accessToken, name: result.username, id: result.id },
     message: "User successfully logged in",
   });
 };
@@ -194,7 +194,7 @@ export const refreshedToken = async (req: Request, res: Response) => {
 
   res.cookie("refreshToken", refreshToken, options);
   return res.json({
-    data: accessToken,
+    data: { accessToken, id: user.id },
     message: "User successfully refreshed the token",
   });
 };

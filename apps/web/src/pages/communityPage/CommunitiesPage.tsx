@@ -2,13 +2,15 @@ import { CommunitySection } from "@repo/ui/components/CommunitySection";
 import { LeftArrowIcon } from "@repo/ui/icons/LeftArrowIcon";
 import Button from "@repo/ui/components/Button";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import {useState } from "react";
 import CommunityForm from "./CommunityForm";
 import { useAllCommunities } from "../../react_queries/queries";
 import { useNavigate } from "react-router-dom";
 export default function CommunitiesPage() {
+
   const navigate = useNavigate();
   const { data, isLoading, error } = useAllCommunities();
+
   const [formOpen, setFormClose] = useState(false);
   if (isLoading) {
     console.log("communities is loading");
@@ -18,6 +20,7 @@ export default function CommunitiesPage() {
     return <div className="text-6xl">Something is messedup</div>;
   }
 
+  // console.log(filteredCommunity);
   function moveToCommunity(path: string) {
     navigate(path);
   }
@@ -29,7 +32,9 @@ export default function CommunitiesPage() {
           <div className="flex justify-between items-center py-8">
             <div className="flex items-center gap-1 ">
               <div
-                onClick={() => {}}
+                onClick={() => {
+                  navigate(-1);
+                }}
                 className="w-10 h-10 rounded-full cursor-pointer hover:bg-gray-100 flex justify-center items-center font-semibold"
               >
                 <LeftArrowIcon />

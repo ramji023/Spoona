@@ -1,4 +1,3 @@
-import com_1 from "../../../public/communities/com_01.jpg";
 import {
   ArrowLeft,
   Share2,
@@ -11,15 +10,20 @@ import Button from "@repo/ui/components/Button";
 import { FilterIcon } from "@repo/ui/icons/FilterIcon";
 import { useCommunity } from "../../react_queries/queries";
 import Recipes from "../HomePage/Recipes";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import EmptyPage from "@repo/ui/components/EmptyPage";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInstance";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
+import { useAuthStore } from "../../stores/authStore";
 export default function Community() {
+  const navigate = useNavigate();
   const { communityId } = useParams();
   if (!communityId) return null;
 
+  const queryClient = useQueryClient();
+  const id = useAuthStore((s) => s.id);
+  // console.log(id)
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
   //write mutation to add user in community
   const addUserMutation = useMutation({
@@ -32,6 +36,7 @@ export default function Community() {
     onSuccess: (data) => {
       console.log(data);
       setSuccessMsg("You have joined this community successfully");
+      queryClient.invalidateQueries({ queryKey: ["community", communityId] });
     },
     onError: (err) => {
       console.log(err);
@@ -42,13 +47,16 @@ export default function Community() {
   if (isLoading) {
     console.log("recipe is loading");
   }
+  const joined =
+    data?.CommunityMembers?.some((member: any) => member.user.id === id) ??
+    false;
+
   if (!data || error) {
     console.log("recipe fetching error" + error);
     return <div className="text-6xl">Something is messedup</div>;
   }
-  if (data) {
-    console.log(data);
 
+  if (data) {
     return (
       <>
         <div className="mx-40 my-8 p-2">
@@ -60,16 +68,25 @@ export default function Community() {
               className="h-[200px] w-full object-cover rounded-lg"
             />
             <div className="absolute bottom-2 left-2 flex items-center justify-center gap-3">
-              <div className="w-10 h-10 rounded-full text-white flex justify-center items-center hover:bg-white hover:text-black">
+              <div
+                onClick={() => navigate("/communities")}
+                className="w-10 h-10 rounded-full text-white flex justify-center items-center hover:bg-white hover:text-black"
+              >
                 <ArrowLeft className="stroke-2" />
               </div>
               <h1 className="text-3xl text-white">{data.name}</h1>
             </div>
             <div className="absolute bottom-2 right-4 flex items-center justify-center gap-3">
               <div>
-                <Button onClick={() => addUserMutation.mutate()}>
-                  <span className="font-normal">join</span>
-                </Button>
+                {joined ? (
+                  <button className="cursor-pointer outline-2 outline-white text-white px-5 py-2 rounded-3xl hover:outline-orange-400 hover:bg-orange-400">
+                    <span className="font-semibold">Leave</span>
+                  </button>
+                ) : (
+                  <Button onClick={() => addUserMutation.mutate()}>
+                    <span className="font-normal">join</span>
+                  </Button>
+                )}
               </div>
               <div className="w-10 h-10 rounded-full  flex justify-center items-center bg-white hover:text-black">
                 <Share2 className="stroke-2" />
@@ -95,13 +112,15 @@ export default function Community() {
                 </p>
               </div>
             </div>
-            <div>
-              <Button onClick={() => {}}>
-                <div className="flex items-center gap-1 font-normal">
-                  <Plus className="w-5 h-5" /> Add Recipe
-                </div>
-              </Button>
-            </div>
+            {joined && (
+              <div>
+                <Button onClick={() => {}}>
+                  <div className="flex items-center gap-1 font-normal">
+                    <Plus className="w-5 h-5" /> Add Recipe
+                  </div>
+                </Button>
+              </div>
+            )}
           </div>
           <div className="px-4">
             <p className="text-gray-500 text-xs">{data.description}</p>
@@ -131,8 +150,8 @@ export default function Community() {
           <div className="flex flex-row justify-center">
             {data.CommunityRecipe.length !== 0 ? (
               <>
-                {/* <Recipes
-                  recipes={data.map((s) => ({
+                <Recipes
+                  recipes={data.CommunityRecipe.map((s: any) => ({
                     id: s.recipe.id,
                     title: s.recipe.title,
                     cookTime: s.recipe.cookTime,
@@ -142,10 +161,10 @@ export default function Community() {
                     categories: s.recipe.categories,
                     user: s.recipe.user,
                   }))}
-                /> */}
+                />
               </>
             ) : (
-              <div className="py-10">
+              <div className="py-10 flex flex-row justify-center">
                 <EmptyPage
                   message="There is no recipe"
                   button="Post first Recipe in this community"

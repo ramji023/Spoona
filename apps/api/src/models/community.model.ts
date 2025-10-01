@@ -40,6 +40,7 @@ export const getAllCommunities = async () => {
         select: {
           user: {
             select: {
+              id:true,
               profileImage: true,
             },
           },
@@ -86,12 +87,13 @@ export const getCommunity = async (id: string) => {
       select: {
         id: true,
         name: true,
-        description:true,
+        description: true,
         coverImage: true,
         CommunityMembers: {
           select: {
             user: {
               select: {
+                id:true,
                 profileImage: true,
               },
             },
@@ -107,6 +109,7 @@ export const getCommunity = async (id: string) => {
                 tags: true,
                 cuisines: true,
                 categories: true,
+                cookTime: true,
                 user: {
                   select: {
                     username: true,

@@ -24,7 +24,7 @@ export default function Signin() {
     onSuccess: (data) => {
       console.log("Signin successful:", data);
       setIsAuthenticated(true);
-      setToken(data.data.accessToken);
+      setToken(data.data.accessToken, data.data.id);
       setSuccessMsg(`Welcome back! ${data.data.name}`);
       navigate("/");
     },
