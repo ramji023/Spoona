@@ -120,7 +120,7 @@ model Community {
   createdAt   DateTime @default(now())
 
   // @relations between user and community creator 
-  user             User               @relation(fields: [creatorId], references: [id])
+  user             User               @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId        String
   // relation between community member and community
   CommunityMembers CommunityMembers[]
@@ -132,11 +132,11 @@ model CommunityMembers {
   joinedAt DateTime @default(now())
 
   // relations between user and community member
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   // relation between community member and community
-  community   Community @relation(fields: [communityId], references: [id])
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
 }
 
@@ -145,15 +145,15 @@ model CommunityRecipe {
   createdAt DateTime @default(now())
 
   // relations between community and community recipe
-  community   Community @relation(fields: [communityId], references: [id])
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
 
   //relations between recipe and community recipe
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId String @unique
 
   //relation between user and community recipe
-  postedBy User   @relation(fields: [userId], references: [id])
+  postedBy User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String
 }
 

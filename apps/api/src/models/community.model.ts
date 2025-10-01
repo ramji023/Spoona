@@ -40,7 +40,7 @@ export const getAllCommunities = async () => {
         select: {
           user: {
             select: {
-              id:true,
+              id: true,
               profileImage: true,
             },
           },
@@ -61,6 +61,23 @@ export const addMember = async (communityData: {
       communityId: communityData.communityId,
     },
   });
+};
+
+// leave member on a new community
+export const deleteMember = async (communityData: {
+  userId: string;
+  communityId: string;
+}) => {
+  try {
+    return await prisma.communityMembers.deleteMany({
+      where: {
+        userId: communityData.userId,
+        communityId: communityData.communityId,
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
 };
 
 // add recipe on a community
@@ -93,7 +110,7 @@ export const getCommunity = async (id: string) => {
           select: {
             user: {
               select: {
-                id:true,
+                id: true,
                 profileImage: true,
               },
             },

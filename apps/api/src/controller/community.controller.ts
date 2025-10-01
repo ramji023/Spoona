@@ -5,6 +5,7 @@ import {
   addMember,
   addRecipe,
   createNewCommunity,
+  deleteMember,
   getAllCommunities,
   getCommunity,
 } from "../models/community.model";
@@ -86,6 +87,33 @@ export const AddMembersOnCommunity = async (req: Request, res: Response) => {
   }
 
   return res.json({ msg: "Member has been added in community successfully" });
+};
+
+// delete member from community
+export const deleteMemberOnCommunity = async (req: Request, res: Response) => {
+  const parsedBodyObject = z
+    .object({ communityId: z.string() })
+    .safeParse({ communityId: req.params.communityId });
+
+  if (!parsedBodyObject.success) {
+    //throw error
+    throw new ApiError(parsedBodyObject.error.issues[0].message, 404);
+  }
+
+  // add member on community
+  const result = await deleteMember({
+    userId: req.user!,
+    communityId: parsedBodyObject.data.communityId,
+  });
+  if (result.count === 0) {
+    throw new ApiError(
+      "Something went wrong whilte removing member from communtiy",
+      404
+    );
+  }
+  return res.json({
+    msg: "Member has been removed from community successfully",
+  });
 };
 
 // upload a recipe on community

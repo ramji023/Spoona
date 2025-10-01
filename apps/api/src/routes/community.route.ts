@@ -2,6 +2,7 @@ import express from "express";
 import {
   AddMembersOnCommunity,
   createCommunity,
+  deleteMemberOnCommunity,
   fetchAllCommunities,
   fetchSingleCommunity,
   uploadOnCommunity,
@@ -18,7 +19,8 @@ router
 router
   .route("/:communityId/members")
   .all(AuthMiddleware)
-  .post(AddMembersOnCommunity);
+  .post(AddMembersOnCommunity)
+  .delete(deleteMemberOnCommunity);
 router
   .route("/:communityId")
   .get(fetchSingleCommunity)

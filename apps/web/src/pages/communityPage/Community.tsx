@@ -25,6 +25,24 @@ export default function Community() {
   const id = useAuthStore((s) => s.id);
   // console.log(id)
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
+  //write mutation to remove user from community
+  const removeUserMutation = useMutation({
+    mutationFn: async () => {
+      const response = await api.delete(
+        `/api/v1/community/${communityId}/members`
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      setSuccessMsg("You have left this community successfully");
+      queryClient.invalidateQueries({ queryKey: ["community", communityId] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   //write mutation to add user in community
   const addUserMutation = useMutation({
     mutationFn: async () => {
@@ -47,9 +65,6 @@ export default function Community() {
   if (isLoading) {
     console.log("recipe is loading");
   }
-  const joined =
-    data?.CommunityMembers?.some((member: any) => member.user.id === id) ??
-    false;
 
   if (!data || error) {
     console.log("recipe fetching error" + error);
@@ -57,6 +72,10 @@ export default function Community() {
   }
 
   if (data) {
+    const joined =
+      data?.CommunityMembers?.some((member: any) => member.user.id === id) ??
+      false;
+
     return (
       <>
         <div className="mx-40 my-8 p-2">
@@ -79,7 +98,10 @@ export default function Community() {
             <div className="absolute bottom-2 right-4 flex items-center justify-center gap-3">
               <div>
                 {joined ? (
-                  <button className="cursor-pointer outline-2 outline-white text-white px-5 py-2 rounded-3xl hover:outline-orange-400 hover:bg-orange-400">
+                  <button
+                    onClick={() => removeUserMutation.mutate()}
+                    className="cursor-pointer outline-2 outline-white text-white px-5 py-2 rounded-3xl hover:outline-orange-400 hover:bg-orange-400"
+                  >
                     <span className="font-semibold">Leave</span>
                   </button>
                 ) : (
