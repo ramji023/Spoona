@@ -9,7 +9,9 @@ import { useRecipe } from "../../react_queries/queries";
 import { ingredientsMap } from "../../utils/ingredientsMap";
 import { api } from "../../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import { useState } from "react";
+import { PlannerForm } from "../plannerPage/PlannerForm";
 
 const RecipeBox = () => {
   const { recipeId } = useParams();
@@ -20,6 +22,10 @@ const RecipeBox = () => {
       </div>
     );
   }
+  const [plannerForm, setPlannerForm] = useState(false);
+  const location = useLocation();
+  console.log(location);
+
   //react query for savedRecipe
   const savedRecipeMutation = useMutation({
     mutationFn: async () => {
@@ -77,7 +83,10 @@ const RecipeBox = () => {
                     <EllipseIcon />
                   </div>
                   <div className="flex items-center">
-                    <button className="text-lg font-semibold bg-orange-400 cursor-pointer text-white  rounded-3xl px-6 py-2 mx-3 ">
+                    <button
+                      onClick={() => setPlannerForm(true)}
+                      className="text-lg font-semibold bg-orange-400 cursor-pointer text-white  rounded-3xl px-6 py-2 mx-3 "
+                    >
                       Plan
                     </button>
                     <button
@@ -96,7 +105,7 @@ const RecipeBox = () => {
                         className="w-12 h-12 rounded-full"
                       />
                     ) : (
-                      <ProfileIcon className="w-12 h-12"/>
+                      <ProfileIcon className="w-12 h-12" />
                     )}
                   </div>
                   <div className="flex gap-1">
@@ -189,6 +198,18 @@ const RecipeBox = () => {
             <NotesSection />
           </div>
         </div>
+
+        {plannerForm && (
+          <PlannerForm
+            open={plannerForm}
+            close={() => setPlannerForm(false)}
+            recipeData={{
+              recipeImage: data.imageUrl,
+              title: data.title,
+              id: recipeId,
+            }}
+          />
+        )}
       </>
     );
   }

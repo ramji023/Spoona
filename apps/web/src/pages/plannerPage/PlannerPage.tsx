@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CalendarComponent } from "@repo/ui/components/CelendarComponent";
+import { CalendarComponent } from "./CelendarComponent";
 import SetPlan from "./SetPlan";
 
 type ValuePiece = Date | null;
