@@ -28,6 +28,10 @@ app.use("/api/v1/recipe", recipeRoute);
 import communityRoute from "./routes/community.route";
 app.use("/api/v1/community", communityRoute);
 
+//handle planner operation
+import plannerRoute from "./routes/planner.route"
+app.use("/api/v1/planner",plannerRoute)
+
 //export error middleware
 import { errorHandler } from "./middlewares/error.middleware";
 app.use(errorHandler);
