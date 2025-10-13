@@ -41,8 +41,8 @@ function App() {
           isAuthenticated: true,
         });
         // console.log({ token, id, isAuthenticated });
-      } catch (err) {
-        console.log("refresh token request is failed");
+      } catch (e) {
+        console.log("refresh token request is failed",e);
         useAuthStore.setState({
           token: null,
           id: null,
@@ -101,7 +101,7 @@ function App() {
                 />
                 <Route path="add-recipe" element={<AddRecipe />} />
                 <Route path="recipe/:recipeId" element={<RecipeBox />} />
-                <Route path="*" element={<Err />} />
+                <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
           </BrowserRouter>

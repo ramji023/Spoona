@@ -129,3 +129,54 @@ export const RecipeCardSkeleton = () => {
     </div>
   );
 };
+
+
+export const CommunityPageSkeleton = () => {
+  return (
+    <div className="mx-40 my-8 p-2 animate-fadeIn min-h-screen">
+      {/* First Section (Banner + Buttons) */}
+      <div className="relative">
+        <Shimmer className="h-[200px] w-full rounded-lg" />
+
+        <div className="absolute bottom-2 left-2 flex items-center gap-3">
+          <Shimmer className="w-10 h-10 rounded-full" />
+          <Shimmer className="h-8 w-48 rounded-md" />
+        </div>
+
+        <div className="absolute bottom-2 right-4 flex items-center gap-3">
+          <Shimmer className="w-20 h-10 rounded-3xl" />
+          <Shimmer className="w-10 h-10 rounded-full" />
+          <Shimmer className="w-10 h-10 rounded-full" />
+        </div>
+      </div>
+
+      {/* Second Section (Stats + Button) */}
+      <div className="flex justify-between items-center p-4 mt-3">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <Shimmer className="w-5 h-5 rounded-full" />
+            <Shimmer className="w-24 h-4 rounded-md" />
+          </div>
+          <div className="flex items-center gap-2">
+            <Shimmer className="w-5 h-5 rounded-full" />
+            <Shimmer className="w-24 h-4 rounded-md" />
+          </div>
+        </div>
+        <Shimmer className="w-32 h-10 rounded-3xl" />
+      </div>
+
+      {/* Third Section (Description) */}
+      <div className="px-4">
+        <Shimmer className="h-3 w-full mb-2 rounded-md" />
+        <Shimmer className="h-3 w-3/4 mb-2 rounded-md" />
+        <Shimmer className="h-3 w-1/2 rounded-md" />
+      </div>
+
+      {/* Fourth Section (Search bar + Filter) */}
+      <div className="my-3 flex items-center gap-3 justify-center">
+        <Shimmer className="w-[90%] h-[45px] rounded-4xl" />
+        <Shimmer className="w-16 h-[45px] rounded-3xl" />
+      </div>
+    </div>
+  );
+};

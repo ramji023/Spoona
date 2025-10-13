@@ -1,7 +1,3 @@
-import {config as base} from "@repo/eslint-config/base.js"
-import {config as reactInternals} from "@repo/eslint-config/react-internal.js"
+import { config as reactInternals } from "@repo/eslint-config/react-internal";
 
-export default {
-  ...base,
-  ...reactInternals
-}
+export default reactInternals;

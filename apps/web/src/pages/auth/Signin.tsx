@@ -1,5 +1,5 @@
 import Logo from "@repo/ui/components/Logo";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { User } from "../../types/user";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInstance";
@@ -7,7 +7,6 @@ import { useAuthStore } from "../../stores/authStore";
 import { useNavigate } from "react-router-dom";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { Spinner } from "../../loaders/Loaders";
-import { motion } from "motion/react";
 export default function Signin() {
   const navigate = useNavigate();
   const setIsAuthenticated = useAuthStore((s) => s.setIsAuthenticated);
@@ -40,8 +39,8 @@ export default function Signin() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const onSubmit = (data: any) => {
+  } = useForm<User>();
+  const onSubmit: SubmitHandler<User> = (data) => {
     console.log(data);
     signinMutation.mutate(data);
   };

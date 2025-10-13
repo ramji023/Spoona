@@ -2,9 +2,13 @@ import { motion, AnimatePresence } from "motion/react";
 import Recipes from "./Recipes";
 import { useRecipes } from "../../react_queries/queries";
 import { RecipeCardSkeleton } from "../../loaders/Loaders";
+import { useFailureMsgStore } from "../../stores/failureMsgStore";
 const LeftSection = () => {
+  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
   const { data, isLoading, error } = useRecipes();
-
+  if (error) {
+    setFailureMsg("Can't get Recipes for you");
+  }
   return (
     <>
       <div className="flex flex-col gap-6">
