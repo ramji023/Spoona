@@ -11,6 +11,7 @@ export const useProfile = () => {
     queryKey: ["profile"],
     queryFn: async () => {
       const response = await api.get("/api/v1/user");
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       return response.data.data;
     },
     staleTime: 1000 * 60 * 5, // data is fresh for 5 minutes
@@ -19,13 +20,15 @@ export const useProfile = () => {
 };
 
 // fetch single recipe data
-export const useRecipe = (recipeId: string) => {
+export const useRecipe = (recipeId?: string) => {
   return useQuery<Recipe>({
     queryKey: ["recipeData", recipeId],
     queryFn: async () => {
       const response = await api.get(`/api/v1/recipe/${recipeId}`);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       return response.data.data;
     },
+    enabled: !!recipeId,
     staleTime: 1000 * 60 * 5, // data is fresh for 5 minutes
     refetchOnMount: false,
   });
@@ -47,15 +50,17 @@ export const useRecipes = () => {
 
 // fetch notes for a recipe
 export const useNotes = (
-  recipeId: string,
+  recipeId?: string,
   queryOptions?: Omit<UseQueryOptions<NoteType, Error>, "queryKey" | "queryFn">
 ) => {
   return useQuery({
     queryKey: ["notes", recipeId],
     queryFn: async () => {
       const response = await api.get(`/api/v1/recipe/${recipeId}/note`);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       return response.data.data;
     },
+    enabled: !!recipeId,
     staleTime: 1000 * 60 * 5, // data is fresh for 5 minutes
     refetchOnMount: false,
     ...queryOptions,

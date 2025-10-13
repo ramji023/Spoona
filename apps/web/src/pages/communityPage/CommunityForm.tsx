@@ -17,7 +17,6 @@ interface FormStateType {
 }
 
 export default function CommunityForm({ open, close }: CommunityFormType) {
-  if (!open) return null;
   const navigate = useNavigate();
   // success msg
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
@@ -54,6 +53,8 @@ export default function CommunityForm({ open, close }: CommunityFormType) {
     console.log(data);
     sendCommunityMutation.mutate(data);
   };
+
+  if (!open) return null;
   return (
     <>
       <div className="fixed inset-0 flex items-center justify-center backdrop-blur-[1px] z-50">

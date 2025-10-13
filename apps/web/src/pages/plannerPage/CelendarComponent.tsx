@@ -21,7 +21,7 @@ export const CalendarComponent = (props: propType) => {
           nextLabel={<ChevronRight className="w-5 h-5 text-gray-600" />}
           prev2Label={null}
           next2Label={null}
-          tileClassName={({ date, view }) =>
+          tileClassName={({ view }) =>
             view === "month"
               ? "h-12 w-12 flex items-center justify-center  transition-colors relative font-inter"
               : null

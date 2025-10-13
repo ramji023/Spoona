@@ -2,13 +2,14 @@ import Recipes from "../HomePage/Recipes";
 import { useRecipes } from "../../react_queries/queries";
 import { motion, AnimatePresence } from "motion/react";
 import { RecipeCardSkeleton } from "../../loaders/Loaders";
+import { useFailureMsgStore } from "../../stores/failureMsgStore";
 export default function Section_4() {
   const { data, isLoading, error } = useRecipes();
 
-  // if (!data || error) {
-  //   console.log("recipe fetching error" + error);
-  //   return <div className="text-6xl">Something is messedup</div>;
-  // }
+  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
+  if (error) {
+    setFailureMsg("Can't get communities for you. Please try again");
+  }
   return (
     <>
       <div className="mx-25 my-10 p-2 font-poppins flex-col space-y-10">

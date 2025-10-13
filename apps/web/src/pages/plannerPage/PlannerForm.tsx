@@ -31,7 +31,7 @@ export const PlannerForm = (prop: PropType) => {
           {/* error div  */}
           <div className="min-h-[13px]">
             <span className="text-xs text-red-500 flex items-center justify-center">
-              ""
+              Error occured
             </span>
           </div>
 
@@ -62,7 +62,6 @@ export const PlannerForm = (prop: PropType) => {
               </>
             ) : (
               <>
-                {" "}
                 {/* Type Select */}
                 <div className="flex flex-col gap-1">
                   <label className="text-sm font-medium text-gray-700">
@@ -107,7 +106,6 @@ export const PlannerForm = (prop: PropType) => {
               </>
             ) : (
               <>
-                {" "}
                 {/* Meal URL / Note */}
                 <div className="flex flex-col gap-1">
                   <label className="text-sm font-medium text-gray-700">

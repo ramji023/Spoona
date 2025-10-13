@@ -8,38 +8,33 @@ import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { useNotes } from "../../react_queries/queries";
 import { useParams } from "react-router-dom";
 import { ProfileIcon } from "@repo/ui/icons/profileIcon";
+import NotFound from "../../errors/NotFound";
+import { NoteSectionSkeleton } from "../../loaders/Loaders";
+import { useFailureMsgStore } from "../../stores/failureMsgStore";
+import { AxiosError } from "axios";
 
 export function NotesSection() {
   const [noteOpen, setNoteOpen] = useState(false);
 
   const { recipeId } = useParams();
 
-  console.log("recipe id is : ", recipeId);
-  if (!recipeId) {
-    return (
-      <div className="h-screen text-8xl flex justify-center items-center">
-        404 Error Page
-      </div>
-    );
-  }
-
   const [noteSection, setNoteSection] = useState(false);
+  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
   const { data, isLoading, error } = useNotes(recipeId, {
     enabled: noteSection && !!recipeId,
   });
 
   if (isLoading) {
-    console.log("notes are fetching");
+    return <NoteSectionSkeleton />;
   }
 
   if (error) {
-    console.log("error in note fetching : ", error);
+    setFailureMsg("Sorry, Can't fetch notes for you. Please try after a while");
   }
 
-  // //calculate likes
-  // const likeCount = data.notes.filter((note) => note.status === "like").length;
-  // const disLikeCount = data.notes.length - likeCount;
-
+  if (!recipeId) {
+    return <NotFound />;
+  }
   return (
     <>
       <div>
@@ -138,10 +133,6 @@ function NoteBox({
   open: boolean;
   close: React.Dispatch<SetStateAction<boolean>>;
 }) {
-  if (!open) {
-    return null;
-  }
-
   type NoteDataType = {
     status: "like" | "dislike";
     note: string | undefined;
@@ -172,17 +163,22 @@ function NoteBox({
         queryKey: ["notes", recipeId],
       });
     },
-    onError: (err: any) => {
-      console.log("error : ", err);
-      setError(`${err}`);
-      if (err.response) {
-        setError(
-          err.response.data?.message || JSON.stringify(err.response.data)
-        );
-      } else if (err.request) {
-        setError("No response from server. Please try again.");
+    onError: (err: unknown) => {
+      console.log("Something went wrong while sending your notes", err);
+      if (err instanceof AxiosError) {
+        if (err.response) {
+          setError(
+            err.response.data?.message || JSON.stringify(err.response.data)
+          );
+        } else if (err.request) {
+          setError("No response from server. Please try again.");
+        } else {
+          setError(err.message || "An unexpected error occurred");
+        }
+      } else if (err instanceof Error) {
+        setError(err.message);
       } else {
-        setError(err.message || "An unexpected error occurred");
+        setError("An unexpected error occurred");
       }
     },
   });
@@ -199,64 +195,66 @@ function NoteBox({
     });
   }
 
-  if (open) {
-    return (
-      <>
-        {/* main div  */}
-        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-[1px] z-50">
-          <div className="bg-gray-200 rounded-xl p-6 w-[470px] h-[470px] flex flex-col gap-5">
-            {/* first div  */}
-            <div className="text-2xl font-semibold flex justify-between items-center">
-              <h1>Add Note</h1>
-              <div
-                onClick={() => close(false)}
-                className="text-gray-700 cursor-pointer w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-300"
-              >
-                <CrossIcon />
-              </div>
-            </div>
-            {/* error div  */}
-            <div className="min-h-[13px]">
-              <span className="text-xs text-red-500 flex items-center justify-center">
-                {error ?? ""}
-              </span>
-            </div>
-            {/* second div  */}
-            <div className="flex justify-center gap-4">
-              <div
-                onClick={() => {
-                  setIsDisliked(false);
-                  setIsLiked((curr) => !curr);
-                }}
-                className={`w-25 h-25 outline-1 outline-gray-700 rounded-full flex justify-center items-center  hover:text-green-500 cursor-pointer ${isLiked && `text-green-500`}`}
-              >
-                <LikeSolidIcon className="size-18" />
-              </div>
-              <div
-                onClick={() => {
-                  setIsLiked(false);
-                  setIsDisliked((curr) => !curr);
-                }}
-                className={`w-25 h-25 outline-1 outline-gray-700 rounded-full flex justify-center items-center hover:text-red-500 cursor-pointer ${isDisLike && `text-red-500`}`}
-              >
-                <DislikeSolidIcon className="size-18" />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 py-1">
-              <label>Note</label>
-              <textarea
-                name="note"
-                rows={3}
-                ref={noteRef}
-                placeholder="Share your experience with everyone..."
-                className="px-2 py-2 col-5 outline-2 outline-gray-500 rounded focus:outline-orange-400"
-              ></textarea>
-            </div>
-
-            <Button onClick={() => sendNote()}>Publish your note</Button>
-          </div>
-        </div>
-      </>
-    );
+  if (!open) {
+    return null;
   }
+
+  return (
+    <>
+      {/* main div  */}
+      <div className="fixed inset-0 flex items-center justify-center backdrop-blur-[1px] z-50">
+        <div className="bg-gray-200 rounded-xl p-6 w-[470px] h-[470px] flex flex-col gap-5">
+          {/* first div  */}
+          <div className="text-2xl font-semibold flex justify-between items-center">
+            <h1>Add Note</h1>
+            <div
+              onClick={() => close(false)}
+              className="text-gray-700 cursor-pointer w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-300"
+            >
+              <CrossIcon />
+            </div>
+          </div>
+          {/* error div  */}
+          <div className="min-h-[13px]">
+            <span className="text-xs text-red-500 flex items-center justify-center">
+              {error ?? ""}
+            </span>
+          </div>
+          {/* second div  */}
+          <div className="flex justify-center gap-4">
+            <div
+              onClick={() => {
+                setIsDisliked(false);
+                setIsLiked((curr) => !curr);
+              }}
+              className={`w-25 h-25 outline-1 outline-gray-700 rounded-full flex justify-center items-center  hover:text-green-500 cursor-pointer ${isLiked && `text-green-500`}`}
+            >
+              <LikeSolidIcon className="size-18" />
+            </div>
+            <div
+              onClick={() => {
+                setIsLiked(false);
+                setIsDisliked((curr) => !curr);
+              }}
+              className={`w-25 h-25 outline-1 outline-gray-700 rounded-full flex justify-center items-center hover:text-red-500 cursor-pointer ${isDisLike && `text-red-500`}`}
+            >
+              <DislikeSolidIcon className="size-18" />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 py-1">
+            <label>Note</label>
+            <textarea
+              name="note"
+              rows={3}
+              ref={noteRef}
+              placeholder="Share your experience with everyone..."
+              className="px-2 py-2 col-5 outline-2 outline-gray-500 rounded focus:outline-orange-400"
+            ></textarea>
+          </div>
+
+          <Button onClick={() => sendNote()}>Publish your note</Button>
+        </div>
+      </div>
+    </>
+  );
 }

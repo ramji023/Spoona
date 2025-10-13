@@ -180,3 +180,151 @@ export const CommunityPageSkeleton = () => {
     </div>
   );
 };
+
+export const UserProfileSkeleton = () => {
+  return (
+    <div className="mx-30 p-10 my-10 min-h-screen">
+      {/* first section */}
+      <div className="flex justify-between items-center py-2 mb-10">
+        <div className="flex gap-2 justify-center items-center">
+          {/* Profile image */}
+          <Shimmer className="w-30 h-30 rounded-full" />
+          <div>
+            {/* Username */}
+            <Shimmer className="w-48 h-6 rounded mb-2" />
+            {/* Bio */}
+            <Shimmer className="w-64 h-4 rounded mb-2" />
+            {/* Stats */}
+            <div className="flex gap-4 items-center justify-center p-2 text-lg">
+              <Shimmer className="w-20 h-5 rounded" />
+              <Shimmer className="w-20 h-5 rounded" />
+            </div>
+          </div>
+        </div>
+        {/* Edit profile button */}
+        <Shimmer className="w-32 h-10 rounded-3xl" />
+      </div>
+      {/* Divider */}
+      <div className="border-gray-300 border-t-2 py-5" />
+    </div>
+  );
+};
+
+export const NoteSectionSkeleton = () => (
+  <div className="mx-4 my-4 p-4 space-y-4">
+    {/* first div - header */}
+    <div className="flex justify-between items-center">
+      <Shimmer className="h-8 w-40 rounded-lg" /> {/* Notes title */}
+      <Shimmer className="h-8 w-32 rounded-3xl" /> {/* Leave Note button */}
+    </div>
+
+    {/* second div - stats */}
+    <div className="flex gap-6">
+      <Shimmer className="h-6 w-20 rounded-md" /> {/* liked */}
+      <Shimmer className="h-6 w-24 rounded-md" /> {/* disliked */}
+    </div>
+
+    {/* third div - list of notes */}
+    <div className="space-y-4">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="p-2 flex gap-4 items-start">
+          {/* user avatar */}
+          <Shimmer className="w-12 h-12 rounded-full" />
+
+          <div className="flex-1 space-y-2">
+            {/* username */}
+            <Shimmer className="h-4 w-32 rounded-md" />
+            {/* note text */}
+            <Shimmer className="h-3 w-full rounded-md" />
+            <Shimmer className="h-3 w-5/6 rounded-md" />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+export const RecipePageSkeleton = () => (
+  <div className="m-5 px-5 py-4 space-y-6">
+    {/* first section */}
+    <div className="flex gap-5 my-4">
+      {/* recipe image */}
+      <div className="flex-1/2">
+        <Shimmer className="h-[500px] w-full rounded-lg" />
+      </div>
+
+      {/* recipe raw data */}
+      <div className="flex-1/2 p-5 space-y-4">
+        {/* icons & buttons */}
+        <div className="flex justify-between p-2">
+          <div className="flex gap-5 items-center">
+            <Shimmer className="h-8 w-8 rounded-full" />
+            <Shimmer className="h-8 w-8 rounded-full" />
+            <Shimmer className="h-8 w-8 rounded-full" />
+          </div>
+          <div className="flex items-center gap-3">
+            <Shimmer className="h-8 w-20 rounded-3xl" />
+            <Shimmer className="h-8 w-20 rounded-3xl" />
+          </div>
+        </div>
+
+        {/* user info */}
+        <div className="flex items-center gap-2">
+          <Shimmer className="w-12 h-12 rounded-full" />
+          <div className="flex flex-col gap-2">
+            <Shimmer className="h-4 w-32 rounded-md" />
+            <Shimmer className="h-3 w-20 rounded-md" />
+          </div>
+        </div>
+
+        {/* title */}
+        <Shimmer className="h-10 w-3/4 rounded-md" />
+
+        {/* actions */}
+        <div className="flex gap-10">
+          <Shimmer className="h-6 w-20 rounded-md" />
+          <Shimmer className="h-6 w-20 rounded-md" />
+        </div>
+
+        {/* description header */}
+        <div className="flex justify-between py-3 border-t border-b border-gray-300">
+          <Shimmer className="h-5 w-32 rounded-md" />
+          <div className="flex gap-4">
+            <Shimmer className="h-5 w-16 rounded-md" />
+            <Shimmer className="h-5 w-16 rounded-md" />
+          </div>
+        </div>
+
+        {/* description text */}
+        <Shimmer className="h-16 w-full rounded-md" />
+      </div>
+    </div>
+
+    {/* second section */}
+    <div className="flex gap-5 my-4">
+      {/* ingredients */}
+      <div className="flex-1 p-4 space-y-4">
+        <Shimmer className="h-6 w-32 rounded-md" />
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex gap-3 items-center">
+            <Shimmer className="w-10 h-10 rounded-md" />
+            <div className="flex flex-col gap-1">
+              <Shimmer className="h-4 w-24 rounded-md" />
+              <Shimmer className="h-3 w-16 rounded-md" />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* instructions */}
+      <div className="flex-3 p-4 space-y-4">
+        <Shimmer className="h-6 w-40 rounded-md" />
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex flex-col gap-2">
+            <Shimmer className="h-4 w-3/4 rounded-md" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);

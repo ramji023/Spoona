@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { type Value } from "./PlannerPage";
 import { ChevronLeft, Plus } from "lucide-react";
 import { PlannerForm } from "./PlannerForm";
@@ -24,8 +24,9 @@ export default function SetPlan({ value }: { value: Value }) {
         </div>
         {/* second div  */}
         <div>
-          {planner.map((plan) => (
+          {planner.map((plan, index) => (
             <PlanItems
+              key={index}
               text={plan}
               date={value instanceof Date ? value : undefined}
             />

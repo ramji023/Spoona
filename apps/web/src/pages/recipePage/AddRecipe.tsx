@@ -10,7 +10,7 @@ import { api } from "../../utils/axiosInstance";
 import { DropDown } from "./DropDown";
 import { useAllCommunities } from "../../react_queries/queries";
 import { useAuthStore } from "../../stores/authStore";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 type RecipeForm = {
   community: string;
   title: string;
@@ -127,13 +127,7 @@ const AddRecipe = () => {
   };
 
   const { data, isLoading, error } = useAllCommunities();
-  useEffect(() => {
-    if (data) {
-      const communities = filteredCommunity();
-      setCommuties(communities);
-    }
-  }, [data]);
-  const filteredCommunity = () => {
+  const filteredCommunity = useCallback(() => {
     if (!data) return [];
 
     return data
@@ -144,14 +138,19 @@ const AddRecipe = () => {
         id: community.id,
         name: community.name,
       }));
-  };
+  }, [data, id]);
+
+  useEffect(() => {
+    const communities = filteredCommunity();
+    setCommuties(communities);
+  }, [filteredCommunity]);
 
   if (isLoading) {
     console.log("communities is loading");
   }
   if (!data || error) {
     console.log("communities fetching error" + error);
-    return <div className="text-6xl">Something is messedup</div>;
+    alert("Something is messedup");
   }
   return (
     <>

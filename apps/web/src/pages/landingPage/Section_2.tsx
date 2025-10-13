@@ -3,13 +3,17 @@ import { useAllCommunities } from "../../react_queries/queries";
 import { useNavigate } from "react-router-dom";
 import { CommunityCardSkeleton } from "../../loaders/Loaders";
 import { motion, AnimatePresence } from "motion/react";
+import { useFailureMsgStore } from "../../stores/failureMsgStore";
 export default function Section_2() {
   const navigate = useNavigate();
   function moveToCommunity(path: string) {
     navigate(path);
   }
+  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
   const { data, isLoading, error } = useAllCommunities();
-
+  if (error) {
+    setFailureMsg("Can't get communities for you. Please try again");
+  }
   return (
     <>
       <div className="mx-25 my-10 p-2 font-poppins flex-col space-y-10">
