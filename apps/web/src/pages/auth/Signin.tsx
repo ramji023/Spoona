@@ -6,6 +6,8 @@ import { api } from "../../utils/axiosInstance";
 import { useAuthStore } from "../../stores/authStore";
 import { useNavigate } from "react-router-dom";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
+import { Spinner } from "../../loaders/Loaders";
+import { motion } from "motion/react";
 export default function Signin() {
   const navigate = useNavigate();
   const setIsAuthenticated = useAuthStore((s) => s.setIsAuthenticated);
@@ -110,9 +112,21 @@ export default function Signin() {
           <div className="flex justify-center items-center">
             <button
               type="submit"
-              className="px-4 py-2 text-white bg-orange-400 rounded-xl cursor-pointer text-lg hover:font-semibold"
+              disabled={signinMutation.isPending}
+              className="relative px-6 py-2 text-white bg-orange-400 rounded-xl cursor-pointer text-lg font-medium hover:font-semibold flex items-center justify-center"
             >
-              Signin
+              <span
+                className={`${signinMutation.isPending ? "opacity-0" : "opacity-100"} transition-opacity duration-200`}
+              >
+                Signin
+              </span>
+
+              {/* Spinner */}
+              {signinMutation.isPending && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Spinner />
+                </div>
+              )}
             </button>
           </div>
         </form>

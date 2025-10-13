@@ -1,20 +1,15 @@
 import { CommunitySection } from "@repo/ui/components/CommunitySection";
 import { useAllCommunities } from "../../react_queries/queries";
 import { useNavigate } from "react-router-dom";
-
+import { CommunityCardSkeleton } from "../../loaders/Loaders";
+import { motion, AnimatePresence } from "motion/react";
 export default function Section_2() {
   const navigate = useNavigate();
   function moveToCommunity(path: string) {
     navigate(path);
   }
   const { data, isLoading, error } = useAllCommunities();
-  if (isLoading) {
-    console.log("communities is loading");
-  }
-  if (!data || error) {
-    console.log("communities fetching error" + error);
-    return <div className="text-6xl">Something is messedup</div>;
-  }
+
   return (
     <>
       <div className="mx-25 my-10 p-2 font-poppins flex-col space-y-10">
@@ -31,12 +26,41 @@ export default function Section_2() {
           </div>
         </div>
         <div className="flex flex-row justify-center">
-          <CommunitySection
-            width="w-[150px]"
-            height="h-[150px]"
-            data={data}
-            onMove={moveToCommunity}
-          />
+          <AnimatePresence mode="wait">
+            {isLoading ? (
+              <motion.div
+                key="skeleton"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-wrap justify-start gap-6"
+              >
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <CommunityCardSkeleton
+                    key={i}
+                    width="w-[150px]"
+                    height="h-[150px]"
+                  />
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="community-section"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <CommunitySection
+                  width="w-[150px]"
+                  height="h-[150px]"
+                  data={data!}
+                  onMove={moveToCommunity}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <div className="border border-gray-200"></div>
       </div>

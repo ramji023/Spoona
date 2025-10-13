@@ -1,15 +1,10 @@
+import { motion, AnimatePresence } from "motion/react";
 import Recipes from "./Recipes";
 import { useRecipes } from "../../react_queries/queries";
+import { RecipeCardSkeleton } from "../../loaders/Loaders";
 const LeftSection = () => {
   const { data, isLoading, error } = useRecipes();
-  if (isLoading) {
-    console.log("recipe is loading");
-  }
 
-  if (!data || error) {
-    console.log("recipe fetching error" + error);
-    return <div className="text-6xl">Something is messedup</div>;
-  }
   return (
     <>
       <div className="flex flex-col gap-6">
@@ -32,7 +27,32 @@ const LeftSection = () => {
           </div>
         </div>
         <div>
-          <Recipes recipes={data}/>
+          <AnimatePresence mode="wait">
+            {isLoading ? (
+              <motion.div
+                key="skeleton"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-wrap justify-start gap-4"
+              >
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <RecipeCardSkeleton key={i} />
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="recipes-section"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Recipes recipes={data!} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </>

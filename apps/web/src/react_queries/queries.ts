@@ -37,6 +37,7 @@ export const useRecipes = () => {
     queryKey: ["recipes"],
     queryFn: async () => {
       const response = await api.get("/api/v1/recipe");
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       return response.data.data;
     },
     staleTime: 1000 * 60 * 5, // data is fresh for 5 minutes
@@ -93,6 +94,7 @@ export const useAllCommunities = () => {
     queryKey: ["communities"],
     queryFn: async () => {
       const response = await api.get("/api/v1/community");
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       return response.data.data;
     },
     staleTime: 1000 * 60 * 5,

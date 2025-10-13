@@ -1,30 +1,30 @@
+import { motion, AnimatePresence } from "motion/react";
 import { CommunitySection } from "@repo/ui/components/CommunitySection";
 import { LeftArrowIcon } from "@repo/ui/icons/LeftArrowIcon";
 import Button from "@repo/ui/components/Button";
 import { Plus } from "lucide-react";
-import {useState } from "react";
+import { useState } from "react";
 import CommunityForm from "./CommunityForm";
 import { useAllCommunities } from "../../react_queries/queries";
 import { useNavigate } from "react-router-dom";
+import { CommunityCardSkeleton } from "../../loaders/Loaders";
 export default function CommunitiesPage() {
-
   const navigate = useNavigate();
   const { data, isLoading, error } = useAllCommunities();
 
   const [formOpen, setFormClose] = useState(false);
-  if (isLoading) {
-    console.log("communities is loading");
-  }
-  if (!data || error) {
-    console.log("communities fetching error" + error);
-    return <div className="text-6xl">Something is messedup</div>;
-  }
+  // if (isLoading) {
+  //   console.log("communities is loading");
+  // }
+  // if (!data || error) {
+  //   console.log("communities fetching error" + error);
+  //   return <div className="text-6xl">Something is messedup</div>;
+  // }
 
   // console.log(filteredCommunity);
   function moveToCommunity(path: string) {
     navigate(path);
   }
-  if (data) {
     return (
       <>
         <div className="mx-40 my-10 p-2">
@@ -65,12 +65,41 @@ export default function CommunitiesPage() {
               </div>
             </div>
             <div className="flex flex-row justify-center items-center">
-              <CommunitySection
-                width="w-[200px]"
-                height="h-[250px]"
-                data={data}
-                onMove={moveToCommunity}
-              />
+              <AnimatePresence mode="wait">
+                {isLoading ? (
+                  <motion.div
+                    key="skeleton"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex flex-wrap justify-start gap-6"
+                  >
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <CommunityCardSkeleton
+                        key={i}
+                        width="w-[200px]"
+                        height="h-[250px]"
+                      />
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="community-section"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <CommunitySection
+                      width="w-[200px]"
+                      height="h-[250px]"
+                      data={data!}
+                      onMove={moveToCommunity}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
           {/* second div  */}
@@ -87,13 +116,42 @@ export default function CommunitiesPage() {
                 stories.
               </div>
             </div>
-            <div>
-              <CommunitySection
-                width="w-[200px]"
-                height="h-[250px]"
-                data={data}
-                onMove={moveToCommunity}
-              />
+             <div className="flex flex-row justify-center items-center">
+              <AnimatePresence mode="wait">
+                {isLoading ? (
+                  <motion.div
+                    key="skeleton"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex flex-wrap justify-start gap-6"
+                  >
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <CommunityCardSkeleton
+                        key={i}
+                        width="w-[200px]"
+                        height="h-[250px]"
+                      />
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="community-section"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <CommunitySection
+                      width="w-[200px]"
+                      height="h-[250px]"
+                      data={data!}
+                      onMove={moveToCommunity}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
@@ -111,13 +169,42 @@ export default function CommunitiesPage() {
                 stories.
               </div>
             </div>
-            <div>
-              <CommunitySection
-                width="w-[200px]"
-                height="h-[250px]"
-                data={data}
-                onMove={moveToCommunity}
-              />
+            <div className="flex flex-row justify-center items-center">
+              <AnimatePresence mode="wait">
+                {isLoading ? (
+                  <motion.div
+                    key="skeleton"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex flex-wrap justify-start gap-6"
+                  >
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <CommunityCardSkeleton
+                        key={i}
+                        width="w-[200px]"
+                        height="h-[250px]"
+                      />
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="community-section"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <CommunitySection
+                      width="w-[200px]"
+                      height="h-[250px]"
+                      data={data!}
+                      onMove={moveToCommunity}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
@@ -129,4 +216,4 @@ export default function CommunitiesPage() {
       </>
     );
   }
-}
+
