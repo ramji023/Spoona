@@ -13,13 +13,12 @@ export default function SuccessMessage({
   duration?: number;
 }) {
   useEffect(() => {
-    if (open) {
-      const timer = setTimeout(() => {
-        onClose();
-      }, duration);
+    if (!open) return;
+    const timer = setTimeout(() => {
+      onClose();
+    }, duration);
 
-      return () => clearTimeout(timer);
-    }
+    return () => clearTimeout(timer);
   }, [open, duration, onClose]);
 
   if (!open) return null;

@@ -1,4 +1,4 @@
-export function ProfileIcon(props:any) {
+export function ProfileIcon(props:{className?:string}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -47,7 +47,7 @@ export const CalendarComponent = (props: propType) => {
               </div>
             ) : null;
           }}
-          formatShortWeekday={(locale, date) =>
+          formatShortWeekday={(_, date) =>
             ["S", "M", "T", "W", "T", "F", "S"][date.getDay()]
           }
         />

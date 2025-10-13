@@ -7,7 +7,13 @@ const users = [
   { name: "Zassicca", avatar: "https://i.pravatar.cc/150?u=N" },
 ];
 
-function ProfileCard(props) {
+interface ProfileCardProp {
+    user : {
+      avatar:string;
+      name:string;
+    }
+}
+function ProfileCard(props:ProfileCardProp) {
   return (
     <>
       <div className="cursor-pointer w-[150px] h-[150px] rounded-2xl group border border-gray-300 hover:border-orange-400 flex flex-col items-center justify-around hover:shadow-xl">

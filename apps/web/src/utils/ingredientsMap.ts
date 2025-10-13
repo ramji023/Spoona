@@ -176,3 +176,27 @@ export const ingredientsMap: Record<string, string> = {
   others:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758638352/405493444_b7360155-6f42-425a-b6d9-ee07274fbf7c_1_knpvdx.jpg",
 };
+
+export const categoriesMap: Record<string, string> = {
+  Beverages:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596871/Beverages_x983mw.jpg",
+  Main_course:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596872/Main_Course_xqkxav.jpg",
+  Non_vageterian:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596872/Stews_xkjhct.jpg",
+  Desserts:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596872/Desserts_qjbooy.jpg",
+  Salad:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596872/Salads_i50imw.jpg",
+  Appetizers:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596873/Appetizers_avqh6a.jpg",
+  Soup: "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596873/Soups_qqpggc.jpg",
+  Snacks:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596874/Snacks_aqt1vh.jpg",
+  Dinner:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596875/Dinner_j6eilw.jpg",
+  Lunch:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596876/Lunch_xzswfk.jpg",
+  Breakfast:
+    "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596878/Breakfast_eufo4q.jpg",
+};

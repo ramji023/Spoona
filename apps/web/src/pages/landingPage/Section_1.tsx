@@ -1,4 +1,5 @@
 import { CategorySection } from "@repo/ui/components/CategoryCard";
+import { categoriesMap } from "../../utils/ingredientsMap";
 export default function Section_1() {
   return (
     <>
@@ -16,7 +17,7 @@ export default function Section_1() {
           </div>
         </div>
         <div>
-          <CategorySection />
+          <CategorySection categories={categoriesMap}/>
         </div>
         <div className="border border-gray-200"></div>
       </div>
