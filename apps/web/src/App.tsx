@@ -15,8 +15,10 @@ import axios from "axios";
 import RecipeBox from "./pages/recipePage/RecipeBox";
 import Community from "./pages/communityPage/Community";
 import { GlobalLoader } from "./loaders/Loaders";
-
 import { motion, AnimatePresence } from "motion/react";
+import NotFound from "./errors/NotFound";
+import { ErrorBoundary } from "react-error-boundary";
+import Err from "./errors/ErrorBoundary";
 function App() {
   const [loading, setLoading] = useState(true);
   // const token = useAuthStore((s) => s.token);
@@ -74,31 +76,37 @@ function App() {
   }
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<LandingPage />} />
-              <Route path="/auth" element={<LandingPage />}>
-                <Route path="signup" element={<Signup />} />
-                <Route path="signin" element={<Signin />} />
+      <ErrorBoundary fallback={<Err/>}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<LandingPage />} />
+                <Route path="/auth" element={<LandingPage />}>
+                  <Route path="signup" element={<Signup />} />
+                  <Route path="signin" element={<Signin />} />
+                </Route>
+                <Route path="home" element={<Home />} />
+                <Route path="planner" element={<PlannerPage />} />
+                <Route path="saved" element={<SavedRecipe />} />
+                <Route path="account" element={<Profile />} />
+                <Route path="communities" element={<CommunityPage />} />
+                <Route
+                  path="communities/:communityId"
+                  element={<Community />}
+                />
+                <Route path="add-recipe" element={<AddRecipe />} />
+                <Route path="recipe/:recipeId" element={<RecipeBox />} />
+                <Route path="*" element={<Err />} />
               </Route>
-              <Route path="home" element={<Home />} />
-              <Route path="planner" element={<PlannerPage />} />
-              <Route path="saved" element={<SavedRecipe />} />
-              <Route path="account" element={<Profile />} />
-              <Route path="communities" element={<CommunityPage />} />
-              <Route path="communities/:communityId" element={<Community />} />
-              <Route path="add-recipe" element={<AddRecipe />} />
-              <Route path="recipe/:recipeId" element={<RecipeBox />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </motion.div>
+            </Routes>
+          </BrowserRouter>
+        </motion.div>
+      </ErrorBoundary>
     </>
   );
 }
