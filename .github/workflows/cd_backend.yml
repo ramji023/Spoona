@@ -40,6 +40,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/Dockerfile.backend
+          file: ./Docker/Dockerfile.backend
           push: true
           tags: ramjimishra024/spoona-backend:${{ github.sha }}
