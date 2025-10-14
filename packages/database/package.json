@@ -6,6 +6,7 @@
   },
   "main": "index.js",
   "scripts": {
+    "build": "tsc --build",
     "db:migrate:dev": "prisma migrate dev"
   },
   "keywords": [],
