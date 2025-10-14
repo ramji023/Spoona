@@ -22,9 +22,6 @@ jobs:
 
       - run: npm install -g pnpm
 
-      - name: Install Prisma
-        run: pnpm add -g prisma
-
       - name: Run Prisma Migrations
         working-directory: ./packages/database
         env:
