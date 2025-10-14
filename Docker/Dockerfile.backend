@@ -9,9 +9,12 @@ COPY ./pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY ./turbo.json ./turbo.json
 COPY ./apps/api ./apps/api
 
+
+RUN npm install -g pnpm
 RUN pnpm install
+RUN pnpm run db:generate
 RUN pnpm run build
 
 EXPOSE 3000
 
-CMD ["pnpm" ,"run","start:web"]
+CMD ["pnpm" ,"run","start:backend"]
