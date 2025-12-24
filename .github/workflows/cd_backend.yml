@@ -21,7 +21,8 @@ jobs:
           node-version: 20
 
       - run: npm install -g pnpm
-
+      - run: pnpm install
+      
       - name: Run Prisma Migrations
         working-directory: ./packages/database
         env:
