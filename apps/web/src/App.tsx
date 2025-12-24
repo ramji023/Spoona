@@ -5,7 +5,7 @@ import Home from "./pages/HomePage/Home";
 import PlannerPage from "./pages/plannerPage/PlannerPage";
 import SavedRecipe from "./pages/SavedRecipePage/SavedRecipe";
 import Profile from "./pages/profilePage/Profile";
-import CommunityPage from "./pages/communityPage/CommunitiesPage";
+import CommunitiesPage from "./pages/communityPage/CommunitiesPage";
 import AddRecipe from "./pages/recipePage/AddRecipe";
 import { useAuthStore } from "./stores/authStore";
 import { useEffect, useState } from "react";
@@ -19,14 +19,15 @@ import { motion, AnimatePresence } from "motion/react";
 import NotFound from "./errors/NotFound";
 import { ErrorBoundary } from "react-error-boundary";
 import Err from "./errors/ErrorBoundary";
+
+const MIN_LOADING_TIME = 1000;
 function App() {
   const [loading, setLoading] = useState(true);
-  // const token = useAuthStore((s) => s.token);
-  // const id = useAuthStore((s) => s.id);
-  // const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  // console.log("In app component useAuthStore data : ",{ token, id, isAuthenticated });
+
+  // only send request to refresh the token if user reload/refresh the page
   useEffect(() => {
     const refreshAuth = async () => {
+      const startTime = Date.now();
       try {
         const storedToken = await axios.post(
           "http://localhost:3000/api/v1/user/refresh",
@@ -42,7 +43,7 @@ function App() {
         });
         // console.log({ token, id, isAuthenticated });
       } catch (e) {
-        console.log("refresh token request is failed",e);
+        console.log("refresh token request is failed", e);
         useAuthStore.setState({
           token: null,
           id: null,
@@ -50,9 +51,13 @@ function App() {
         });
         return;
       } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 600);
+        const end_time = Date.now();
+        const elapsedTime = end_time - startTime;
+        const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
+        if (remainingTime > 0) {
+          await new Promise((resolve) => setTimeout(resolve, remainingTime));
+        }
+        setLoading(false);
       }
     };
     refreshAuth();
@@ -76,7 +81,7 @@ function App() {
   }
   return (
     <>
-      <ErrorBoundary fallback={<Err/>}>
+      <ErrorBoundary fallback={<Err />}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -87,20 +92,26 @@ function App() {
               <Route path="/" element={<Layout />}>
                 <Route index element={<LandingPage />} />
                 <Route path="/auth" element={<LandingPage />}>
-                  <Route path="signup" element={<Signup />} />
-                  <Route path="signin" element={<Signin />} />
+                  {" "}
+                  // show landing page to user
+                  <Route path="signup" element={<Signup />} /> // show signup
+                  component
+                  <Route path="signin" element={<Signin />} /> // render signin
+                  component
                 </Route>
-                <Route path="home" element={<Home />} />
+                <Route path="home" element={<Home />} /> // show all the recipes
+                to the user
                 <Route path="planner" element={<PlannerPage />} />
                 <Route path="saved" element={<SavedRecipe />} />
-                <Route path="account" element={<Profile />} />
-                <Route path="communities" element={<CommunityPage />} />
+                <Route path="account" element={<Profile />} />  // show user profile data
+                <Route path="communities" element={<CommunitiesPage />} />  // show global communities page
                 <Route
                   path="communities/:communityId"
                   element={<Community />}
                 />
-                <Route path="add-recipe" element={<AddRecipe />} />
-                <Route path="recipe/:recipeId" element={<RecipeBox />} />
+                <Route path="add-recipe" element={<AddRecipe />} />  // show add-recipe form
+                <Route path="recipe/:recipeId" element={<RecipeBox />} /> //
+                show complete recipe data to user
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>

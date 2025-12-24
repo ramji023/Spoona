@@ -6,6 +6,7 @@ import {
   addRecipe,
   createNewCommunity,
   deleteMember,
+  findCommunityById,
   getAllCommunities,
   getCommunity,
 } from "../models/community.model";
@@ -14,19 +15,22 @@ import { createNewRecipe } from "../models/recipe.model";
 import { ApiError } from "../utils/customError";
 import { prisma } from "@repo/database";
 import {
-  cleanArrayObjects,
-  cleanString,
-  removeExtraSpaces,
+  cleanNestedObject,
+  convertIntoArray,
 } from "../utils/helper.functions";
 
-//create a community
+//write controller to create a community
 export const createCommunity = async (req: Request, res: Response) => {
+  // first validate the user request data
   const parsedBodyObject = createCommunityValidation.safeParse(req.body);
 
+  // if validation failed then throw error
   if (!parsedBodyObject.success) {
     //throw error
     throw new ApiError(parsedBodyObject.error.issues[0].message, 404);
   }
+
+  // if pass
 
   //create new community
   const result = await createNewCommunity({
@@ -34,18 +38,29 @@ export const createCommunity = async (req: Request, res: Response) => {
     userId: req.user!,
   });
 
-  if (!result) {
-    //throw error
-    return;
-  }
-
+  // then return success response to user
   return res.json({
     data: result,
     msg: "user have created community successfully",
   });
 };
 
+/***
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+// controller to fetch all  the communities saved in community table
 export const fetchAllCommunities = async (req: Request, res: Response) => {
+  // call model functions to fetch all the communities data from database
   const communities = await getAllCommunities();
 
   if (!communities) {
@@ -61,118 +76,66 @@ export const fetchAllCommunities = async (req: Request, res: Response) => {
   });
 };
 
-// add member to a community
-export const AddMembersOnCommunity = async (req: Request, res: Response) => {
-  const parsedBodyObject = z
-    .object({ communityId: z.string() })
-    .safeParse({ communityId: req.params.communityId });
-
-  if (!parsedBodyObject.success) {
-    //throw error
-    throw new ApiError(parsedBodyObject.error.issues[0].message, 404);
-  }
-
-  // add member on community
-  const result = await addMember({
-    userId: req.user!,
-    communityId: parsedBodyObject.data.communityId,
-  });
-
-  if (!result) {
-    //throw error
-    throw new ApiError(
-      "Something went wrong while adding members to a community",
-      404
-    );
-  }
-
-  return res.json({ msg: "Member has been added in community successfully" });
-};
-
-// delete member from community
-export const deleteMemberOnCommunity = async (req: Request, res: Response) => {
-  const parsedBodyObject = z
-    .object({ communityId: z.string() })
-    .safeParse({ communityId: req.params.communityId });
-
-  if (!parsedBodyObject.success) {
-    //throw error
-    throw new ApiError(parsedBodyObject.error.issues[0].message, 404);
-  }
-
-  // add member on community
-  const result = await deleteMember({
-    userId: req.user!,
-    communityId: parsedBodyObject.data.communityId,
-  });
-  if (result.count === 0) {
-    throw new ApiError(
-      "Something went wrong whilte removing member from communtiy",
-      404
-    );
-  }
-  return res.json({
-    msg: "Member has been removed from community successfully",
-  });
-};
-
-// upload a recipe on community
+//write controller to upload a recipe on community
 export const uploadOnCommunity = async (req: Request, res: Response) => {
-  console.log("hit this route");
-  const title = removeExtraSpaces(req.body.title);
-  const description = removeExtraSpaces(req.body.description);
-  const ingredients = cleanArrayObjects(req.body.ingredients);
-  const instructions = cleanArrayObjects(req.body.instructions);
-  const prepHours = removeExtraSpaces(req.body.prepHours);
-  const prepMinutes = removeExtraSpaces(req.body.prepMinutes);
-  const cookHours = removeExtraSpaces(req.body.cookHours);
-  const cookMinutes = removeExtraSpaces(req.body.cookMinutes);
-  const imageUrl = removeExtraSpaces(req.body.imageUrl);
-  const tags = cleanString(req.body.tags);
-  const cuisines = cleanString(req.body.cuisines);
-  const categories = cleanString(req.body.categories);
+  // console.log("hit this route");
+  const communityId = req.params.communityId; // check the community id first
+  // if community id is not present in client request
+  if (!communityId) {
+    throw new ApiError("Community id is required", 404);
+  }
+  // if present then verify if community id is valid or not
+  const findCommunity = await findCommunityById(communityId);
+  // if findCommuniy is null then throw custom error
+  if (!findCommunity) {
+    throw new ApiError("Community is not exist", 404);
+  }
+  // if id valid then proceed
+  //first normalize the request data
+  const normalizeObject = cleanNestedObject(req.body);
+  console.log("after cleaning recipe data : ", normalizeObject);
 
-  console.log("after cleaning recipe data : ", {
-    title,
-    description,
-    ingredients,
-    instructions,
-    prepHours,
-    cookHours,
-    cookMinutes,
-    imageUrl,
-    tags,
-    cuisines,
-    categories,
-  });
+  // after normalizing the recipe data call zod schema validation
   const parsedBodyObject = createRecipeValidation.safeParse({
     userId: req.user!,
-    title,
-    description,
-    ingredients,
-    instructions,
-    cookTime: String(parseInt(cookHours) * 60 + parseInt(cookMinutes)),
-    prepTime: String(parseInt(prepHours) * 60 + parseInt(prepMinutes)),
-    imageUrl,
-    tags,
-    cuisines,
-    categories,
+    title: normalizeObject.title,
+    description: normalizeObject.description,
+    ingredients: normalizeObject.ingredients,
+    instructions: normalizeObject.instructions,
+    cookTime: String(
+      parseInt(normalizeObject.cookHours) * 60 +
+        parseInt(normalizeObject.cookMinutes)
+    ),
+    prepTime: String(
+      parseInt(normalizeObject.prepHours) * 60 +
+        parseInt(normalizeObject.prepMinutes)
+    ),
+    imageUrl: normalizeObject.imageUrl,
+    tags: convertIntoArray(normalizeObject.tags),
+    cuisines: convertIntoArray(normalizeObject.cuisines),
+    categories: convertIntoArray(normalizeObject.categories),
   });
+  console.log(parsedBodyObject.data);
+
+  // if validation failed then throw custom error
   if (!parsedBodyObject.success) {
     //throw error
     throw new ApiError(parsedBodyObject.error.issues[0].message, 404);
   }
 
-  console.log(parsedBodyObject.data);
+  // write a interactive transaction when you need conditional logic or to read before writing
   const result = await prisma.$transaction(async (tx) => {
     const recipe = await createNewRecipe(
-      { ...parsedBodyObject.data, userId: req.user! },
+      {
+        ...parsedBodyObject.data,
+        userId: req.user as string,
+      },
       tx
     );
     console.log("recipe is : ", recipe);
     const communityRecipe = await addRecipe(
       {
-        userId: req.user!,
+        userId: req.user as string,
         communityId: req.params.communityId,
         recipeId: recipe.id,
       },
@@ -181,18 +144,87 @@ export const uploadOnCommunity = async (req: Request, res: Response) => {
     console.log("community rcipe is  : ", communityRecipe);
     return { recipe, communityRecipe };
   });
+
   // console.log(result);
   return res.json({ msg: "Recipe has been added in community successfully" });
 };
 
 //fetch single community data
 export const fetchSingleCommunity = async (req: Request, res: Response) => {
+  // get the community id from params
   const communityId = req.params.communityId;
 
+  // check if community id is present in params or not
+  // if not present then throw custom error
+  if (!communityId) {
+    throw new ApiError("Community Id is required", 404);
+  }
+  // if present then call getCommunity model function to get the community data
   const result = await getCommunity(communityId);
 
+  // return the success response to user
   return res.json({
     data: result,
     message: "fetch single community successfully",
   });
 };
+
+//write controller to add member to a community
+export const AddMembersOnCommunity = async (req: Request, res: Response) => {
+  const communityId = req.params.communityId;
+  // if community id is not present then throw  custom error
+  if (!communityId) {
+    throw new ApiError("Community Id is required", 404);
+  }
+  // if present then check is community id is valid or not
+  const existCommunity = await findCommunityById(communityId);
+  // if existeCommunity is undefined then throw custom error
+  if (!existCommunity) {
+    throw new ApiError("Community id is invalid", 404);
+  }
+  // if community exist then add member
+  // add member on community
+  await addMember({
+    userId: req.user!,
+    communityId: communityId,
+  });
+
+  return res.json({ msg: "Member has been added in community successfully" });
+};
+
+// write controller to delete member from community
+export const deleteMemberOnCommunity = async (req: Request, res: Response) => {
+  const communityId = req.params.communityId;
+  // if community id is not present then throw  custom error
+  if (!communityId) {
+    throw new ApiError("Community Id is required", 404);
+  }
+  // if present then check is community id is valid or not
+  const existCommunity = await findCommunityById(communityId);
+  // if existeCommunity is undefined then throw custom error
+  if (!existCommunity) {
+    throw new ApiError("Community id is invalid", 404);
+  }
+  // if community exist then add member
+  // add member on community
+  await deleteMember({
+    userId: req.user!,
+    communityId: communityId,
+  });
+
+  return res.json({
+    msg: "Member has been removed from community successfully",
+  });
+};
+/***
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */

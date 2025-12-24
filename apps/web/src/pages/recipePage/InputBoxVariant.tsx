@@ -16,6 +16,7 @@ type InputBoxVariantProps = {
   index?: number;
 };
 
+//custom input component to handle ingredients and instruction
 export const InputBoxVariant = React.memo(
   ({
     text,
@@ -113,6 +114,7 @@ export const Box = React.memo(
       },
       ref
     ) => {
+      // state to track loading
       const [loading, setLoading] = useState(false);
 
       const handleFileChange = async (

@@ -6,6 +6,7 @@ type DropDownProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   error?: string;
 };
 
+// dropdown component where show all the user community
 export const DropDown = React.forwardRef<HTMLSelectElement, DropDownProps>(
   ({ communities, text, boxSize, error, ...rest }, ref) => {
     return (

@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from "zod"; // import z class from zod
 
-//check signup data
+// zod schema object to validate user registration data
 export const loggerValidation = z.object({
   email: z.email("Invalid Email"),
   password: z
@@ -9,7 +9,8 @@ export const loggerValidation = z.object({
     .max(8, "Password is too long"),
 });
 
-// check profile data
+
+// zod schema object to validation profile  dat
 export const profileDataValidation = z.object({
   username: z
     .string()
@@ -17,9 +18,22 @@ export const profileDataValidation = z.object({
     .min(5, "Username is too sort")
     .optional(),
   bio: z.string().max(300, "Bio is too long").optional(),
+  profileImage: z.string().url("Invalid profile image url").optional(),
 });
 
-// check profile image
+
+/**
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+// zod schema object to validate profile image url
 export const imageValidation = z.object({
   profileImage: z.string().url("Invalid profile image url"),
 });

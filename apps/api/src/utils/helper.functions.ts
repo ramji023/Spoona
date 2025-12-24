@@ -1,4 +1,4 @@
-// clean the json object
+// clean the user json object (remove keys which is undefined)
 export function removeUndefined<T extends Record<string, any>>(
   obj: T
 ): Partial<T> {
@@ -7,15 +7,46 @@ export function removeUndefined<T extends Record<string, any>>(
   ) as Partial<T>;
 }
 
-// convert string into lowercase characters
+//function to remove  the whitespaces from the given string then convert it into lowercase characters string
 export function makeLowerCase(s: string) {
   return s.trim().toLowerCase();
 }
 
-// remove extra spaces
+// function to remove extra spaces
 export function removeExtraSpaces(s: string) {
   return s.trim();
 }
+
+// function to clean nested object
+export function cleanNestedObject(data: any): any {
+  if (data == null) return data;
+  if (typeof data === "string") {
+    return data.trim();
+  }
+
+  if (Array.isArray(data)) {
+    return data.map((d) => cleanNestedObject(d));
+  }
+  if (typeof data === "object") {
+    const cleanObject: any = {};
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const value = data[key];
+        cleanObject[key] = cleanNestedObject(data[key]);
+      }
+    }
+    return cleanObject;
+  }
+
+  return data;
+}
+
+// convert string into array
+export function convertIntoArray(str:string){
+  if(!str) return null
+  return str.split(",").map((s)=>s.trim())
+}
+
 
 export function cleanArrayObjects<T extends Record<string, any>>(
   arr: T[]

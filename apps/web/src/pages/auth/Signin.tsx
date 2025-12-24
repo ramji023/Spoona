@@ -7,6 +7,7 @@ import { useAuthStore } from "../../stores/authStore";
 import { useNavigate } from "react-router-dom";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { Spinner } from "../../loaders/Loaders";
+import { useFailureMsgStore } from "../../stores/failureMsgStore";
 export default function Signin() {
   const navigate = useNavigate();
   const setIsAuthenticated = useAuthStore((s) => s.setIsAuthenticated);
@@ -15,6 +16,8 @@ export default function Signin() {
   // success store
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
 
+  // failure store
+  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
   // signup mutation using react-query
   const signinMutation = useMutation({
     mutationFn: async (data: User) => {
@@ -27,10 +30,17 @@ export default function Signin() {
       setIsAuthenticated(true);
       setToken(data.data.accessToken, data.data.id);
       setSuccessMsg(`Welcome back! ${data.data.name}`);
-      navigate("/");
+      navigate("/home");
     },
-    onError: (err) => {
+    onError: (err: Error | any) => {
       console.error("signin failed : ", err);
+      if (err.request) {
+        setFailureMsg('Network error: Cannot connect to server');
+      } else if (err.response) {
+        setFailureMsg(err.response.data?.message || 'Signin failed');
+      } else {
+        setFailureMsg("Something went wrong.Try Again");
+      }
     },
   });
 
@@ -56,13 +66,13 @@ export default function Signin() {
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="">
-            <div>
+            {/* <div>
               {signinMutation.isError && (
                 <p className="text-red-500 text-xs flex justify-center items-center">
                   Error: {(signinMutation.error as Error).message}{" "}
                 </p>
               )}
-            </div>
+            </div> */}
             <div className="flex flex-col gap-1 py-1">
               <label className="text-lg">Email</label>
               <input

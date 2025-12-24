@@ -8,33 +8,42 @@ import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { useNotes } from "../../react_queries/queries";
 import { useParams } from "react-router-dom";
 import { ProfileIcon } from "@repo/ui/icons/profileIcon";
-import NotFound from "../../errors/NotFound";
 import { NoteSectionSkeleton } from "../../loaders/Loaders";
-import { useFailureMsgStore } from "../../stores/failureMsgStore";
 import { AxiosError } from "axios";
+import Err from "../../errors/ErrorBoundary";
+import useMinLoader from "../../hooks/useMinLoader";
 
 export function NotesSection() {
+  console.log("Render notes section component");
+  // manage state to open note box to write the note
   const [noteOpen, setNoteOpen] = useState(false);
-
+  // get the recipe id from params
   const { recipeId } = useParams();
 
+  // manage state of wheather showing notes to user or not (default No)
   const [noteSection, setNoteSection] = useState(false);
-  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
-  const { data, isLoading, error } = useNotes(recipeId, {
+
+  // call react query to fetch all the notes for a specific recipe
+  const query = useNotes(recipeId, {
     enabled: noteSection && !!recipeId,
   });
+  const { data, isLoading, error } = useMinLoader({ query, loadingTime: 500 });
 
+  // if notes are processing then show loading state to user
   if (isLoading) {
     return <NoteSectionSkeleton />;
   }
 
+  // if there is something wrong while fetching notes then show error to user
   if (error) {
-    setFailureMsg("Sorry, Can't fetch notes for you. Please try after a while");
+    return <Err />;
   }
 
+  // if recipe id is not present then throw the error
   if (!recipeId) {
-    return <NotFound />;
+    return <Err />;
   }
+
   return (
     <>
       <div>
@@ -42,7 +51,7 @@ export function NotesSection() {
         <div className="text-center text-gray-400 font-semibold  py-3 px-3">
           <span
             onClick={() => {
-              setNoteSection(true);
+              setNoteSection(true); // fuction to open the all the notes
             }}
             className="hover:text-orange-400 cursor-pointer"
           >
@@ -56,7 +65,7 @@ export function NotesSection() {
             <div className="relative flex justify-between">
               <h1 className="text-2xl font-semibold">Notes</h1>
               <button
-                onClick={() => setNoteOpen(true)}
+                onClick={() => setNoteOpen(true)} // open the note box
                 className="text-lg font-semibold bg-orange-400 cursor-pointer text-white  rounded-3xl px-6 py-2 mx-3 "
               >
                 Leave Note
@@ -126,6 +135,7 @@ export function NotesSection() {
   );
 }
 
+// component to  write the note on a specific recipe
 function NoteBox({
   open,
   close,
@@ -138,15 +148,17 @@ function NoteBox({
     note: string | undefined;
   };
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isDisLike, setIsDisliked] = useState(false);
-  const noteRef = useRef<HTMLTextAreaElement>(null);
-  const [error, setError] = useState("");
+  const [isLiked, setIsLiked] = useState(false); // state to check like status
+  const [isDisLike, setIsDisliked] = useState(false); // state to check dislike status
+  const noteRef = useRef<HTMLTextAreaElement>(null); // ref to store current note data
+  const [error, setError] = useState(""); // state to store the error message
+
+  // get the recipe id form params
   const { recipeId } = useParams();
 
   const queryClient = useQueryClient();
 
-  // create react query for note
+  // write mutation to send the note data to server
   const sendNoteMutation = useMutation({
     mutationFn: async (data: NoteDataType) => {
       const response = await api.post(`/api/v1/recipe/${recipeId}/note`, data);
@@ -183,8 +195,10 @@ function NoteBox({
     },
   });
 
+  // function to send user note to server
   function sendNote() {
     console.log("calling sendNote function");
+    // if user dont select like or dislike icon then show him error
     if (!isLiked && !isDisLike) {
       setError("you must either like or dislike to proceed");
       return;
@@ -195,10 +209,16 @@ function NoteBox({
     });
   }
 
+  // if open is false then return null
   if (!open) {
     return null;
   }
 
+  // if recipe id is not present then show error page
+  if (!recipeId) {
+    return <Err />;
+  }
+  // otherwise return note box
   return (
     <>
       {/* main div  */}
@@ -208,7 +228,7 @@ function NoteBox({
           <div className="text-2xl font-semibold flex justify-between items-center">
             <h1>Add Note</h1>
             <div
-              onClick={() => close(false)}
+              onClick={() => close(false)} // function to close the note box
               className="text-gray-700 cursor-pointer w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-300"
             >
               <CrossIcon />

@@ -1,5 +1,16 @@
 import { Prisma, prisma, PrismaClient } from "@repo/database";
+import { ApiError } from "../utils/customError";
 
+/***
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 // create new community
 export const createNewCommunity = async (communityData: {
   userId: string;
@@ -7,63 +18,89 @@ export const createNewCommunity = async (communityData: {
   description: string;
   coverImage: string;
 }) => {
-  return await prisma.community.create({
-    data: {
-      creatorId: communityData.userId,
-      name: communityData.name,
-      description: communityData.description,
-      coverImage: communityData.coverImage,
-    },
-    select: {
-      id: true,
-      name: true,
-      description: true,
-      coverImage: true,
-      user: {
-        select: {
-          username: true,
-          profileImage: true,
+  try {
+    return await prisma.community.create({
+      data: {
+        creatorId: communityData.userId,
+        name: communityData.name,
+        description: communityData.description,
+        coverImage: communityData.coverImage,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        coverImage: true,
+        user: {
+          select: {
+            username: true,
+            profileImage: true,
+          },
         },
       },
-    },
-  });
+    });
+  } catch (err) {
+    throw new ApiError(
+      "Something went wrong while creating new community",
+      404
+    );
+  }
 };
 
-// fetch all the communities
+// model functions to fetch all the communities
 export const getAllCommunities = async () => {
-  return await prisma.community.findMany({
-    select: {
-      id: true,
-      name: true,
-      coverImage: true,
-      CommunityMembers: {
-        select: {
-          user: {
-            select: {
-              id: true,
-              profileImage: true,
+  try {
+    return await prisma.community.findMany({
+      select: {
+        id: true,
+        name: true,
+        coverImage: true,
+        CommunityMembers: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                profileImage: true,
+              },
             },
           },
         },
       },
-    },
-  });
+    });
+  } catch (err) {
+    throw new ApiError(
+      "Something went wrong while fetching all communities data",
+      404
+    );
+  }
 };
 
-// add members on a new community
+export const findCommunityById = async (id: string) => {
+  try {
+    return await prisma.community.findUnique({ where: { id: id } });
+  } catch (err) {
+    throw new ApiError("Community Id is invalid", 404);
+  }
+};
+
+//model function to add members on a new community
 export const addMember = async (communityData: {
   userId: string;
   communityId: string;
 }) => {
-  return await prisma.communityMembers.create({
-    data: {
-      userId: communityData.userId,
-      communityId: communityData.communityId,
-    },
-  });
+  try {
+    return await prisma.communityMembers.create({
+      data: {
+        userId: communityData.userId,
+        communityId: communityData.communityId,
+      },
+    });
+  } catch (err) {
+    throw new ApiError("Something went wrong while adding in community", 404);
+  }
 };
 
-// leave member on a new community
+// model function to leave member on a new community
 export const deleteMember = async (communityData: {
   userId: string;
   communityId: string;
@@ -76,11 +113,14 @@ export const deleteMember = async (communityData: {
       },
     });
   } catch (err) {
-    throw err;
+    throw new ApiError(
+      "Something went wrong while removing you from community",
+      404
+    );
   }
 };
 
-// add recipe on a community
+//model function to add recipe on a community
 export const addRecipe = async (
   communityData: { userId: string; communityId: string; recipeId: string },
   client: Prisma.TransactionClient | PrismaClient = prisma
@@ -91,10 +131,14 @@ export const addRecipe = async (
     });
   } catch (err) {
     console.log(err);
+    throw new ApiError(
+      "Something went wrong while uploading recipe in community",
+      404
+    );
   }
 };
 
-// get single community data
+// model function to get single community data
 export const getCommunity = async (id: string) => {
   try {
     return await prisma.community.findUnique({
@@ -143,3 +187,13 @@ export const getCommunity = async (id: string) => {
     throw err;
   }
 };
+/***
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */

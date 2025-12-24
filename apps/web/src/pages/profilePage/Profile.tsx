@@ -11,50 +11,61 @@ import { Edit } from "lucide-react";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
 import Recipes from "../HomePage/Recipes";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
-import { UserProfileSkeleton } from "../../loaders/Loaders";
+import { Spinner, UserProfileSkeleton } from "../../loaders/Loaders";
 import { AxiosError } from "axios";
+import Err from "../../errors/ErrorBoundary";
+import useMinLoader from "../../hooks/useMinLoader";
 // import { useAuthStore } from "../../stores/authStore";
 export default function Profile() {
   const navigate = useNavigate();
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
   const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
-  // const token = useAuthStore((s)=>s.token)
-  // const id = useAuthStore((s)=>s.id)
   const [err, setError] = useState("");
+  const [loading, setIsLoading] = useState(false); // loading state when user update username or bio
+  const [imageLoading, setImageLoading] = useState(false);
   const queryClient = useQueryClient();
   //write mutation for updating profile image
   const updateProfileImageMutation = useMutation({
-    mutationFn: async (data: { profileImage: string }) => {
-      const response = await api.post("/api/v1/user/avatar", data);
+    mutationFn: async (data: {
+      profileImage?: string;
+      username?: string;
+      bio?: string;
+    }) => {
+      const response = await api.post("/api/v1/user", data);
       return response.data;
     },
     onSuccess: (data) => {
       console.log("after updating data : ", data);
-      setSuccessMsg("waoo! You have updated your profile picture successfully");
+      setSuccessMsg("waoo! You have updated your profile data successfully");
       queryClient.invalidateQueries({
         queryKey: ["profile"],
       });
+      setIsLoading(false);
+      setImageLoading(false);
     },
     onError: (err: unknown) => {
       console.log("Something went wrong while updating profile image", err);
       if (err instanceof AxiosError) {
         if (err.response) {
-          setError(
+          setFailureMsg(
             err.response.data?.message || JSON.stringify(err.response.data)
           );
         } else if (err.request) {
-          setError("No response from server. Please try again.");
+          setFailureMsg("No response from server. Please try again.");
         } else {
-          setError(err.message || "An unexpected error occurred");
+          setFailureMsg(err.message || "An unexpected error occurred");
         }
       } else if (err instanceof Error) {
-        setError(err.message);
+        setFailureMsg(err.message);
       } else {
-        setError("An unexpected error occurred");
+        setFailureMsg("An unexpected error occurred");
       }
     },
   });
 
+  /**
+   
+  
   // write mutation for updating profile data
   const updateProfileMutation = useMutation({
     mutationFn: async (data: { username: string; bio: string }) => {
@@ -89,134 +100,170 @@ export default function Profile() {
       }
     },
   });
+   */
 
+  // state to manage edit profile model open or close
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // write logic to change profile image
+
+  // store the reference of input field
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // trigger this function when user click to edit icon
   const handleIconClick = () => {
     fileInputRef.current?.click();
   };
 
+  // then call this function to send the profile image to server
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       console.log("Selected file:", file);
       // TODO: upload file to backend here
-      if (!file) return;
+      if (!file) {
+        setFailureMsg("Please select the image");
+        return;
+      }
+      setImageLoading(true); // set the loading status true when user upload image
+      // then call the custom function to upload image to cloudinary serive
       const { url, err } = await uploadToCloudinary(file, "Spoona/avatar");
+      //if successfully got the url then call the mutation to send url to server
       if (url) {
         updateProfileImageMutation.mutate({ profileImage: url });
       } else {
+        // if there is any error then throw error
         console.log(err);
+        setFailureMsg("Something went wrong while updating profile image");
       }
     }
   };
-  const { data, isLoading, error } = useProfile();
-  if (!data || error) {
-    setFailureMsg("Sorry, Can't fetch your profile. Please try again");
-    return <UserProfileSkeleton />;
-  }
 
+  // query to fetch the profile data of user
+  const query = useProfile();
+  const { data, isLoading, error } = useMinLoader({ query, loadingTime: 2000 });
+  //  if there is any error then show err componnet to user
+  if (error) {
+    return <Err />;
+  }
+  // if profile data is processing then show loader page
   if (isLoading) {
     return <UserProfileSkeleton />;
   }
 
-  return (
-    <>
-      <div className="mx-30 p-10 my-10">
-        {/* first section  */}
-        <div className="flex justify-between items-center py-2 mb-10">
-          <div className="flex gap-2 justify-center items-center">
-            <div className="relative group">
-              {data.profileImage ? (
-                <>
-                  <img
-                    src={data.profileImage}
-                    alt=""
-                    className="w-30 h-30 rounded-full"
-                  />
-                </>
-              ) : (
-                <>
-                  <div className="w-30 h-30 rounded-full flex items-center justify-center">
-                    <ProfileIcon className="w-30 h-30" />
+  if (data) {
+    return (
+      <>
+        <div className="mx-30 p-10 my-10">
+          {/* first section  */}
+          <div className="flex justify-between items-center py-2 mb-10">
+            <div className="flex gap-2 justify-center items-center">
+              <div className="relative group">
+                {data.profileImage ? (
+                  <>
+                    <img
+                      src={data.profileImage}
+                      alt=""
+                      className="w-30 h-30 rounded-full"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div className="w-30 h-30 rounded-full flex items-center justify-center">
+                      <ProfileIcon className="w-30 h-30" />
+                    </div>
+                  </>
+                )}
+                {/* Overlay on hover */}
+                <div
+                  className="absolute inset-0 rounded-full bg-black/10 opacity-0 group-hover:opacity-80 flex items-center justify-center transition-opacity cursor-pointer"
+                  onClick={handleIconClick}
+                >
+                  <Edit className="w-7 h-7 text-orange-500" />
+                </div>
+                {/* Hidden file input */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+                {imageLoading && (
+                  <div className="absolute inset-0 rounded-full bg-black/70 flex flex-col items-center justify-center gap-2">
+                    {/* Spinner */}
+                    <div className="w-6 h-6 border-3 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
+                    {/* Text */}
+                    <span className="text-xs text-white font-medium">
+                      Uploading...
+                    </span>
                   </div>
-                </>
-              )}
-              {/* Overlay on hover */}
-              <div
-                className="absolute inset-0 rounded-full bg-black/10 opacity-0 group-hover:opacity-80 flex items-center justify-center transition-opacity cursor-pointer"
-                onClick={handleIconClick}
-              >
-                <Edit className="w-7 h-7 text-orange-500" />
+                )}
               </div>
-              {/* Hidden file input */}
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept="image/*"
-                className="hidden"
-              />
+
+              <div>
+                <h1 className="text-3xl font-semibold p-2">{data.username}</h1>
+                {data.bio && (
+                  <p className="text-xs px-2 text-gray-600">{data.bio}</p>
+                )}
+                <div className="flex gap-4 items-center justify-center p-2 text-lg">
+                  <div className="font-semibold text-orange-400 text-xl">
+                    0 <span className=" text-gray-400 text-lg">Following</span>
+                  </div>
+                  <div className="font-semibold text-orange-400 text-xl">
+                    0 <span className=" text-gray-400 text-lg ">Followers</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div>
-              <h1 className="text-3xl font-semibold p-2">{data.username}</h1>
-              {data.bio && (
-                <p className="text-xs px-2 text-gray-600">{data.bio}</p>
-              )}
-              <div className="flex gap-4 items-center justify-center p-2 text-lg">
-                <div className="font-semibold text-orange-400 text-xl">
-                  0 <span className=" text-gray-400 text-lg">Following</span>
-                </div>
-                <div className="font-semibold text-orange-400 text-xl">
-                  0 <span className=" text-gray-400 text-lg ">Followers</span>
-                </div>
-              </div>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="outline-1 outline-gray-400 px-4 py-2 rounded-3xl text-md hover:bg-orange-400 hover:text-white font-semibold cursor-pointer "
+              >
+                Edit Profile
+              </button>
             </div>
-          </div>
-          <div>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="outline-1 outline-gray-400 px-4 py-2 rounded-3xl text-md hover:bg-orange-400 hover:text-white font-semibold cursor-pointer "
-            >
-              Edit Profile
-            </button>
-          </div>
-          <ProfileUpdation
-            open={isModalOpen}
-            close={() => {
-              setIsModalOpen(false);
-              setError("");
-            }}
-            initialUsername={data.username}
-            initialBio={data.bio}
-            onSave={(data) => {
-              console.log("Updated profile data:", data);
-              updateProfileMutation.mutate(data);
-            }}
-            err={err}
-          />
-        </div>
-        <div className="border-gray-300 border-t-2 py-5"></div>
-        {/* second div  */}
-        {data.recipes.length !== 0 ? (
-          <div>
-            <Recipes recipes={data.recipes} />
-          </div>
-        ) : (
-          <div>
-            <EmptyPage
-              onClick={() => navigate("/add-recipe")}
-              message="Keep track of recipes you made and share your food experience"
-              button="Add Recipe"
+            <ProfileUpdation
+              open={isModalOpen}
+              close={() => {
+                setIsModalOpen(false);
+                setError("");
+              }}
+              initialUsername={data.username}
+              initialBio={data.bio}
+              onSave={(data) => {
+                console.log("Updated profile data:", data);
+                updateProfileImageMutation.mutate(data);
+                setIsModalOpen(false);
+              }}
+              err={err}
+              setError={(error: string) => setError(error)}
+              loading={loading}
+              setLoading={() => setIsLoading(true)}
             />
           </div>
-        )}
-      </div>
-    </>
-  );
+          <div className="border-gray-300 border-t-2 py-5"></div>
+          {/* second div  */}
+          {data.recipes.length !== 0 ? (
+            <div>
+              <Recipes recipes={data.recipes} />
+            </div>
+          ) : (
+            <div>
+              <EmptyPage
+                onClick={() => navigate("/add-recipe")}
+                message="Keep track of recipes you made and share your food experience"
+                button="Add Recipe"
+              />
+            </div>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  return null;
 }
 
 interface PropType {
@@ -226,6 +273,9 @@ interface PropType {
   initialBio?: string;
   onSave?: (data: { username: string; bio: string }) => void;
   err: string;
+  setError: (error: string) => void;
+  loading: boolean;
+  setLoading: () => void;
 }
 
 function ProfileUpdation({
@@ -235,14 +285,33 @@ function ProfileUpdation({
   initialBio = "",
   onSave,
   err,
+  setError,
+  loading,
+  setLoading,
 }: PropType) {
   const usernameRef = useRef<HTMLInputElement>(null);
   const bioRef = useRef<HTMLTextAreaElement>(null);
   if (!open) return null; // Don’t render if modal is closed
 
+  // when user click to save button
   const handleSave = () => {
+    setLoading();
+    if (
+      usernameRef.current?.value === initialUsername &&
+      bioRef.current?.value === initialBio
+    ) {
+      setError("Nothing is changed");
+      return;
+    }
     if (onSave) {
-      if (usernameRef.current && bioRef.current) {
+      if (
+        usernameRef.current &&
+        bioRef.current &&
+        !(
+          usernameRef.current.value === initialUsername &&
+          bioRef.current.value === initialBio
+        )
+      ) {
         onSave({
           username: usernameRef.current.value,
           bio: bioRef.current.value,
@@ -307,7 +376,17 @@ function ProfileUpdation({
             className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600"
             onClick={handleSave}
           >
-            Save
+            <span
+              className={`${loading ? "opacity-0" : "opacity-100"} transition-opacity duration-200`}
+            >
+              Signin
+            </span>
+            {/* Spinner */}
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Spinner />
+              </div>
+            )}
           </button>
         </div>
       </div>

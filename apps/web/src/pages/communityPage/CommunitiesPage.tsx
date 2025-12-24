@@ -9,27 +9,28 @@ import { useAllCommunities } from "../../react_queries/queries";
 import { useNavigate } from "react-router-dom";
 import { CommunityCardSkeleton } from "../../loaders/Loaders";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
+import useMinLoader from "../../hooks/useMinLoader";
+import Err from "../../errors/ErrorBoundary";
 export default function CommunitiesPage() {
+  // function to set the error message
   const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
   const navigate = useNavigate();
-  const { data, isLoading, error } = useAllCommunities();
+  // react query to fetch all the communities data
+  const query = useAllCommunities()
+  const { data, isLoading, error } = useMinLoader({query,loadingTime:800});
 
+  // manage state to open the community form
   const [formOpen, setFormClose] = useState(false);
-  // if (isLoading) {
-  //   console.log("communities is loading");
-  // }
-  // if (!data || error) {
-  //   console.log("communities fetching error" + error);
-  //   return <div className="text-6xl">Something is messedup</div>;
-  // }
 
   // console.log(filteredCommunity);
+  // function to navigate to the given path
   function moveToCommunity(path: string) {
     navigate(path);
   }
 
   if (error) {
     setFailureMsg("Can't get communities for you. Please try again.");
+    return <Err/>
   }
   return (
     <>

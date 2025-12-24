@@ -1,6 +1,6 @@
 {
   "extends": "@repo/typescript-config/vite.json",
-  "include": ["src", "../../apps/web/src/pages/HomePage/Recipes.tsx"],
+  "include": ["src", "../../apps/web/src/pages/HomePage/Recipes.tsx", "../../apps/web/src/pages/auth/ButtonVariant.tsx"],
   "compilerOptions": {
     "jsx": "react-jsx"
   }

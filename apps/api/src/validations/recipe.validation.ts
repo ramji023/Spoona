@@ -10,6 +10,8 @@ const instructionSchema = z.object({
   step: z.string("Instruction step is required"),
 });
 
+
+// write zod schema validation  to check user recipe data
 export const createRecipeValidation = z.object({
   recipeId: z
     .string("invalid recipe id")
@@ -25,9 +27,9 @@ export const createRecipeValidation = z.object({
   cookTime: z.string("Cook time is required").max(10, "Cook time is too long"),
   prepTime: z.string("Prep time is required").max(10, "Prep time is too long"),
   imageUrl: z.string("Image URL is required").url("Invalid image URL"),
-  tags: z.array(
-    z.string("Tag must be a string"),
-    "Tags must be an array of strings"
+  diets: z.array(
+    z.string("Diet must be a string"),
+    "Diets must be an array of strings"
   ),
   cuisines: z.array(
     z.string("Cuisine must be a string"),
@@ -39,7 +41,7 @@ export const createRecipeValidation = z.object({
   ),
 });
 
-export type CreateRecipeInput = z.infer<typeof createRecipeValidation>;
+export type CreateRecipeInput = z.infer<typeof createRecipeValidation>; // infer te type of createRecipe validation
 
 export const noteValidation = z.object({
   userId: z.string().uuid("Valid recipe Id is required"),

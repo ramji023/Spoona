@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { api } from "../../utils/axiosInstance";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { useNavigate } from "react-router-dom";
+import { useFailureMsgStore } from "../../stores/failureMsgStore";
 interface CommunityFormType {
   open: boolean;
   close: () => void;
@@ -18,9 +19,12 @@ interface FormStateType {
 
 export default function CommunityForm({ open, close }: CommunityFormType) {
   const navigate = useNavigate();
-  // success msg
+  // function to set the success msg
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
+  // function to set the failure msg
+  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
 
+  // write mutation to create the community
   const sendCommunityMutation = useMutation({
     mutationFn: async (data: FormStateType) => {
       const response = await api.post("/api/v1/community", data);
@@ -32,11 +36,21 @@ export default function CommunityForm({ open, close }: CommunityFormType) {
       close();
       navigate(`${data.data.id}`);
     },
-    onError: (err) => {
+    onError: (err: Error | any) => {
       console.log("Error to create communnity : ", err);
+      if (err.request) {
+        setFailureMsg("Network error: Cannot connect to server");
+      } else if (err.response) {
+        setFailureMsg(
+          err.response.data?.message || "Community Creation failed"
+        );
+      } else {
+        setFailureMsg("Something went wrong.Try Again");
+      }
     },
   });
 
+  // initialize react hook form to create community
   const {
     register,
     handleSubmit,
@@ -49,6 +63,8 @@ export default function CommunityForm({ open, close }: CommunityFormType) {
       coverImage: "",
     },
   });
+
+  // call function when click to create button
   const onSubmit = (data: FormStateType) => {
     console.log(data);
     sendCommunityMutation.mutate(data);

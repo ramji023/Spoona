@@ -4,15 +4,19 @@ import { FilterIcon } from "@repo/ui/icons/FilterIcon";
 import { LeftArrowIcon } from "@repo/ui/icons/LeftArrowIcon";
 import { useSavedRecipes } from "../../react_queries/queries";
 import Recipes from "../HomePage/Recipes";
+import useMinLoader from "../../hooks/useMinLoader";
+import Err from "../../errors/ErrorBoundary";
+import { SavedRecipesSkeleton } from "../../loaders/Loaders";
 
 const SavedRecipe = () => {
-  const { data, isLoading, error } = useSavedRecipes();
+  const query = useSavedRecipes();
+  const { data, isLoading, error } = useMinLoader({ query, loadingTime: 800 });
   if (error) {
-    console.log("something is messedup : ", error);
+    return <Err />;
   }
 
   if (isLoading) {
-    console.log("profile data is coming...");
+    return <SavedRecipesSkeleton />;
   }
   return (
     <>

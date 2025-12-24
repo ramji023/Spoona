@@ -1,5 +1,6 @@
 import { Prisma, prisma, PrismaClient } from "@repo/database";
 import { CreateRecipeInput } from "../validations/recipe.validation";
+import { ApiError } from "../utils/customError";
 
 // export const createNewRecipe = async (userData: CreateRecipeInput) => {
 //   try {
@@ -33,6 +34,9 @@ import { CreateRecipeInput } from "../validations/recipe.validation";
 //   }
 // };
 
+// write model
+
+// write model function to create the new recipe in recipe table
 export const createNewRecipe = async (
   userData: CreateRecipeInput,
   client: Prisma.TransactionClient | PrismaClient = prisma
@@ -46,7 +50,7 @@ export const createNewRecipe = async (
         cookTime: userData.cookTime,
         prepTime: userData.prepTime,
         imageUrl: userData.imageUrl,
-        tags: userData.tags,
+        tags: userData.diets,
         cuisines: userData.cuisines,
         categories: userData.categories,
         ingredients: {
@@ -64,9 +68,10 @@ export const createNewRecipe = async (
     });
   } catch (err) {
     console.log(err);
-    throw err;
+    throw new ApiError("Something went wrong while creating recipe", 404);
   }
 };
+
 // update the recipe
 export const updateNewRecipe = async (recipeData: CreateRecipeInput) => {
   const recipe = await prisma.recipe.update({
@@ -77,7 +82,7 @@ export const updateNewRecipe = async (recipeData: CreateRecipeInput) => {
       cookTime: recipeData.cookTime,
       prepTime: recipeData.prepTime,
       imageUrl: recipeData.imageUrl,
-      tags: recipeData.tags,
+      tags: recipeData.diets,
       ingredients: {
         deleteMany: {},
         create: recipeData.ingredients.map((ingredient) => ({
@@ -107,55 +112,76 @@ export const deleteRecipe = async (recipeId: string) => {
     where: { id: recipeId },
   });
 };
-
-// get single recipe
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+// model function to ge the complete recipe data for given recipe Id
 export const getSingleRecipe = async (recipeId: string) => {
-  return await prisma.recipe.findUnique({
-    where: { id: recipeId },
-    select: {
-      title: true,
-      description: true,
-      cookTime: true,
-      prepTime: true,
-      imageUrl: true,
-      ingredients: {
-        select: {
-          name: true,
-          quantity: true,
+  try {
+    return await prisma.recipe.findUnique({
+      where: { id: recipeId },
+      select: {
+        title: true,
+        description: true,
+        cookTime: true,
+        prepTime: true,
+        imageUrl: true,
+        ingredients: {
+          select: {
+            name: true,
+            quantity: true,
+          },
+        },
+        instructions: {
+          select: {
+            step: true,
+          },
+        },
+        user: {
+          select: {
+            username: true,
+            profileImage: true,
+          },
         },
       },
-      instructions: {
-        select: {
-          step: true,
-        },
-      },
-      user: {
-        select: {
-          username: true,
-          profileImage: true,
-        },
-      },
-    },
-  });
+    });
+  } catch (err) {
+    throw new ApiError("Something went wrong while fetching recipe data", 404);
+  }
 };
 
-// get all recipes
+// model function to fetch all the recipes from recipe table
 export const getAllRecipes = async () => {
-  return await prisma.recipe.findMany({
-    select: {
-      id: true,
-      title: true,
-      cookTime: true,
-      imageUrl: true,
-      tags: true,
-      cuisines: true,
-      categories: true,
-      user: {
-        select: {
-          username: true,
-          profileImage: true,
+  try {
+    return await prisma.recipe.findMany({
+      select: {
+        id: true,
+        title: true,
+        cookTime: true,
+        imageUrl: true,
+        tags: true,
+        cuisines: true,
+        categories: true,
+        user: {
+          select: {
+            username: true,
+            profileImage: true,
+          },
         },
       },
-    },
-  });
+    });
+  } catch (err) {
+    throw new ApiError(
+      "Something went wrong while fetching all the recipes",
+      404
+    );
+  }
 };

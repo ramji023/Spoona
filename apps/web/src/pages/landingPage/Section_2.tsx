@@ -4,16 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { CommunityCardSkeleton } from "../../loaders/Loaders";
 import { motion, AnimatePresence } from "motion/react";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
+import useMinLoader from "../../hooks/useMinLoader";
+import { div } from "motion/react-client";
 export default function Section_2() {
   const navigate = useNavigate();
+
+  // function to navigate to the given path
   function moveToCommunity(path: string) {
     navigate(path);
   }
-  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
-  const { data, isLoading, error } = useAllCommunities();
-  if (error) {
-    setFailureMsg("Can't get communities for you. Please try again");
-  }
+  // function to set the error message
+  // const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
+  const query = useAllCommunities();
+  const { data, isLoading, error } = useMinLoader({ query, loadingTime: 800 });
   return (
     <>
       <div className="mx-25 my-10 p-2 font-poppins flex-col space-y-10">
@@ -29,43 +32,49 @@ export default function Section_2() {
             stories.
           </div>
         </div>
-        <div className="flex flex-row justify-center">
-          <AnimatePresence mode="wait">
-            {isLoading ? (
-              <motion.div
-                key="skeleton"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="flex flex-wrap justify-start gap-6"
-              >
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <CommunityCardSkeleton
-                    key={i}
+        {error ? (
+          <div className="text-3xl text-center  h-[100px]">
+            Couldn't fetched the communities
+          </div>
+        ) : (
+          <div className="flex flex-row justify-center">
+            <AnimatePresence mode="wait">
+              {isLoading ? (
+                <motion.div
+                  key="skeleton"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="flex flex-wrap justify-start gap-6"
+                >
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <CommunityCardSkeleton
+                      key={i}
+                      width="w-[150px]"
+                      height="h-[150px]"
+                    />
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="community-section"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <CommunitySection
                     width="w-[150px]"
                     height="h-[150px]"
+                    data={data!}
+                    onMove={moveToCommunity}
                   />
-                ))}
-              </motion.div>
-            ) : (
-              <motion.div
-                key="community-section"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <CommunitySection
-                  width="w-[150px]"
-                  height="h-[150px]"
-                  data={data!}
-                  onMove={moveToCommunity}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
         <div className="border border-gray-200"></div>
       </div>
     </>

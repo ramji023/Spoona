@@ -10,5 +10,11 @@ export type UserProfile = {
   username: string;
   bio?: string;
   profileImage?: string;
-  recipes:Recipes[];
+  recipes: Recipes[];
+};
+
+export type PopularCreator = {
+  id: string;
+  username: string;
+  profileImage: string;
 };

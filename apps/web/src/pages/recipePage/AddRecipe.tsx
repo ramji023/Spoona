@@ -11,33 +11,32 @@ import { DropDown } from "./DropDown";
 import { useAllCommunities } from "../../react_queries/queries";
 import { useAuthStore } from "../../stores/authStore";
 import { useCallback, useEffect, useState } from "react";
-type RecipeForm = {
-  community: string;
-  title: string;
-  description: string;
-  ingredients: { name: string; quantity: string }[];
-  instructions: { step: string }[];
-  prepHours: string;
-  prepMinutes: string;
-  cookHours: string;
-  cookMinutes: string;
-  imageUrl?: string;
-  cuisines?: string;
-  categories?: string;
-  tags?: string;
-};
-
+import { RecipeForm } from "../../types/recipe";
+import { useFailureMsgStore } from "../../stores/failureMsgStore";
+import Err from "../../errors/ErrorBoundary";
+import { diet,categories,cuisines } from "../../utils/recipe_filters";
+import { AutocompleteInput } from "./AutoCompleteInput";
+import { useSuccessMsgStore } from "../../stores/successMsgStore";
+// write controller to add the recipe
 const AddRecipe = () => {
   const navigate = useNavigate();
+  // store the authenticated user id
   const id = useAuthStore((s) => s.id);
+
+  // function to set the failure message
+  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
+  // function to set the success message
+  const setSuccessMsg = useSuccessMsgStore((s)=>s.setSuccessMsg)
   console.log("Add recipe component re-rendered ");
+  // state to store communities array
   const [communities, setCommuties] = useState<
     {
       id: string;
       name: string;
     }[]
   >([]);
-  //mutate recipe data to backend
+
+  //mutation to send recipe data to server
   const recipeMutation = useMutation({
     mutationFn: async (data: RecipeForm) => {
       const response = await api.post("/api/v1/recipe", data);
@@ -45,15 +44,23 @@ const AddRecipe = () => {
     },
     onSuccess: (data) => {
       console.log("Recipe added successfully", data);
+      setSuccessMsg("Recipe has been created successfully")
       reset();
       navigate(-1);
     },
-    onError: (err) => {
+    onError: (err: Error | any) => {
       console.log("Error adding recipe", err);
+      if (err.request) {
+        setFailureMsg("Network error: Cannot connect to server");
+      } else if (err.response) {
+        setFailureMsg(err.response.data?.message || "Recipe Creation Failed");
+      } else {
+        setFailureMsg("Something went wrong.Try Again");
+      }
     },
   });
 
-  // mutate community recipe data to backend
+  // mutation to send recipe data with-in a community
   const communityRecipeMutation = useMutation({
     mutationFn: async (data: RecipeForm) => {
       const response = await api.post(
@@ -64,11 +71,21 @@ const AddRecipe = () => {
     },
     onSuccess: (data) => {
       console.log("Recipe added successfully", data);
+      setSuccessMsg("Recipe has been uploaded on community successfully")
       reset();
       navigate(-1);
     },
-    onError: (err) => {
+    onError: (err: Error | any) => {
       console.log("Error adding recipe", err);
+      if (err.request) {
+        setFailureMsg("Network error: Cannot connect to server");
+      } else if (err.response) {
+        setFailureMsg(
+          err.response.data?.message || "Community Recipe Creation Failed"
+        );
+      } else {
+        setFailureMsg("Something went wrong.Try Again");
+      }
     },
   });
 
@@ -93,7 +110,7 @@ const AddRecipe = () => {
       imageUrl: "",
       cuisines: "",
       categories: "",
-      tags: "",
+      diets: "",
     },
   });
 
@@ -117,8 +134,10 @@ const AddRecipe = () => {
     name: "instructions",
   });
 
+  // call onSubmit when user click to save button
   const onSubmit = (data: RecipeForm) => {
     console.log("Recipe Data:", data);
+    // if user select everyone in community it means he want to upload recipe independently and if not then want to create community within community
     if (data.community !== "everyone") {
       communityRecipeMutation.mutate(data);
     } else {
@@ -126,7 +145,9 @@ const AddRecipe = () => {
     }
   };
 
+  // call react query to fetch all the  communities
   const { data, isLoading, error } = useAllCommunities();
+  // then write function to filter out the communitiy where he is a community member
   const filteredCommunity = useCallback(() => {
     if (!data) return [];
 
@@ -140,17 +161,21 @@ const AddRecipe = () => {
       }));
   }, [data, id]);
 
+  // write effect runs whenever filterCommunity update then update setCommunites also
   useEffect(() => {
     const communities = filteredCommunity();
     setCommuties(communities);
   }, [filteredCommunity]);
 
+  // if community is loading
   if (isLoading) {
-    console.log("communities is loading");
+    return <>Community is loading</>;
   }
-  if (!data || error) {
+  if ( error) {
     console.log("communities fetching error" + error);
-    alert("Something is messedup");
+    // if there is an error then show error to user
+    return <Err/>
+    // alert("Something is messedup");
   }
   return (
     <>
@@ -210,27 +235,54 @@ const AddRecipe = () => {
               })}
               error={errors.description?.message as string}
             />
-            <InputBox
-              text="Cuisines"
-              placeholder="Indian, Italian, Mexican"
-              boxSize="w-[600px]"
-              {...register("cuisines")}
-              note="* Make your recipe more discoverable by adding cuisines"
+           {/* cuisines with AutocompleteInput */}
+            <Controller
+              name="cuisines"
+              control={control}
+              render={({ field }) => (
+                <AutocompleteInput
+                  text="Cuisines"
+                  placeholder="Type to search cuisines..."
+                  boxSize="w-[600px]"
+                  options={cuisines}
+                  {...field}
+                  error={errors.cuisines?.message}
+                />
+              )}
             />
-            <InputBox
-              text="Categories"
-              placeholder="Main Course, Dessert, Appetizer"
-              boxSize="w-[600px]"
-              {...register("categories")}
-              note="* Make your recipe more discoverable by adding categories"
+            {/* categories with AutocompleteInput */}
+            <Controller
+              name="categories"
+              control={control}
+              render={({ field }) => (
+                <AutocompleteInput
+                  text="Categories"
+                  placeholder="Type to search categories..."
+                  boxSize="w-[600px]"
+                  options={categories}
+                  {...field}
+                  error={errors.categories?.message}
+                />
+              )}
             />
-            <InputBox
-              text="Tags"
-              placeholder="Gluten-Free, Vegan, Quick & Easy"
-              boxSize="w-[600px]"
-              {...register("tags")}
-              note="* Make your recipe more discoverable by adding tags"
+
+            {/* diet with AutocompleteInput */}
+            <Controller
+              name="diets"
+              control={control}
+              render={({ field }) => (
+                <AutocompleteInput
+                  text="Diets"
+                  placeholder="Type to search Diets (Gluten-Free, Vegan, etc)..."
+                  boxSize="w-[600px]"
+                  options={diet}
+                  {...field}
+                  error={errors.diets?.message}
+                />
+              )}
             />
+
+
             {ingredientFields.map((field, index) => (
               <InputBoxVariant
                 key={field.id}

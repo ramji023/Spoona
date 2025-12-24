@@ -50,10 +50,14 @@ export const toggleBookMarkRecipe = async (req: Request, res: Response) => {
   return res.json({ msg: "User successfully Bookmarked recipe" });
 };
 
+
+// write controller to fetch all saved recipes by a user
 export const getAllSavedRecipe = async (req: Request, res: Response) => {
-  console.log("all saved recipe controller hit");
+  // console.log("all saved recipe controller hit");
+  // call model function to get all the saved recipe from savedRecipe table
   const savedRecipes = await fetchAllBookmarkRecipe(req.user as string);
 
+  // return the success response to user
   return res.json({
     data: savedRecipes,
     message: "user fetch all saved recipe",

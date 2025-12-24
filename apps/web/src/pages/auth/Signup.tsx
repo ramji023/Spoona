@@ -6,10 +6,12 @@ import { api } from "../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { Spinner } from "../../loaders/Loaders";
+import { useFailureMsgStore } from "../../stores/failureMsgStore";
 export default function Signup() {
   // use success store
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
-
+  // set error message
+  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
   const navigate = useNavigate();
   // signup mutation using react-query
   const signupMutation = useMutation({
@@ -23,8 +25,15 @@ export default function Signup() {
       setSuccessMsg("Signup successful! Please Signin to continue.");
       navigate("/auth/signin");
     },
-    onError: (err) => {
+    onError: (err: Error | any) => {
       console.error("signup failed : ", err);
+      if (err.message === "Network Connection") {
+        setFailureMsg("Network Connection Failed");
+      } else if (err.response.data.message) {
+        setFailureMsg(err.response.data.message);
+      } else {
+        setFailureMsg("Something went wrong.Try Again");
+      }
     },
   });
 

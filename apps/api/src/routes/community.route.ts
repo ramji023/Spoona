@@ -3,7 +3,7 @@ import {
   AddMembersOnCommunity,
   createCommunity,
   deleteMemberOnCommunity,
-  fetchAllCommunities,
+  fetchAllCommunities, // controller to fetch all the communities data
   fetchSingleCommunity,
   uploadOnCommunity,
 } from "../controller/community.controller";
@@ -13,9 +13,9 @@ const router: express.Router = express.Router();
 
 router
   .route("/")
-  .get(fetchAllCommunities)
-  .all(AuthMiddleware)
-  .post(createCommunity);
+  .get(fetchAllCommunities) //  fetch all the communities data
+  .all(AuthMiddleware) // apply authentication middleware
+  .post(createCommunity); // create new community
 router
   .route("/:communityId/members")
   .all(AuthMiddleware)
@@ -23,7 +23,7 @@ router
   .delete(deleteMemberOnCommunity);
 router
   .route("/:communityId")
-  .get(fetchSingleCommunity)
+  .get(fetchSingleCommunity) // fetch single community data
   .all(AuthMiddleware)
-  .post(uploadOnCommunity);
+  .post(uploadOnCommunity); // upload recipe on the community
 export default router;

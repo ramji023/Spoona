@@ -2,20 +2,147 @@ import { motion } from "motion/react";
 
 export const GlobalLoader = () => {
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-white z-50">
-      <motion.div
-        className="w-16 h-16 border-4 border-orange-400 border-t-transparent rounded-full"
-        animate={{ rotate: 360 }}
-        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-      />
-      <motion.p
-        className="mt-4 text-lg font-semibold text-black"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
-      >
-        Recipes are cooking...
-      </motion.p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+      {/* Background pattern - subtle food dots */}
+      <div className="absolute inset-0 opacity-5">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(circle, hsl(25,95%,53%) 1px, transparent 1px)`,
+            backgroundSize: "24px 24px",
+          }}
+        />
+      </div>
+
+      {/* Main loader container */}
+      <div className="relative flex flex-col items-center gap-6">
+        {/* Cooking pot with steam */}
+        <div className="relative w-32 h-32">
+          {/* Steam particles */}
+          {[0, 1, 2].map((index) => (
+            <motion.div
+              key={index}
+              className="absolute w-3 h-3 rounded-full bg-[hsl(25,95%,53%)]/30"
+              style={{
+                left: `${30 + index * 20}%`,
+                bottom: "75%",
+              }}
+              animate={{
+                y: [-10, -40, -60],
+                opacity: [0, 0.8, 0],
+                scale: [0.5, 1, 0.3],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                delay: index * 0.4,
+                ease: "easeOut",
+              }}
+            />
+          ))}
+
+          {/* Pot lid */}
+          <motion.div
+            className="absolute top-6 left-1/2 -translate-x-1/2 w-20 h-3 bg-[hsl(25,95%,53%)] rounded-full shadow-md"
+            animate={{
+              y: [0, -4, 0],
+              rotate: [-2, 2, -2],
+            }}
+            transition={{
+              duration: 0.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Lid handle */}
+          <motion.div
+            className="absolute top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-[hsl(25,95%,53%)] rounded-full shadow-sm"
+            animate={{
+              y: [0, -4, 0],
+            }}
+            transition={{
+              duration: 0.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Pot body */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-24 h-14 bg-gradient-to-b from-[hsl(25,95%,53%)] to-[hsl(25,95%,53%)]/80 rounded-b-3xl rounded-t-lg shadow-lg" />
+
+          {/* Pot handles */}
+          <div className="absolute bottom-10 left-1 w-4 h-3 bg-[hsl(25,95%,53%)] rounded-l-full shadow-sm" />
+          <div className="absolute bottom-10 right-1 w-4 h-3 bg-[hsl(25,95%,53%)] rounded-r-full shadow-sm" />
+
+          {/* Stirring spoon */}
+          <motion.div
+            className="absolute bottom-8 left-1/2 origin-bottom"
+            animate={{
+              rotate: [-15, 15, -15],
+            }}
+            transition={{
+              duration: 1.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <div className="w-2 h-12 bg-amber-700 rounded-full -translate-x-1/2" />
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-5 h-5 bg-amber-800 rounded-full" />
+          </motion.div>
+        </div>
+
+        {/* Bouncing ingredients */}
+        <div className="flex items-center gap-3">
+          {["🍅", "🧅", "🥕"].map((emoji, index) => (
+            <motion.span
+              key={index}
+              className="text-2xl"
+              animate={{
+                y: [0, -8, 0],
+              }}
+              transition={{
+                duration: 0.6,
+                repeat: Infinity,
+                delay: index * 0.15,
+                ease: "easeInOut",
+              }}
+            >
+              {emoji}
+            </motion.span>
+          ))}
+        </div>
+
+        {/* Loading text */}
+        <motion.p
+          className="text-[hsl(0,0%,45%)] font-medium tracking-wide text-sm"
+          animate={{
+            opacity: [0.5, 1, 0.5],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          Cooking up something delicious...
+        </motion.p>
+
+        {/* Progress bar styled as a cutting board */}
+        <div className="w-48 h-2 bg-amber-200 rounded-full overflow-hidden shadow-inner">
+          <motion.div
+            className="h-full bg-gradient-to-r from-[hsl(25,95%,53%)] via-orange-400 to-[hsl(25,95%,53%)] rounded-full"
+            animate={{
+              x: ["-100%", "100%"],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };
@@ -129,7 +256,6 @@ export const RecipeCardSkeleton = () => {
     </div>
   );
 };
-
 
 export const CommunityPageSkeleton = () => {
   return (
@@ -328,3 +454,194 @@ export const RecipePageSkeleton = () => (
     </div>
   </div>
 );
+
+// skeleton for showing popular creators
+export const UserCardSkeleton = () => {
+  return (
+    <div className="cursor-pointer w-[150px] h-[150px] rounded-2xl border border-gray-300 flex flex-col items-center justify-around">
+      {/* Avatar Skeleton */}
+      <div className="overflow-hidden w-[90px] h-[90px] rounded-full bg-gray-200">
+        <motion.div
+          className="w-full h-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200"
+          animate={{
+            x: ["-100%", "100%"],
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      </div>
+
+      {/* Name Skeleton */}
+      <div className="w-3/4 h-4 bg-gray-200 rounded overflow-hidden">
+        <motion.div
+          className="w-full h-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200"
+          animate={{
+            x: ["-100%", "100%"],
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+// skeleton for showing saved recipe page
+export function SavedRecipesSkeleton() {
+  return (
+    <div className="mx-20 p-10 flex flex-col gap-4">
+      {/* First div - Header skeleton */}
+      <div className="flex justify-between my-2">
+        <div className="flex items-center gap-1">
+          <motion.div
+            className="w-6 h-6 bg-gray-200 rounded"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+          <motion.div
+            className="w-32 h-9 bg-gray-200 rounded"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.1 }}
+          />
+        </div>
+
+        <motion.div
+          className="w-24 h-10 bg-gray-200 rounded-3xl"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+        />
+      </div>
+
+      {/* Second div - Search bar skeleton */}
+      <div className="my-3 flex items-center gap-3">
+        <motion.div
+          className="w-[90%] h-[45px] bg-gray-200 rounded-4xl"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
+        />
+        <motion.div
+          className="w-[45px] h-[45px] bg-gray-200 rounded-3xl"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
+        />
+      </div>
+
+      <div className="my-3 border border-solid border-gray-300"></div>
+
+      {/* Third div - Recipes header skeleton */}
+      <div className="my-3">
+        <div className="flex justify-between items-center">
+          <motion.div
+            className="w-24 h-7 bg-gray-200 rounded"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
+          />
+          <motion.div
+            className="w-16 h-6 bg-gray-200 rounded"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.6 }}
+          />
+        </div>
+      </div>
+
+      {/* Fourth div - Recipe cards skeleton */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3, 4, 5, 6].map((item) => (
+          <motion.div
+            key={item}
+            className="bg-white rounded-lg overflow-hidden shadow-sm"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: item * 0.1 }}
+          >
+            {/* Image skeleton */}
+            <motion.div
+              className="w-full h-48 bg-gray-200"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                delay: item * 0.1,
+              }}
+            />
+
+            {/* Content skeleton */}
+            <div className="p-4 space-y-3">
+              {/* Title skeleton */}
+              <motion.div
+                className="h-6 bg-gray-200 rounded w-3/4"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  delay: item * 0.1 + 0.2,
+                }}
+              />
+
+              {/* Cook time skeleton */}
+              <motion.div
+                className="h-4 bg-gray-200 rounded w-1/2"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  delay: item * 0.1 + 0.3,
+                }}
+              />
+
+              {/* Tags skeleton */}
+              <div className="flex gap-2">
+                <motion.div
+                  className="h-6 w-16 bg-gray-200 rounded-full"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: item * 0.1 + 0.4,
+                  }}
+                />
+                <motion.div
+                  className="h-6 w-20 bg-gray-200 rounded-full"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: item * 0.1 + 0.5,
+                  }}
+                />
+              </div>
+
+              {/* User info skeleton */}
+              <div className="flex items-center gap-2 pt-2">
+                <motion.div
+                  className="w-8 h-8 bg-gray-200 rounded-full"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: item * 0.1 + 0.6,
+                  }}
+                />
+                <motion.div
+                  className="h-4 bg-gray-200 rounded w-24"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: item * 0.1 + 0.7,
+                  }}
+                />
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
