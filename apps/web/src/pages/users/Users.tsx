@@ -106,9 +106,21 @@ function UserBox({ user }: { user: PopularCreator }) {
             onClick={() => {
               followMutation.mutate(user.id);
             }}
-            className={`${followingData?.includes(user.id) ? "text-orange-400" : ""} px-4 py-2 rounded-3xl text-md hover:text-orange-400 hover:outline-orange-400 font-semibold cursor-pointer`}
+            disabled={followMutation.isPending}
+            className={`${
+              followingData?.includes(user.id) ? "text-orange-400" : ""
+            } px-4 py-2 rounded-3xl text-md hover:text-orange-400 hover:outline-orange-400 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
           >
-            {followingData?.includes(user.id) ? "Unfollow" : "Follow"}
+            {followMutation.isPending ? (
+              <>
+                <div className="w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
+                <span>Processing</span>
+              </>
+            ) : (
+              <span>
+                {followingData?.includes(user.id) ? "Unfollow" : "Follow"}
+              </span>
+            )}
           </button>
         </div>
       </div>

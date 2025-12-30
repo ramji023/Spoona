@@ -20,10 +20,10 @@ export default function User() {
   const query = useCreatorData(creatorId);
   const { data, isLoading, error } = useMinLoader({ query, loadingTime: 800 });
 
- // call usefollowMutation hooks to send follower data to server
+  // call usefollowMutation hooks to send follower data to server
   const followMutation = useFollowMutation(creatorId);
 
-   // if creator data is processing then show loader
+  // if creator data is processing then show loader
   if (isLoading) {
     return <UserProfileSkeleton />;
   }
@@ -33,7 +33,6 @@ export default function User() {
     // console.log(error)
     return <Err />;
   }
-
 
   if (data) {
     // console.log(data)
@@ -82,9 +81,23 @@ export default function User() {
                 onClick={() => {
                   followMutation.mutate(data.id);
                 }}
-                className={`${followingData?.includes(data.id) ? "text-orange-400 outline-orange-400" : "outline-gray-400"}  outline-1  px-4 py-2 rounded-3xl text-md hover:text-orange-400 hover:outline-orange-400 font-semibold cursor-pointer`}
+                disabled={followMutation.isPending}
+                className={`${
+                  followingData?.includes(data.id)
+                    ? "text-orange-400 outline-orange-400"
+                    : "outline-gray-400"
+                } outline-1 px-4 py-2 rounded-3xl text-md hover:text-orange-400 hover:outline-orange-400 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[100px]`}
               >
-                {followingData?.includes(data.id) ? "Unfollow" : "Follow"}
+                {followMutation.isPending ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span>Processing</span>
+                  </>
+                ) : followingData?.includes(data.id) ? (
+                  "Unfollow"
+                ) : (
+                  "Follow"
+                )}
               </button>
             </div>
           </div>

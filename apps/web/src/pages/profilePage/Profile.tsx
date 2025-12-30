@@ -11,7 +11,7 @@ import { Edit } from "lucide-react";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
 import Recipes from "../HomePage/Recipes";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
-import {UserProfileSkeleton } from "../../loaders/Loaders";
+import { UserProfileSkeleton } from "../../loaders/Loaders";
 import { AxiosError } from "axios";
 import Err from "../../errors/ErrorBoundary";
 import useMinLoader from "../../hooks/useMinLoader";
@@ -156,15 +156,15 @@ export default function Profile() {
       <>
         <div className="mx-30 p-10 my-10">
           {/* first section  */}
-          <div className="flex justify-between items-center py-2 mb-10">
-            <div className="flex gap-2 justify-center items-center">
-              <div className="relative group">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 py-2 mb-5">
+            <div className="flex gap-4 items-start w-full md:w-auto">
+              <div className="relative group flex-shrink-0">
                 {data.profileImage ? (
                   <>
                     <img
                       src={data.profileImage}
                       alt=""
-                      className="w-30 h-30 rounded-full"
+                      className="w-30 h-30 rounded-full object-cover"
                     />
                   </>
                 ) : (
@@ -201,31 +201,37 @@ export default function Profile() {
                 )}
               </div>
 
-              <div>
-                <h1 className="text-3xl font-semibold p-2">{data.username}</h1>
+              <div className="flex-1 min-w-0 max-w-xl">
+                <h1 className="text-3xl font-semibold p-2 break-words">
+                  {data.username}
+                </h1>
                 {data.bio && (
-                  <p className="text-xs px-2 text-gray-600">{data.bio}</p>
+                  <p className="text-sm px-2 text-gray-600 break-words whitespace-normal line-clamp-3 md:line-clamp-none">
+                    {data.bio}
+                  </p>
                 )}
-                <div className="flex gap-4 items-center justify-center p-2 text-lg">
+                <div className="flex gap-4 items-center p-2 text-lg flex-wrap">
                   <div className="font-semibold text-orange-400 text-xl">
                     {data._count.Followings}{" "}
-                    <span className=" text-gray-400 text-lg">Following</span>
+                    <span className="text-gray-400 text-lg">Following</span>
                   </div>
                   <div className="font-semibold text-orange-400 text-xl">
                     {data._count.Followers}{" "}
-                    <span className=" text-gray-400 text-lg ">Followers</span>
+                    <span className="text-gray-400 text-lg">Followers</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div>
+
+            <div className="flex-shrink-0 w-full md:w-auto">
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="outline-1 outline-gray-400 px-4 py-2 rounded-3xl text-md hover:bg-orange-400 hover:text-white font-semibold cursor-pointer "
+                className=" outline-1 outline-gray-400 px-4 py-2 rounded-3xl text-md hover:bg-orange-400 hover:text-white font-semibold cursor-pointer whitespace-nowrap w-full md:w-auto"
               >
                 Edit Profile
               </button>
             </div>
+
             <ProfileUpdation
               open={isModalOpen}
               close={() => {
