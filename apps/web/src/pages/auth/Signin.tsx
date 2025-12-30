@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { Spinner } from "../../loaders/Loaders";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
+import { AxiosError } from "axios";
 export default function Signin() {
   const navigate = useNavigate();
   const setIsAuthenticated = useAuthStore((s) => s.setIsAuthenticated);
@@ -32,14 +33,21 @@ export default function Signin() {
       setSuccessMsg(`Welcome back! ${data.data.name}`);
       navigate("/home");
     },
-    onError: (err: Error | any) => {
-      console.error("signin failed : ", err);
-      if (err.request) {
-        setFailureMsg('Network error: Cannot connect to server');
-      } else if (err.response) {
-        setFailureMsg(err.response.data?.message || 'Signin failed');
+    onError: (err: unknown) => {
+      if (err instanceof AxiosError) {
+        if (err.response) {
+          setFailureMsg(
+            err.response.data?.message ||
+              "Something went wrong. Please try again."
+          );
+        } else if (err.request) {
+          setFailureMsg("No response from server. Please try again.");
+        } else {
+          console.log(err.message);
+          setFailureMsg(err.message || "An unexpected error occurred");
+        }
       } else {
-        setFailureMsg("Something went wrong.Try Again");
+        setFailureMsg("An unexpected error occurred");
       }
     },
   });

@@ -6,7 +6,7 @@ export const loggerValidation = z.object({
   password: z
     .string()
     .min(3, "Password is  too sort")
-    .max(8, "Password is too long"),
+    .max(20, "Password is too long"),
 });
 
 

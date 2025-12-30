@@ -5,6 +5,7 @@ import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
 import { useRef, useState } from "react";
 import { PlannerInput } from "../../types/planner";
+import { AxiosError } from "axios";
 
 interface PropType {
   open: boolean;
@@ -46,13 +47,20 @@ export const PlannerForm = (prop: PropType) => {
       prop.close();
     },
     onError: (err: Error | any) => {
-      console.error("planner creation failed : ", err);
-      if (err.request) {
-        setFailureMsg("Network error: Cannot connect to server");
-      } else if (err.response) {
-        setFailureMsg(err.response.data?.message || "planner creation failed");
+      if (err instanceof AxiosError) {
+        if (err.response) {
+          setFailureMsg(
+            err.response.data?.message ||
+              "Something went wrong. Please try again."
+          );
+        } else if (err.request) {
+          setFailureMsg("No response from server. Please try again.");
+        } else {
+          console.log(err.message);
+          setFailureMsg(err.message || "An unexpected error occurred");
+        }
       } else {
-        setFailureMsg("Something went wrong.Try Again");
+        setFailureMsg("An unexpected error occurred");
       }
       prop.close();
     },

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { Spinner } from "../../loaders/Loaders";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
+import { AxiosError } from "axios";
 export default function Signup() {
   // use success store
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
@@ -25,14 +26,21 @@ export default function Signup() {
       setSuccessMsg("Signup successful! Please Signin to continue.");
       navigate("/auth/signin");
     },
-    onError: (err: Error | any) => {
-      console.error("signup failed : ", err);
-      if (err.message === "Network Connection") {
-        setFailureMsg("Network Connection Failed");
-      } else if (err.response.data.message) {
-        setFailureMsg(err.response.data.message);
+    onError: (err: unknown) => {
+     if (err instanceof AxiosError) {
+        if (err.response) {
+          setFailureMsg(
+            err.response.data?.message ||
+              "Something went wrong. Please try again."
+          );
+        } else if (err.request) {
+          setFailureMsg("No response from server. Please try again.");
+        } else {
+          console.log(err.message);
+          setFailureMsg(err.message || "An unexpected error occurred");
+        }
       } else {
-        setFailureMsg("Something went wrong.Try Again");
+        setFailureMsg("An unexpected error occurred");
       }
     },
   });
@@ -59,13 +67,13 @@ export default function Signup() {
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="">
-            <div>
+            {/* <div>
               {signupMutation.isError && (
                 <p className="text-red-500 text-xs flex justify-center items-center">
                   Error: {(signupMutation.error as Error).message}{" "}
                 </p>
               )}
-            </div>
+            </div> */}
             <div className="flex flex-col gap-1 py-1">
               <label className="text-lg">Email</label>
               <input

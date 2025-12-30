@@ -42,7 +42,7 @@ export const signup = async (req: Request, res: Response) => {
   const existedUser = await findUserByEmail(parsedBodyObject.data.email);
 
   // if user exist then throw custom error
-  if (!existedUser) {
+  if (existedUser) {
     throw new ApiError("User is already registered", 404);
   }
 

@@ -6,6 +6,7 @@ import { api } from "../../utils/axiosInstance";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { useNavigate } from "react-router-dom";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
+import { AxiosError } from "axios";
 interface CommunityFormType {
   open: boolean;
   close: () => void;
@@ -37,15 +38,20 @@ export default function CommunityForm({ open, close }: CommunityFormType) {
       navigate(`${data.data.id}`);
     },
     onError: (err: Error | any) => {
-      console.log("Error to create communnity : ", err);
-      if (err.request) {
-        setFailureMsg("Network error: Cannot connect to server");
-      } else if (err.response) {
-        setFailureMsg(
-          err.response.data?.message || "Community Creation failed"
-        );
+      if (err instanceof AxiosError) {
+        if (err.response) {
+          setFailureMsg(
+            err.response.data?.message ||
+              "Something went wrong. Please try again."
+          );
+        } else if (err.request) {
+          setFailureMsg("No response from server. Please try again.");
+        } else {
+          console.log(err.message);
+          setFailureMsg(err.message || "An unexpected error occurred");
+        }
       } else {
-        setFailureMsg("Something went wrong.Try Again");
+        setFailureMsg("An unexpected error occurred");
       }
     },
   });

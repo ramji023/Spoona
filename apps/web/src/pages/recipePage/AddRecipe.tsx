@@ -17,6 +17,7 @@ import Err from "../../errors/ErrorBoundary";
 import { diet, categories, cuisines } from "../../utils/recipe_filters";
 import { AutocompleteInput } from "./AutoCompleteInput";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
+import { AxiosError } from "axios";
 // write controller to add the recipe
 const AddRecipe = () => {
   const navigate = useNavigate();
@@ -76,15 +77,20 @@ const AddRecipe = () => {
       navigate(-1);
     },
     onError: (err: Error | any) => {
-      console.log("Error adding recipe", err);
-      if (err.request) {
-        setFailureMsg("Network error: Cannot connect to server");
-      } else if (err.response) {
-        setFailureMsg(
-          err.response.data?.message || "Community Recipe Creation Failed"
-        );
+      if (err instanceof AxiosError) {
+        if (err.response) {
+          setFailureMsg(
+            err.response.data?.message ||
+              "Something went wrong. Please try again."
+          );
+        } else if (err.request) {
+          setFailureMsg("No response from server. Please try again.");
+        } else {
+          console.log(err.message);
+          setFailureMsg(err.message || "An unexpected error occurred");
+        }
       } else {
-        setFailureMsg("Something went wrong.Try Again");
+        setFailureMsg("An unexpected error occurred");
       }
     },
   });

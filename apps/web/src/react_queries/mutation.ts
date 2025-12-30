@@ -3,6 +3,7 @@ import { useAuthStore } from "../stores/authStore";
 import { useSuccessMsgStore } from "../stores/successMsgStore";
 import { useFailureMsgStore } from "../stores/failureMsgStore";
 import { api } from "../utils/axiosInstance";
+import { AxiosError } from "axios";
 
 // write follower mutation to follow or unfollow to creators
 export const useFollowMutation = (creatorId: string | undefined) => {
@@ -26,13 +27,20 @@ export const useFollowMutation = (creatorId: string | undefined) => {
       });
     },
     onError: (err: Error | any) => {
-      console.error("Follow operation failed:", err);
-      if (err.request) {
-        setFailureMsg("Network error: Cannot connect to server");
-      } else if (err.response) {
-        setFailureMsg(err.response.data?.message || "Operation failed");
+      if (err instanceof AxiosError) {
+        if (err.response) {
+          setFailureMsg(
+            err.response.data?.message ||
+              "Something went wrong. Please try again."
+          );
+        } else if (err.request) {
+          setFailureMsg("No response from server. Please try again.");
+        } else {
+          console.log(err.message);
+          setFailureMsg(err.message || "An unexpected error occurred");
+        }
       } else {
-        setFailureMsg("Something went wrong. Try again");
+        setFailureMsg("An unexpected error occurred");
       }
     },
   });
