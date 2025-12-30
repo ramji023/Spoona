@@ -113,8 +113,14 @@ export const signin = async (req: Request, res: Response) => {
 
 // signout controller to handle user logout operation
 export const signout = async (req: Request, res: Response) => {
+  const options = {
+    secure: true,
+    httpOnly: true,
+    sameSite: "none" as const,
+    path: "/",
+  };
   // first clear the cookie from user browser cookie
-  res.clearCookie("refreshToken");
+  res.clearCookie("refreshToken", options);
   // then return the success response to user
   return res.json({ message: "User successfully logged out" });
 };

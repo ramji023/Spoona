@@ -9,20 +9,18 @@ import { NavLink } from "react-router-dom";
 export default function Navbar() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   // const setIsAuthenticated = useAuthStore((s) => s.setIsAuthenticated);
-  const setToken = useAuthStore((s) => s.setToken);
   const navigate = useNavigate();
 
   // implment logout functionality
   const logoutMutation = useMutation({
     mutationFn: async () => {
       // perform any logout related api calls if needed
-      const response = await api.post("/api/v1/user/auth/signout", null);
+      const response = await api.post("/api/v1/user/auth/signout");
       return response.data;
     },
     onSuccess: (data) => {
       console.log("Logout successful:", data);
       useAuthStore.setState({id:null,isAuthenticated:false,token:null,savedRecipeData:null})
-      setToken("", "");
       navigate("/");
     },
     onError: (err) => {
