@@ -3,10 +3,11 @@ import Logo from "@repo/ui/components/Logo";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { UserIcon } from "@repo/ui/icons/UserIcon";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../utils/axiosInstance";
 import { NavLink } from "react-router-dom";
 export default function Navbar() {
+  const queryClient = useQueryClient();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   // const setIsAuthenticated = useAuthStore((s) => s.setIsAuthenticated);
   const navigate = useNavigate();
@@ -20,7 +21,15 @@ export default function Navbar() {
     },
     onSuccess: (data) => {
       console.log("Logout successful:", data);
-      useAuthStore.setState({id:null,isAuthenticated:false,token:null,savedRecipeData:null})
+      // Clear all React Query cache
+      queryClient.clear();
+      // become null to useAuthStore
+      useAuthStore.setState({
+        id: null,
+        isAuthenticated: false,
+        token: null,
+        savedRecipeData: null,
+      });
       navigate("/");
     },
     onError: (err) => {
