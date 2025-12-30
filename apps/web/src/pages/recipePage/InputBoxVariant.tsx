@@ -142,20 +142,31 @@ export const Box = React.memo(
             </div>
           )}
           <div
-            className={`relative ${boxSize} bg-gray-200 rounded outline-1 ${className} flex justify-center items-center cursor-pointer`}
+            className={`${loading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}   relative ${boxSize} bg-gray-200 rounded outline-1 ${className} flex justify-center items-center cursor-pointer`}
           >
             <input
               type="file"
               accept="image/*"
               ref={ref}
+              disabled={loading}
               className="absolute inset-0 opacity-0 cursor-pointer"
               {...props}
               onChange={handleFileChange}
             />
-            <label className="flex flex-col justify-center items-center pointer-events-none">
-              <CameraIcon />
-              <div className="text-sm text-gray-600">{label}</div>
-            </label>
+            {loading ? (
+              <div className="flex flex-col justify-center items-center pointer-events-none">
+                {/* Spinner */}
+                <div className="w-8 h-8 border-4 border-gray-300 border-t-orange-500 rounded-full animate-spin mb-2"></div>
+                <div className="text-sm text-gray-600">
+                  Loading, please wait...
+                </div>
+              </div>
+            ) : (
+              <label className="flex flex-col justify-center items-center pointer-events-none">
+                <CameraIcon />
+                <div className="text-sm text-gray-600">{label}</div>
+              </label>
+            )}
           </div>
           <span className="text-red-500 text-xs min-h-[16px] flex">
             {error ?? ""}

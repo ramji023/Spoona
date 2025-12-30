@@ -645,3 +645,208 @@ export function SavedRecipesSkeleton() {
     </div>
   );
 }
+
+// skeleton for showing planner data
+export const PlannerPageSkeleton = () => {
+  return (
+    <div className="mx-20 p-10 flex gap-4 my-10">
+      {/* Calendar Skeleton */}
+      <div className="flex-1/2 p-4">
+        <div className="max-w-md w-full p-6 bg-white rounded-2xl">
+          {/* Calendar Header Skeleton */}
+          <div className="flex justify-between items-center mb-6">
+            <motion.div
+              className="h-8 w-32 bg-gray-200 rounded"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+            <div className="flex gap-2">
+              <motion.div
+                className="h-8 w-8 bg-gray-200 rounded"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1.5, repeat: Infinity, delay: 0.1 }}
+              />
+              <motion.div
+                className="h-8 w-8 bg-gray-200 rounded"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+              />
+            </div>
+          </div>
+
+          {/* Weekday Headers */}
+          <div className="grid grid-cols-7 gap-2 mb-2">
+            {[...Array(7)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="h-8 w-12 bg-gray-200 rounded mx-auto"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  delay: i * 0.1,
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Calendar Days Grid */}
+          <div className="grid grid-cols-7 gap-2">
+            {[...Array(35)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="h-12 w-12 bg-gray-200 rounded-full mx-auto"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  delay: i * 0.02,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Planner Skeleton */}
+      <div className="flex-1/2 p-4">
+        <div className="p-6">
+          {/* Date Header Skeleton */}
+          <div className="flex items-center justify-start mb-5">
+            <motion.div
+              className="w-10 h-10 bg-gray-200 rounded mr-2"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+            <motion.div
+              className="h-8 w-64 bg-gray-200 rounded"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity, delay: 0.1 }}
+            />
+          </div>
+
+          {/* Meal Items Skeleton */}
+          <div className="space-y-4">
+            {[...Array(4)].map((_, i) => (
+              <PlanItemSkeleton key={i} delay={i * 0.1} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Individual Meal Item Skeleton
+export const PlanItemSkeleton = ({ delay = 0 }: { delay?: number }) => {
+  return (
+    <div className="px-2 py-2 my-2">
+      <div className="flex justify-between items-center">
+        <motion.div
+          className="h-8 w-32 bg-gray-200 rounded"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay }}
+        />
+        <motion.div
+          className="w-10 h-10 bg-gray-200 rounded-full"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay: delay + 0.1 }}
+        />
+      </div>
+    </div>
+  );
+};
+
+
+// Skeleton for the entire Users page
+export function UsersPageSkeleton() {
+  return (
+    <div className="mx-30 px-10 py-6 my-6 flex flex-col gap-9">
+      {/* Header Skeleton */}
+      <div className="mb-3 flex flex-col justify-center gap-3">
+        <div>
+          <motion.div
+            className="h-4 w-32 bg-gray-200 rounded"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+        </div>
+        <div>
+          <motion.div
+            className="h-8 w-48 bg-gray-200 rounded mb-2"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.1 }}
+          />
+          <motion.div
+            className="h-5 w-96 bg-gray-200 rounded"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+          />
+        </div>
+      </div>
+
+      {/* User Boxes Skeleton */}
+      <div className="mx-10">
+        {[...Array(5)].map((_, index) => (
+          <UserBoxSkeleton key={index} delay={index * 0.1} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Skeleton for individual UserBox
+function UserBoxSkeleton({ delay = 0 }: { delay?: number }) {
+  return (
+    <>
+      <div className="flex justify-between items-center py-1 mb-5">
+        <div className="flex gap-2 justify-center items-center">
+          {/* Avatar Skeleton */}
+          <motion.div
+            className="w-18 h-18 rounded-full bg-gray-200"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay }}
+          />
+
+          <div className="flex flex-col gap-2">
+            {/* Username Skeleton */}
+            <motion.div
+              className="h-5 w-32 bg-gray-200 rounded px-2"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity, delay: delay + 0.1 }}
+            />
+
+            {/* Bio Skeleton */}
+            <motion.div
+              className="h-4 w-48 bg-gray-200 rounded px-2"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity, delay: delay + 0.2 }}
+            />
+
+            {/* Stats Skeleton */}
+            <div className="flex gap-4 items-center p-2">
+              <motion.div
+                className="h-4 w-24 bg-gray-200 rounded"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1.5, repeat: Infinity, delay: delay + 0.3 }}
+              />
+              <motion.div
+                className="h-4 w-24 bg-gray-200 rounded"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1.5, repeat: Infinity, delay: delay + 0.4 }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Follow Button Skeleton */}
+        <motion.div
+          className="h-10 w-24 bg-gray-200 rounded-3xl"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay: delay + 0.5 }}
+        />
+      </div>
+      <div className="border-gray-300 border-t-1 py-2"></div>
+    </>
+  );
+}

@@ -19,10 +19,25 @@ import { motion, AnimatePresence } from "motion/react";
 import NotFound from "./errors/NotFound";
 import { ErrorBoundary } from "react-error-boundary";
 import Err from "./errors/ErrorBoundary";
+import { useUserRecipeData } from "./react_queries/queries";
+import { useFailureMsgStore } from "./stores/failureMsgStore";
+import User from "./pages/users/User";
+import Users from "./pages/users/Users";
 
 const MIN_LOADING_TIME = 1000;
 function App() {
+  const id = useAuthStore((s) => s.id);
+  const setSavedRecipe = useAuthStore((s) => s.setSavedRecipe); // function to store user saved recipes
+  const setFollowingData = useAuthStore((s) => s.setFollowingData); // function to store user following data
   const [loading, setLoading] = useState(true);
+
+  const {
+    data: userRecipeData,
+    isLoading: recipeDataLoading,
+    error: recipeDataError,
+  } = useUserRecipeData(useAuthStore.getState().id, {
+    enabled: !!id && useAuthStore.getState().isAuthenticated,
+  });
 
   // only send request to refresh the token if user reload/refresh the page
   useEffect(() => {
@@ -64,7 +79,25 @@ function App() {
   }, []);
   // console.log("App component ");
 
-  if (loading) {
+  // run this effect to fetch user interactions if user is authenticated
+  useEffect(() => {
+    if (userRecipeData?.savedRecipes && userRecipeData.followingData) {
+      setSavedRecipe(userRecipeData.savedRecipes);
+      setFollowingData(userRecipeData.followingData);
+    }
+  }, [userRecipeData, setSavedRecipe]);
+
+  // run effect to show error message it any error occurs while fetching user saved recipe data
+  useEffect(() => {
+    if (recipeDataError) {
+      useFailureMsgStore.setState({
+        failureMsg: "Something went wrong while fetching user recipe data",
+      });
+    }
+  }, [recipeDataError]);
+
+  const isLoading = loading || recipeDataLoading;
+  if (isLoading) {
     return (
       <AnimatePresence>
         <motion.div
@@ -103,15 +136,22 @@ function App() {
                 to the user
                 <Route path="planner" element={<PlannerPage />} />
                 <Route path="saved" element={<SavedRecipe />} />
-                <Route path="account" element={<Profile />} />  // show user profile data
-                <Route path="communities" element={<CommunitiesPage />} />  // show global communities page
+                <Route path="account" element={<Profile />} /> // show user
+                profile data
+                <Route path="communities" element={<CommunitiesPage />} /> //
+                show global communities page
                 <Route
                   path="communities/:communityId"
                   element={<Community />}
                 />
-                <Route path="add-recipe" element={<AddRecipe />} />  // show add-recipe form
+                <Route path="add-recipe" element={<AddRecipe />} /> // show
+                add-recipe form
                 <Route path="recipe/:recipeId" element={<RecipeBox />} /> //
                 show complete recipe data to user
+                <Route path="creators" element={<Users />} /> //show creators
+                data
+                <Route path="creators/:creatorId" element={<User />} /> // show
+                single creator data
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>

@@ -8,18 +8,25 @@ import { NotesSection } from "./NotesSection";
 import { useRecipe } from "../../react_queries/queries";
 import { ingredientsMap } from "../../utils/ingredientsMap";
 import { api } from "../../utils/axiosInstance";
-import { useMutation } from "@tanstack/react-query";
-import { useLocation, useParams } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { PlannerForm } from "../plannerPage/PlannerForm";
-import { RecipePageSkeleton } from "../../loaders/Loaders";
+import { RecipePageSkeleton, Spinner } from "../../loaders/Loaders";
 // import { useFailureMsgStore } from "../../stores/failureMsgStore";
 import useMinLoader from "../../hooks/useMinLoader";
 import Err from "../../errors/ErrorBoundary";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
+import { useAuthStore } from "../../stores/authStore";
 
 const RecipeBox = () => {
+  const navigate = useNavigate();
+  const id = useAuthStore((s) => s.id); // state to store id of authenticated user
+  const queryClient = useQueryClient();
+  // fetch all the savedRecipe data if user is authenticate
+  const savedRecipe = useAuthStore((s) => s.savedRecipeData);
+  //function to set the success and error message
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
   const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
   // get the recipeId from params
@@ -34,6 +41,8 @@ const RecipeBox = () => {
    *
    *
    */
+
+  // state to open planner form
   const [plannerForm, setPlannerForm] = useState(false);
   const location = useLocation();
   console.log(location);
@@ -58,11 +67,12 @@ const RecipeBox = () => {
     },
     onSuccess: (data) => {
       console.log("saved recipe response : ", data);
-      setSuccessMsg("You have saved this recipe successfully");
+      setSuccessMsg(data.msg);
+      queryClient.invalidateQueries({ queryKey: [useAuthStore.getState().id] });
+      queryClient.invalidateQueries({ queryKey: ["savedRecipe"] });
     },
     onError: (err: Error | any) => {
       console.log("error : ", err);
-      console.error("signin failed : ", err);
       if (err.request) {
         setFailureMsg("Network error: Cannot connect to server");
       } else if (err.response) {
@@ -81,6 +91,7 @@ const RecipeBox = () => {
   // call react query function to fetch the data for a specific recipe id
   const query = useRecipe(recipeId);
   const { data, isLoading, error } = useMinLoader({ query, loadingTime: 500 });
+
   // if recipe id is not present in params then show error page
   if (!recipeId) {
     return <Err />;
@@ -98,6 +109,7 @@ const RecipeBox = () => {
 
   // console.log("successfully fetch recipe data : ", data);
   if (data) {
+    const saveButton = savedRecipe?.includes(recipeId);
     return (
       <>
         <div className="m-5 px-5 py-4">
@@ -128,10 +140,25 @@ const RecipeBox = () => {
                       Plan
                     </button>
                     <button
-                      onClick={sendSavedRecipe} // call function to save this recipe
-                      className="text-lg font-semibold  cursor-pointer text-gray-800 outline-gray-400 outline  rounded-3xl px-6 py-2 mx-3 "
+                      onClick={sendSavedRecipe}
+                      disabled={savedRecipeMutation.isPending}
+                      className={`
+    ${saveButton ? "bg-orange-400 text-white" : "bg-transparent text-gray-800 outline outline-gray-400"}
+    text-lg font-semibold cursor-pointer rounded-3xl px-6 py-2 mx-3
+  `}
                     >
-                      Save
+                      <span
+                        className={`${savedRecipeMutation.isPending ? "opacity-0" : "opacity-100"}`}
+                      >
+                        {" "}
+                        {saveButton ? "Saved" : "Save"}
+                      </span>
+                      {/* Spinner */}
+                      {savedRecipeMutation.isPending && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Spinner />
+                        </div>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -148,7 +175,15 @@ const RecipeBox = () => {
                   </div>
                   <div className="flex gap-1">
                     <span>By</span>
-                    <span className="text-md font-semibold hover:text-orange-400 cursor-pointer">
+                    <span
+                      // if creator is user himself then navigate to their profile otherwise novigate to creators/creatorId
+                      onClick={() => {
+                        id && id === data.user.id
+                          ? navigate("/account")
+                          : navigate(`/creators/${data.user.id}`);
+                      }}
+                      className="text-md font-semibold hover:text-orange-400 cursor-pointer"
+                    >
                       {data.user.username}
                     </span>
                   </div>
@@ -158,7 +193,9 @@ const RecipeBox = () => {
                 </div>
                 <div className="flex gap-10">
                   <div className="text-orange-400 flex items-center">
-                    <SaveIcon />
+                    <SaveIcon
+                      className={`${savedRecipe?.includes(recipeId) ? `fill-orange-400` : ``}`}
+                    />
                     <span className="font-semibold text-black ml-1"> 10K</span>
                   </div>
                   <div className="text-orange-400 flex items-center">

@@ -33,6 +33,10 @@ model User {
   // relations between user and communityrecipe creator
   CommunityRecipe CommunityRecipe[]
   Planner         Planner[]
+  // people who follow me
+  Followers       Subscriber[]      @relation("Followers")
+  // people i follow
+  Followings      Subscriber[]      @relation("Following")
 }
 
 model Recipe {
@@ -63,6 +67,7 @@ model Recipe {
   //@relations between user and saved recipe
   SavedRecipes    SavedRecipe[]
   CommunityRecipe CommunityRecipe[]
+  planners        Planner[]
 }
 
 model Ingredient {
@@ -156,7 +161,6 @@ model CommunityRecipe {
   userId   String
 }
 
-// <--------------- not for now   --------------->
 model Planner {
   id String @id @default(uuid())
 
@@ -166,9 +170,24 @@ model Planner {
 
   date      DateTime
   type      String
+  foodData  Recipe?  @relation(fields: [food], references: [id], onDelete: Cascade)
   food      String?
   foodUrl   String?
   createdAt DateTime @default(now())
+}
+
+model Subscriber {
+  id String @id @default(uuid())
+
+  follower   User   @relation("Following", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId String
+
+  following   User   @relation("Followers", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+
+  createdAt DateTime @default(now())
+
+  @@unique([followerId, followingId])
 }
 
 enum likeType {

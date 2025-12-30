@@ -5,6 +5,7 @@ import {
   deleteARecipe,
   updateRecipe,
   getOneRecipe,
+  fetchUserRecipeData,
 } from "../controller/recipe.controller";
 import { AuthMiddleware } from "../middlewares/auth.middleware"; // import authentication middleware to protect the routes
 import { getAllNote, makeNote } from "../controller/note.controller"; 
@@ -15,6 +16,7 @@ import {
 const router: express.Router = express.Router();
 
 
+router.route("/recipeData").all(AuthMiddleware).get(fetchUserRecipeData) // get all the liked and saved recipe of a user
 router.route("/savedRecipe").all(AuthMiddleware).get(getAllSavedRecipe); // get all saved recipe data
 router.route("/:recipeId").get(getOneRecipe); // get single recipe data
 router

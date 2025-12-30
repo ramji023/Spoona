@@ -29,6 +29,8 @@ const useMinLoader = <TData>({
 
       return () => clearTimeout(timer);
     }
+
+    return undefined;
   }, [query.isLoading, loadingTime, loadStartTime]);
 
   return { ...query, isLoading: loading || query.isLoading };

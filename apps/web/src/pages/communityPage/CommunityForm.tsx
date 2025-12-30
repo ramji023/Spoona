@@ -161,9 +161,21 @@ export default function CommunityForm({ open, close }: CommunityFormType) {
               </button>
               <button
                 type="submit"
-                className="px-3 py-2 rounded-3xl outline-orange-400 outline-1 text-white bg-orange-400 cursor-pointer"
+                disabled={sendCommunityMutation.isPending}
+                className={`px-3 py-2 rounded-3xl outline-orange-400 outline-1 text-white bg-orange-400 flex items-center justify-center gap-2 ${
+                  sendCommunityMutation.isPending
+                    ? "opacity-60 cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}
               >
-                Create
+                {sendCommunityMutation.isPending ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Creating</span>
+                  </>
+                ) : (
+                  "Create"
+                )}
               </button>
             </div>
           </form>

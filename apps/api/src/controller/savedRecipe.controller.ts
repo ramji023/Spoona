@@ -8,48 +8,35 @@ import {
 } from "../models/savedRecipe.model";
 import { ApiError } from "../utils/customError";
 
+// write controller to toggle bookmark recipe
 export const toggleBookMarkRecipe = async (req: Request, res: Response) => {
   const recipeId = req.params.recipeId;
 
-  const parsedBodyObject = z
-    .object({ recipeId: z.uuid("invalid RecipeId") })
-    .safeParse({ recipeId });
-
-  if (!parsedBodyObject.success) {
-    //throw error
-    throw new ApiError(parsedBodyObject.error.issues[0].message, 404);
-  }
-
+  // check wheather user is already saved this recipe or not
   const likeDoc = await findBookmarkRecipe({
-    ...parsedBodyObject.data,
+    recipeId: recipeId,
     userId: req.user!,
   });
+
+  // if user is already saved then delete that row
   if (likeDoc?.id) {
     // update the like status
-    const result = await deleteBookMarkedRecipe(likeDoc?.id);
-    if (!result) {
-      //throw error
-      throw new ApiError("something went wrong while deleting the recipe", 404);
-    }
-    // return response
-    return res.json({ msg: "User successfully Bookmarked recipe" });
+    await deleteBookMarkedRecipe(likeDoc?.id);
+
+    // return  success response
+    return res.json({msg: "Recipe removed from your collection" });
   }
 
-  //create the like status
-  const result = await createBookmarkRecipe({
+  // and  if user is not saved yet then save it
+  //create the save status
+  await createBookmarkRecipe({
     userId: req.user!,
     recipeId: recipeId,
   });
 
-  if (!result) {
-    //throw error
-    throw new ApiError("something went wrong while bookmark the recipe", 404);
-  }
-
-  // return response
-  return res.json({ msg: "User successfully Bookmarked recipe" });
+  // return success response to user
+  return res.json({ msg: "Recipe move into your collection" });
 };
-
 
 // write controller to fetch all saved recipes by a user
 export const getAllSavedRecipe = async (req: Request, res: Response) => {

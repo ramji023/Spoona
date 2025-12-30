@@ -1,18 +1,41 @@
 import { motion, AnimatePresence } from "motion/react";
 import Recipes from "./Recipes";
-import { useRecipes } from "../../react_queries/queries";
 import { RecipeCardSkeleton } from "../../loaders/Loaders";
-import useMinLoader from "../../hooks/useMinLoader";
-import Err from "../../errors/ErrorBoundary";
-const LeftSection = () => {
-  const query = useRecipes();
-  const { data, isLoading, error } = useMinLoader({ query, loadingTime: 800 });
+import { useState } from "react";
+interface Recipes {
+  id: string;
+  title: string;
+  cookTime: string;
+  imageUrl: string;
+  tags: string[];
+  cuisines: string[];
+  categories: string[];
+  user: {
+    username: string;
+    profileImage: string | null;
+  };
+}
+const LeftSection = ({
+  data,
+  isLoading,
+}: {
+  data: Recipes[] | undefined;
+  isLoading: boolean;
+}) => {
+  // state to store selected sorting property
+  const [selectedSort, setSelectSort] = useState<
+    "all" | "time" | "popular" | "latest" | "liked"
+  >("all");
+  // function to change value
+  const handleSortingChange = (
+    value: "all" | "time" | "popular" | "latest" | "liked"
+  ) => {
+    setSelectSort(value);
+  };
 
-  // render Err component if there is any error
-  if (error) {
-    return <Err />;
-  }
   if (data) {
+    // sort the recipes
+    const sortedRecipe = sortRecipesUtil(data, selectedSort);
     return (
       <>
         <div className="flex flex-col gap-6">
@@ -24,13 +47,24 @@ const LeftSection = () => {
             <div className="flex items-center gap-2">
               <label className="text-md text-gray-800">Sort by:</label>
               <select
-                className="px-3 py-2 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-orange-400 "
-                defaultValue="popular"
+                value={selectedSort}
+                onChange={(e) =>
+                  handleSortingChange(
+                    e.target.value as
+                      | "all"
+                      | "time"
+                      | "popular"
+                      | "latest"
+                      | "liked"
+                  )
+                }
+                className={`${selectedSort !== "all" ? "ring-1 ring-orange-400" : ""} px-3 py-2 rounded-xl border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-orange-400`}
               >
+                <option value="all">All</option>
                 <option value="popular">Most Popular</option>
                 <option value="latest">Latest</option>
                 <option value="liked">Most Liked</option>
-                <option value="time">Prep Time</option>
+                <option value="time">Cook Time</option>
               </select>
             </div>
           </div>
@@ -57,7 +91,7 @@ const LeftSection = () => {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <Recipes recipes={data} />
+                  <Recipes recipes={sortedRecipe} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -71,3 +105,35 @@ const LeftSection = () => {
 };
 
 export default LeftSection;
+
+function sortRecipesUtil(
+  recipes: Recipes[],
+  sortBy: "popular" | "latest" | "liked" | "time" | "all"
+): Recipes[] {
+  // Create a copy to avoid mutating original array
+  const result = [...recipes];
+
+  switch (sortBy) {
+    // case "mostLiked":
+    //   return result.sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0));
+
+    // case "popular":
+    //   return result.sort((a, b) => (b.viewsCount || 0) - (a.viewsCount || 0));
+
+    // case "newest":
+    //   return result.sort(
+    //     (a, b) =>
+    //       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    //   );
+
+    // return all the recipes
+    case "all":
+      return result;
+    // sort based on cooking time
+    case "time":
+      return result.sort((a, b) => parseInt(a.cookTime) - parseInt(b.cookTime));
+
+    default:
+      return result; // Return as-is
+  }
+}

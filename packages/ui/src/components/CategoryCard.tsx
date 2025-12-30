@@ -1,6 +1,19 @@
-export function CategoryCard({ categoryName, imagePath }: { categoryName: string; imagePath: string }) {
+export function CategoryCard({
+  categoryName,
+  imagePath,
+  onMove,
+}: {
+  categoryName: string;
+  imagePath: string;
+  onMove: (path: string, value: any) => void;
+}) {
   return (
-    <div className="cursor-pointer relative w-[150px] h-[150px] overflow-hidden rounded-2xl group">
+    <div
+      onClick={() => {
+        onMove("/home", { id: "meal", item: categoryName });
+      }}
+      className="cursor-pointer relative w-[150px] h-[150px] overflow-hidden rounded-2xl group"
+    >
       <img
         src={imagePath}
         alt={categoryName}
@@ -9,16 +22,6 @@ export function CategoryCard({ categoryName, imagePath }: { categoryName: string
       <div className="absolute bottom-0 w-full text-center text-white group-hover:text-orange-400 font-semibold">
         {categoryName}
       </div>
-    </div>
-  );
-}
-
-export function CategorySection({ categories }: { categories: Record<string, string> }) {
-  return (
-    <div className="flex flex-wrap justify-start gap-6">
-      {Object.entries(categories).map(([categoryName, imagePath], index) => (
-        <CategoryCard key={index} categoryName={categoryName} imagePath={imagePath} />
-      ))}
     </div>
   );
 }

@@ -2,40 +2,6 @@ import { Prisma, prisma, PrismaClient } from "@repo/database";
 import { CreateRecipeInput } from "../validations/recipe.validation";
 import { ApiError } from "../utils/customError";
 
-// export const createNewRecipe = async (userData: CreateRecipeInput) => {
-//   try {
-//     const recipe = await prisma.recipe.create({
-//       data: {
-//         userId: userData.userId,
-//         title: userData.title,
-//         description: userData.description,
-//         cookTime: userData.cookTime,
-//         prepTime: userData.prepTime,
-//         imageUrl: userData.imageUrl,
-//         tags: userData.tags,
-//         cuisines: userData.cuisines,
-//         categories: userData.categories,
-//         ingredients: {
-//           create: userData.ingredients.map((ingredient) => ({
-//             name: ingredient.name,
-//             quantity: ingredient.quantity,
-//           })),
-//         },
-//         instructions: {
-//           create: userData.instructions.map((instruction) => ({
-//             step: instruction.step,
-//           })),
-//         },
-//       },
-//     });
-//     return recipe;
-//   } catch (err) {
-//     console.log("err : ", err);
-//   }
-// };
-
-// write model
-
 // write model function to create the new recipe in recipe table
 export const createNewRecipe = async (
   userData: CreateRecipeInput,
@@ -123,7 +89,7 @@ export const deleteRecipe = async (recipeId: string) => {
  *
  *
  */
-// model function to ge the complete recipe data for given recipe Id
+// model function to get the complete recipe data for given recipe Id
 export const getSingleRecipe = async (recipeId: string) => {
   try {
     return await prisma.recipe.findUnique({
@@ -147,6 +113,7 @@ export const getSingleRecipe = async (recipeId: string) => {
         },
         user: {
           select: {
+            id: true,
             username: true,
             profileImage: true,
           },
@@ -183,5 +150,46 @@ export const getAllRecipes = async () => {
       "Something went wrong while fetching all the recipes",
       404
     );
+  }
+};
+
+// write model function to return save and like recipe data
+export const fetchRecipesData = async (id: string) => {
+  try {
+    const userData = await prisma.user.findUnique({
+      where: { id: id },
+      select: {
+        savedRecipes: {
+          select: {
+            userId: true,
+            recipeId: true,
+          },
+        },
+        Followings: {
+          select: {
+            followingId:true,
+          },
+        },
+      },
+    });
+    console.log(userData)
+    return {
+      savedRecipes: userData?.savedRecipes.map((sr) => sr.recipeId),
+      followingData: userData?.Followings.map((f) => f.followingId),
+    };
+  } catch (err) {
+    throw new ApiError(
+      "Something went wrong while fetching user interaction",
+      404
+    );
+  }
+};
+
+// write model function to check recipe id is valid or not
+export const isValidRecipeId = async (id: string) => {
+  try {
+    return await prisma.recipe.findUnique({ where: { id: id } });
+  } catch (err) {
+    throw new ApiError("Recipe Id is invalid", 404);
   }
 };

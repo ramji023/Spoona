@@ -180,9 +180,9 @@ export const ingredientsMap: Record<string, string> = {
 export const categoriesMap: Record<string, string> = {
   Beverages:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596871/Beverages_x983mw.jpg",
-  Main_course:
+  "Main course":
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596872/Main_Course_xqkxav.jpg",
-  Non_vageterian:
+  "Non vageterian":
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596872/Stews_xkjhct.jpg",
   Desserts:
     "https://res.cloudinary.com/dqr7qcgch/image/upload/v1758596872/Desserts_qjbooy.jpg",

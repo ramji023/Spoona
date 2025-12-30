@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { RefreshCcw, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 export default function Err() {
+  
   return (
     <div className="flex items-center justify-center min-h-[80vh] px-4">
       <motion.div

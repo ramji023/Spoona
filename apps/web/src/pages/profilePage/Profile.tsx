@@ -11,7 +11,7 @@ import { Edit } from "lucide-react";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
 import Recipes from "../HomePage/Recipes";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
-import { Spinner, UserProfileSkeleton } from "../../loaders/Loaders";
+import {UserProfileSkeleton } from "../../loaders/Loaders";
 import { AxiosError } from "axios";
 import Err from "../../errors/ErrorBoundary";
 import useMinLoader from "../../hooks/useMinLoader";
@@ -208,10 +208,12 @@ export default function Profile() {
                 )}
                 <div className="flex gap-4 items-center justify-center p-2 text-lg">
                   <div className="font-semibold text-orange-400 text-xl">
-                    0 <span className=" text-gray-400 text-lg">Following</span>
+                    {data._count.Followings}{" "}
+                    <span className=" text-gray-400 text-lg">Following</span>
                   </div>
                   <div className="font-semibold text-orange-400 text-xl">
-                    0 <span className=" text-gray-400 text-lg ">Followers</span>
+                    {data._count.Followers}{" "}
+                    <span className=" text-gray-400 text-lg ">Followers</span>
                   </div>
                 </div>
               </div>
@@ -373,19 +375,19 @@ function ProfileUpdation({
             Cancel
           </button>
           <button
-            className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600"
+            className={`px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 flex items-center justify-center gap-2 ${
+              loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+            }`}
             onClick={handleSave}
+            disabled={loading}
           >
-            <span
-              className={`${loading ? "opacity-0" : "opacity-100"} transition-opacity duration-200`}
-            >
-              Signin
-            </span>
-            {/* Spinner */}
-            {loading && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Spinner />
-              </div>
+            {loading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Updating</span>
+              </>
+            ) : (
+              "Update"
             )}
           </button>
         </div>

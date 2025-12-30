@@ -6,23 +6,42 @@ interface recipeData {
   userId: string;
   recipeId: string;
 }
+
+// model function to saved the recipe
 export const createBookmarkRecipe = async (recipeData: recipeData) => {
-  return await prisma.savedRecipe.create({
-    data: {
-      userId: recipeData.userId,
-      recipeId: recipeData.recipeId,
-    },
-  });
+  try {
+    return await prisma.savedRecipe.create({
+      data: {
+        userId: recipeData.userId,
+        recipeId: recipeData.recipeId,
+      },
+    });
+  } catch (err) {
+    throw new ApiError("Something went wrong while saving recipe", 404);
+  }
 };
 
+// model function to find the existing data of saved recipe
 export const findBookmarkRecipe = async (recipeData: recipeData) => {
-  return await prisma.savedRecipe.findFirst({
-    where: { userId: recipeData.userId, recipeId: recipeData.recipeId },
-  });
+  try {
+    return await prisma.savedRecipe.findFirst({
+      where: { userId: recipeData.userId, recipeId: recipeData.recipeId },
+    });
+  } catch (err) {
+    throw new ApiError(
+      "Something went wrong while finding existing  saved recipe data",
+      404
+    );
+  }
 };
 
+// model function to unsaved the recipe
 export const deleteBookMarkedRecipe = async (id: string) => {
-  return await prisma.savedRecipe.delete({ where: { id: id } });
+  try {
+    return await prisma.savedRecipe.delete({ where: { id: id } });
+  } catch (err) {
+    throw new ApiError("Something went wrong while unsaving the recipe", 404);
+  }
 };
 
 // write model function to fetch all the saved recipe from database

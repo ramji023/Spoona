@@ -5,6 +5,7 @@ import {
   deleteRecipe,
   getSingleRecipe,
   updateNewRecipe,
+  fetchRecipesData,
 } from "../models/recipe.model";
 import { createRecipeValidation } from "../validations/recipe.validation";
 import {
@@ -73,6 +74,20 @@ export const createRecipe = async (req: Request, res: Response) => {
 
   // after creating recipe send the success response data and recipe data to user
   res.json({ data: result, msg: "new recipe has been created successfully" });
+};
+
+// controller to fetch all the recipe and saved recipe data  of authenticate user
+export const fetchUserRecipeData = async (req: Request, res: Response) => {
+  const userId = req.user; // store user id
+
+  // now call model function to return all saved and liked recipe data
+  const result = await fetchRecipesData(userId as string);
+
+  // return the success response to user
+  return res.json({
+    data: result,
+    message: "Fetch all the saved Recipe data successfully",
+  });
 };
 
 // delete a Recipe controller

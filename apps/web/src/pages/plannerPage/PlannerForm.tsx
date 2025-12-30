@@ -1,4 +1,10 @@
 import { CrossIcon } from "@repo/ui/icons/CrossIcon";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "../../utils/axiosInstance";
+import { useSuccessMsgStore } from "../../stores/successMsgStore";
+import { useFailureMsgStore } from "../../stores/failureMsgStore";
+import { useRef, useState } from "react";
+import { PlannerInput } from "../../types/planner";
 
 interface PropType {
   open: boolean;
@@ -13,6 +19,75 @@ interface PropType {
 }
 
 export const PlannerForm = (prop: PropType) => {
+  // write state to manage input value
+  const mealUrlRef = useRef<HTMLTextAreaElement | null>(null);
+  // write state to manage error
+  const [error, setError] = useState("");
+  // function to set success message
+  const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
+  // function to set failure message
+  const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
+
+  // manage value state when user click select planner type
+  const [plannerType, setPlannerType] = useState("Breakfast");
+  // manage date state in planner form
+  const [date, setDate] = useState("");
+  //write mutation to add planner item
+  const plannerMutation = useMutation({
+    mutationFn: async (data: PlannerInput) => {
+      const response = await api.post("/api/v1/planner", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("response from server : ", data);
+      setSuccessMsg("You have successfully set the planner");
+      setError("");
+      mealUrlRef.current = null;
+      prop.close();
+    },
+    onError: (err: Error | any) => {
+      console.error("planner creation failed : ", err);
+      if (err.request) {
+        setFailureMsg("Network error: Cannot connect to server");
+      } else if (err.response) {
+        setFailureMsg(err.response.data?.message || "planner creation failed");
+      } else {
+        setFailureMsg("Something went wrong.Try Again");
+      }
+      prop.close();
+    },
+  });
+
+  // when user click to save button then run this function
+  function handlePlannerCreation() {
+    // if type of planner present in prop
+    if (prop.type && prop.date && mealUrlRef.current) {
+      if (mealUrlRef.current.value === "") {
+        setError("Please enter meal");
+        return;
+      }
+      const data = {
+        date: prop.date,
+        type: prop.type,
+        foodUrl: mealUrlRef.current.value,
+      };
+      plannerMutation.mutate(data);
+    }
+    // if recipe data present in prop then
+    if (prop.recipeData) {
+      if (date === "") {
+        setError("Please select date");
+        return;
+      }
+      const data = {
+        date: new Date(date),
+        type: plannerType,
+        food: prop.recipeData.id,
+      };
+      plannerMutation.mutate(data);
+    }
+  }
+
   if (!prop.open) return null;
   return (
     <>
@@ -30,22 +105,42 @@ export const PlannerForm = (prop: PropType) => {
           </div>
           {/* error div  */}
           <div className="min-h-[13px]">
-            <span className="text-xs text-red-500 flex items-center justify-center">
-              Error occured
+            <span className="text-sm text-red-500 flex items-center justify-center">
+              {error}
             </span>
           </div>
 
           {/* Form Fields */}
           <div className="flex flex-col gap-4">
-            {/* Date Input */}
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Date</label>
-              <input
-                type="date"
-                defaultValue={formatDate(prop.date ?? new Date())}
-                className="px-3 py-2 rounded-lg outline-1 focus:outline-orange-400"
-              />
-            </div>
+            {prop.date ? (
+              <>
+                {/* Date Input */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium text-gray-700">
+                    Date
+                  </label>
+                  <input
+                    value={formatDate(prop.date)}
+                    className="px-3 py-2 rounded-lg outline-1 focus:outline-orange-400"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Date Input */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium text-gray-700">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    onChange={(e) => setDate(e.target.value)}
+                    value={date}
+                    className="px-3 py-2 rounded-lg outline-1 focus:outline-orange-400"
+                  />
+                </div>
+              </>
+            )}
 
             {prop.type ? (
               <>
@@ -67,7 +162,11 @@ export const PlannerForm = (prop: PropType) => {
                   <label className="text-sm font-medium text-gray-700">
                     Meal Type
                   </label>
-                  <select className="px-3 py-2 rounded-lg outline-1 focus:outline-orange-400">
+                  <select
+                    value={plannerType}
+                    onChange={(e) => setPlannerType(e.target.value)}
+                    className="px-3 py-2 rounded-lg outline-1 focus:outline-orange-400"
+                  >
                     <>
                       <option value="Breakfast">Breakfast</option>
                       <option value="Lunch">Lunch</option>
@@ -112,6 +211,7 @@ export const PlannerForm = (prop: PropType) => {
                     Meal URL / Note
                   </label>
                   <textarea
+                    ref={mealUrlRef}
                     placeholder="Paste Spoona Recipe URL or write a note..."
                     rows={3}
                     className="px-3 py-2 rounded-lg outline-1 focus:outline-orange-400 resize-none"
@@ -128,8 +228,23 @@ export const PlannerForm = (prop: PropType) => {
             >
               Cancel
             </button>
-            <button className="px-3 py-2 rounded-3xl outline-orange-400 outline-1 text-white bg-orange-400 cursor-pointer">
-              Save
+            <button
+              onClick={handlePlannerCreation}
+              disabled={plannerMutation.isPending}
+              className={`px-3 py-2 rounded-3xl outline-orange-400 outline-1 text-white bg-orange-400 flex items-center justify-center gap-2 ${
+                plannerMutation.isPending
+                  ? "opacity-60 cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
+              {plannerMutation.isPending ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Saving</span>
+                </>
+              ) : (
+                "Save"
+              )}
             </button>
           </div>
         </div>

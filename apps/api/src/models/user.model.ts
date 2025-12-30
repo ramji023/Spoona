@@ -51,6 +51,12 @@ export const findUserById = async (userData: { id: string }) => {
         profileImage: true,
         bio: true,
         recipes: true,
+        _count: {
+          select: {
+            Followers: true,
+            Followings: true,
+          },
+        },
       },
     });
     return user;
@@ -96,6 +102,13 @@ export const popularCreators = async () => {
         id: true,
         username: true,
         profileImage: true,
+        bio: true,
+        _count: {
+          select: {
+            Followers: true,
+            Followings: true,
+          },
+        },
       },
     });
   } catch (err) {
@@ -103,5 +116,30 @@ export const popularCreators = async () => {
       "Something went wrong while fetching popular creators data",
       404
     );
+  }
+};
+
+// model function to get complete data of that one creator
+export const creatorData = async (id: string) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: id },
+      select: {
+        id: true,
+        username: true,
+        profileImage: true,
+        bio: true,
+        recipes: true,
+        _count: {
+          select: {
+            Followers: true,
+            Followings: true,
+          },
+        },
+      },
+    });
+    return user;
+  } catch (err) {
+    throw new ApiError("Something went wrong while fetching creator data", 404);
   }
 };

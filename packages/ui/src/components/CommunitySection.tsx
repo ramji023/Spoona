@@ -17,11 +17,11 @@ interface PropType {
   move: (path: string) => void;
 }
 
-function CommunityCard(props: PropType) {
+export function CommunityCard(props: PropType) {
   return (
     <>
       <div
-        onClick={() => props.move(props.community.id)}
+        onClick={() => props.move(`/communities/${props.community.id}`)}
         className={` ${props.width} flex-col items-center cursor-pointer hover:text-orange-400`}
       >
         <div
@@ -62,6 +62,7 @@ function CommunityCard(props: PropType) {
     </>
   );
 }
+
 export function CommunitySection({
   width,
   height,

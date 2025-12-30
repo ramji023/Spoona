@@ -32,7 +32,7 @@ export const diet = [
 export const categories = [
   "Breakfast",
   "Lunch",
-  "Non-vageterian",
+  "Non vageterian",
   "Dinner",
   "Brunch",
   "Appetizers",

@@ -1,4 +1,4 @@
-export const SaveIcon = () => {
+export const SaveIcon = ({className}:{className:string}) => {
   return (
     <>
       <svg
@@ -7,7 +7,7 @@ export const SaveIcon = () => {
         viewBox="0 0 24 24"
         strokeWidth="1.5"
         stroke="currentColor"
-        className="size-7"
+        className={`${className} size-7`}
       >
         <path
           strokeLinecap ="round"

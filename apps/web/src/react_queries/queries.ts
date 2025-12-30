@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { UseQueryOptions } from "@tanstack/react-query";
 import { api } from "../utils/axiosInstance";
-import { PopularCreator, UserProfile } from "../types/user";
-import { Recipe, Recipes, SavedRecipe } from "../types/recipe";
+import { CreatorProfile, PopularCreator, UserDataType, UserProfile } from "../types/user";
+import { Recipe, Recipes, SavedRecipeType } from "../types/recipe";
 import { NoteType } from "../types/notes";
 import { CommunitiesType, Community } from "../types/community";
+import { PlannerData } from "../types/planner";
 //fetch user profile
 export const useProfile = () => {
   return useQuery<UserProfile>({
@@ -65,7 +66,7 @@ export const useNotes = (
 
 //react query to fetch all saved recipes
 export const useSavedRecipes = () => {
-  return useQuery<SavedRecipe[]>({
+  return useQuery<SavedRecipeType[]>({
     queryKey: ["savedRecipe"],
     queryFn: async () => {
       const response = await api.get("/api/v1/recipe/savedRecipe");
@@ -112,6 +113,49 @@ export const usePopularCreators = () => {
       return response.data.data;
     },
     staleTime: 1000 * 60 * 5,
+    refetchOnMount: false,
+  });
+};
+
+// react-query to fetch complete data for a given creator Id
+export const useCreatorData = (creatorId: string | undefined) => {
+  return useQuery<CreatorProfile>({
+    queryKey: ["creator", creatorId],
+    queryFn: async () => {
+      const response = await api.get(`/api/v1/user/creators/${creatorId}`);
+      return response.data.data;
+    },
+    staleTime:1000*60*5,
+    refetchOnMount:false,
+    enabled:!!creatorId
+  });
+};
+
+// react-query to fetch user all saved and liked recipe data
+export const useUserRecipeData = (id: string | null, options = {}) => {
+  return useQuery<UserDataType>({
+    queryKey: [id],
+    queryFn: async () => {
+      const response = await api.get("/api/v1/recipe/recipeData");
+      return response.data.data;
+    },
+    staleTime: 1000 * 60 * 20,
+    refetchOnMount: false,
+    enabled: !!id,
+    ...options,
+  });
+};
+
+// react-query to fetch all the planners of authenticate user
+export const useFetchPlanners = (id: string | null) => {
+  return useQuery<PlannerData[]>({
+    queryKey: ["planner"],
+    queryFn: async () => {
+      const response = await api.get("/api/v1/planner");
+      return response.data.data;
+    },
+    staleTime: 1000 * 60 * 5,
+    enabled: !!id,
     refetchOnMount: false,
   });
 };

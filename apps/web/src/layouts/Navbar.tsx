@@ -5,9 +5,10 @@ import { useAuthStore } from "../stores/authStore";
 import { UserIcon } from "@repo/ui/icons/UserIcon";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../utils/axiosInstance";
+import { NavLink } from "react-router-dom";
 export default function Navbar() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const setIsAuthenticated = useAuthStore((s) => s.setIsAuthenticated);
+  // const setIsAuthenticated = useAuthStore((s) => s.setIsAuthenticated);
   const setToken = useAuthStore((s) => s.setToken);
   const navigate = useNavigate();
 
@@ -20,8 +21,8 @@ export default function Navbar() {
     },
     onSuccess: (data) => {
       console.log("Logout successful:", data);
-      setIsAuthenticated(false);
-      setToken("","");
+      useAuthStore.setState({id:null,isAuthenticated:false,token:null,savedRecipeData:null})
+      setToken("", "");
       navigate("/");
     },
     onError: (err) => {
@@ -37,21 +38,38 @@ export default function Navbar() {
         </Link>
         <div>
           <ul className="flex gap-x-10 items-center ">
-            <Link to="home" className="cursor-pointer hover:text-orange-400">
+            <NavLink
+              to="home"
+              className={({ isActive }) =>
+                `${isActive ? "text-orange-400" : ""} cursor-pointer hover:text-orange-400`
+              }
+            >
               Recipes
-            </Link>
-            <Link to="saved" className="cursor-pointer hover:text-orange-400">
+            </NavLink>
+            <NavLink
+              to="saved"
+              className={({ isActive }) =>
+                `${isActive ? "text-orange-400" : ""} cursor-pointer hover:text-orange-400`
+              }
+            >
               Saved
-            </Link>
-            <Link to="planner" className="cursor-pointer hover:text-orange-400">
+            </NavLink>
+            <NavLink
+              to="planner"
+              className={({ isActive }) =>
+                `${isActive ? "text-orange-400" : ""} cursor-pointer hover:text-orange-400`
+              }
+            >
               Planner
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               to="communities"
-              className="cursor-pointer hover:text-orange-400"
+              className={({ isActive }) =>
+                `${isActive ? "text-orange-400" : ""} cursor-pointer hover:text-orange-400`
+              }
             >
               Communities
-            </Link>
+            </NavLink>
           </ul>
         </div>
         {isAuthenticated ? (

@@ -9,6 +9,7 @@ import {
 // import user model functions to perform database operations
 import {
   createNewUser,
+  creatorData,
   findUserByEmail,
   findUserById,
   popularCreators,
@@ -142,13 +143,13 @@ export const updateProfile = async (req: Request, res: Response) => {
   //   ? removeExtraSpaces(req.body.username)
   //   : undefined;
   // const bio = req.body.bio ? removeExtraSpaces(req.body.bio) : undefined;
-  console.log("hit updated profile route")
-  console.log(req.body)
+  console.log("hit updated profile route");
+  console.log(req.body);
   const normalizeData = removeUndefined(req.body); // first normalize the data remove undefined values from object
-  console.log('normalize data : ',normalizeData)
+  console.log("normalize data : ", normalizeData);
   // then pass the normalize data to zod schema for validation
   const parsedBodyObject = profileDataValidation.safeParse(normalizeData);
-  console.log("after validation : ",parsedBodyObject)
+  console.log("after validation : ", parsedBodyObject);
   // if validation failed then send the custom error
   if (!parsedBodyObject.success) {
     //throw error
@@ -164,7 +165,6 @@ export const updateProfile = async (req: Request, res: Response) => {
   // and then return the success response to user
   return res.json({ message: "user updated profile data successfully" });
 };
-
 
 // write controller to generate new access token and refresh token
 export const refreshedToken = async (req: Request, res: Response) => {
@@ -233,5 +233,24 @@ export const getPopularCreators = async (req: Request, res: Response) => {
   return res.json({
     data: creators,
     message: "Fetch all the popular creators data",
+  });
+};
+
+// write controller to get complete data of a creator
+export const getCreatorData = async (req: Request, res: Response) => {
+  // store creator id
+  const creatorId = req.params.creatorId;
+
+  // if creator id is not present then show custom error
+  if (!creatorId) {
+    throw new ApiError("Creator Id is required", 404);
+  }
+  //find all data of this creator
+  const cretor = await creatorData(creatorId);
+
+  // send data to client
+  return res.json({
+    data: cretor,
+    msg: "Fetch complete data of that one creator",
   });
 };

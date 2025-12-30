@@ -8,6 +8,7 @@ import {
   refreshedToken,
   signout,
   getPopularCreators,
+  getCreatorData,
 } from "../controller/user.controller";
 import { AuthMiddleware } from "../middlewares/auth.middleware"; // import authentication middleware to protect the routes
 
@@ -17,5 +18,6 @@ router.post("/auth/signout", AuthMiddleware, signout); // handle user signout op
 router.route("/").all(AuthMiddleware).get(getProfileData).post(updateProfile); // handle user profile-data based operations like update profile, get profile 
 // router.route("/avatar").all(AuthMiddleware).post(changeAvatar); // handle user changeAvatar (profile picture ) operation
 router.route("/refresh").post(refreshedToken); // handle user refresh token operation 
-router.route("/creators").get(getPopularCreators)
+router.route("/creators").get(getPopularCreators) // handle to send all popular creators data
+router.route("/creators/:creatorId").get(getCreatorData) // handle to send complete data for given creatorId
 export default router;

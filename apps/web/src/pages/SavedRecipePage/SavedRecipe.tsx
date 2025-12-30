@@ -7,14 +7,57 @@ import Recipes from "../HomePage/Recipes";
 import useMinLoader from "../../hooks/useMinLoader";
 import Err from "../../errors/ErrorBoundary";
 import { SavedRecipesSkeleton } from "../../loaders/Loaders";
+import { useEffect, useState } from "react";
+import { SavedRecipeType } from "../../types/recipe";
 
 const SavedRecipe = () => {
+  //  state to manage serach input
+  const [searchInput, setSearchInput] = useState("");
   const query = useSavedRecipes();
   const { data, isLoading, error } = useMinLoader({ query, loadingTime: 800 });
+
+  const [recipes, setRecipes] = useState(data); // state to store saved recipe
+  // when user type in search boc
+  function searchInputUpdate(e: React.ChangeEvent<HTMLInputElement>) {
+    setSearchInput(e.target.value);
+  }
+
+  // write effect function to use seach functionality
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchInput.trim() === "") {
+        // if search empty show all recipes
+        setRecipes(data);
+      } else {
+        // otherwise filter recipe
+        const searchRecipes = applySearch(data, searchInput);
+        setRecipes(searchRecipes);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchInput, data]);
+
+  // function to return recipe according to search input
+  function applySearch(
+    recipes: SavedRecipeType[] | undefined,
+    searchInput: string
+  ) {
+    if (!recipes) return undefined;
+    return recipes.filter((recipe) => {
+      console.log(recipe.recipe.title.toLowerCase());
+      console.log(searchInput.toLowerCase());
+      return recipe.recipe.title
+        .toLowerCase()
+        .includes(searchInput.toLowerCase());
+    });
+  }
+
+  // if there is any error show Err component
   if (error) {
     return <Err />;
   }
 
+  // if savedRecipes is processing then show loading state
   if (isLoading) {
     return <SavedRecipesSkeleton />;
   }
@@ -23,20 +66,22 @@ const SavedRecipe = () => {
       <div className="mx-20 p-10  flex flex-col gap-4">
         {/* first div  */}
         <div className="flex justify-between my-2">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-3">
             <LeftArrowIcon />
             <h1 className="text-3xl font-semibold">Saved</h1>
           </div>
 
-          <button className="text-lg font-semibold  cursor-pointer bg-orange-400 text-white outline-gray-400 outline  rounded-3xl px-6 py-2 mx-3 ">
+          <button className="text-lg font-semibold  cursor-pointer bg-orange-400 text-white outline  rounded-3xl px-6 py-2 mx-3 ">
             Add
           </button>
         </div>
         {/* second div  */}
         <div className="my-3 flex items-center gap-3 ">
           <input
+            value={searchInput}
+            onChange={searchInputUpdate}
             type="text"
-            placeholder="Search Recipe"
+            placeholder="Search Recipe By Title"
             className="w-[90%] h-[45px] rounded-4xl bg-gray-200 focus:outline-orange-400 px-4"
           />
           <div className="outline-2 outline-gray-200 rounded-3xl  flex justify-center items-center px-4 py-2 hover:outline-orange-400">
@@ -55,10 +100,10 @@ const SavedRecipe = () => {
           </div>
         </div>
         {/* forth div  */}
-        {data ? (
+        {recipes ? (
           <>
             <Recipes
-              recipes={data.map((s) => ({
+              recipes={recipes.map((s) => ({
                 id: s.recipe.id,
                 title: s.recipe.title,
                 cookTime: s.recipe.cookTime,

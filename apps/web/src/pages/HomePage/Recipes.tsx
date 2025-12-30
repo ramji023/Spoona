@@ -3,8 +3,13 @@ import { SaveIcon } from "@repo/ui/icons/SaveIcon";
 import { CircleIcon } from "@repo/ui/icons/CircleIcon";
 import { ProfileIcon } from "@repo/ui/icons/profileIcon";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../stores/authStore";
 const RecipeCard = ({ recipe }: { recipe: Recipes }) => {
+
+  // state to store saved recipe data
+  const savedRecipe = useAuthStore((s) => s.savedRecipeData);
   const navigate = useNavigate();
+
   return (
     <>
       <div
@@ -17,7 +22,9 @@ const RecipeCard = ({ recipe }: { recipe: Recipes }) => {
             {} 23
           </div>
           <div className="absolute right-2 top-2 text-white z-10">
-            <SaveIcon />
+            <SaveIcon
+              className={`${savedRecipe && savedRecipe.includes(recipe.id) && `fill-white`}`}
+            />
           </div>
           <img
             src={recipe.imageUrl}

@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 import { RecipeForm } from "../../types/recipe";
 import { useFailureMsgStore } from "../../stores/failureMsgStore";
 import Err from "../../errors/ErrorBoundary";
-import { diet,categories,cuisines } from "../../utils/recipe_filters";
+import { diet, categories, cuisines } from "../../utils/recipe_filters";
 import { AutocompleteInput } from "./AutoCompleteInput";
 import { useSuccessMsgStore } from "../../stores/successMsgStore";
 // write controller to add the recipe
@@ -26,7 +26,7 @@ const AddRecipe = () => {
   // function to set the failure message
   const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
   // function to set the success message
-  const setSuccessMsg = useSuccessMsgStore((s)=>s.setSuccessMsg)
+  const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
   console.log("Add recipe component re-rendered ");
   // state to store communities array
   const [communities, setCommuties] = useState<
@@ -44,7 +44,7 @@ const AddRecipe = () => {
     },
     onSuccess: (data) => {
       console.log("Recipe added successfully", data);
-      setSuccessMsg("Recipe has been created successfully")
+      setSuccessMsg("Recipe has been created successfully");
       reset();
       navigate(-1);
     },
@@ -71,7 +71,7 @@ const AddRecipe = () => {
     },
     onSuccess: (data) => {
       console.log("Recipe added successfully", data);
-      setSuccessMsg("Recipe has been uploaded on community successfully")
+      setSuccessMsg("Recipe has been uploaded on community successfully");
       reset();
       navigate(-1);
     },
@@ -171,12 +171,14 @@ const AddRecipe = () => {
   if (isLoading) {
     return <>Community is loading</>;
   }
-  if ( error) {
+  if (error) {
     console.log("communities fetching error" + error);
     // if there is an error then show error to user
-    return <Err/>
+    return <Err />;
     // alert("Something is messedup");
   }
+
+  const loading = recipeMutation.isPending || communityRecipeMutation.isPending;
   return (
     <>
       <div className="m-15 px-15 py-4">
@@ -193,9 +195,19 @@ const AddRecipe = () => {
             </div>
             <button
               type="submit"
-              className="text-lg font-semibold bg-orange-400 cursor-pointer text-white  rounded-3xl px-6 py-2 mx-3 "
+              disabled={loading}
+              className={`text-lg font-semibold bg-orange-400 text-white rounded-3xl px-6 py-2 mx-3 flex items-center justify-center gap-2 ${
+                loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+              }`}
             >
-              Save
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Saving</span>
+                </>
+              ) : (
+                "Save"
+              )}
             </button>
           </div>
           <div className="flex-col items-center justify-center">
@@ -235,7 +247,7 @@ const AddRecipe = () => {
               })}
               error={errors.description?.message as string}
             />
-           {/* cuisines with AutocompleteInput */}
+            {/* cuisines with AutocompleteInput */}
             <Controller
               name="cuisines"
               control={control}
@@ -281,7 +293,6 @@ const AddRecipe = () => {
                 />
               )}
             />
-
 
             {ingredientFields.map((field, index) => (
               <InputBoxVariant
