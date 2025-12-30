@@ -25,7 +25,6 @@ export const useFollowMutation = (creatorId: string | undefined) => {
       queryClient.invalidateQueries({
         queryKey: [useAuthStore.getState().id],
       });
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
     onError: (err: Error | any) => {
       if (err instanceof AxiosError) {

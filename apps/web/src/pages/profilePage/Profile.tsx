@@ -15,9 +15,12 @@ import { UserProfileSkeleton } from "../../loaders/Loaders";
 import { AxiosError } from "axios";
 import Err from "../../errors/ErrorBoundary";
 import useMinLoader from "../../hooks/useMinLoader";
-// import { useAuthStore } from "../../stores/authStore";
+import { useAuthStore } from "../../stores/authStore";
+
 export default function Profile() {
   const navigate = useNavigate();
+  const followingData = useAuthStore((s)=>s.followingData)?.length;
+  const followersData = useAuthStore((s)=>s.followersData)?.length;
   const setSuccessMsg = useSuccessMsgStore((s) => s.setSuccessMsg);
   const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
   const [err, setError] = useState("");
@@ -212,11 +215,11 @@ export default function Profile() {
                 )}
                 <div className="flex gap-4 items-center p-2 text-lg flex-wrap">
                   <div className="font-semibold text-orange-400 text-xl">
-                    {data._count.Followings}{" "}
+                    {followingData}{" "}
                     <span className="text-gray-400 text-lg">Following</span>
                   </div>
                   <div className="font-semibold text-orange-400 text-xl">
-                    {data._count.Followers}{" "}
+                    {followersData}{" "}
                     <span className="text-gray-400 text-lg">Followers</span>
                   </div>
                 </div>

@@ -170,12 +170,18 @@ export const fetchRecipesData = async (id: string) => {
             followingId:true,
           },
         },
+        Followers:{
+          select:{
+            followerId:true
+          }
+        }
       },
     });
     console.log(userData)
     return {
       savedRecipes: userData?.savedRecipes.map((sr) => sr.recipeId),
       followingData: userData?.Followings.map((f) => f.followingId),
+      followersData:userData?.Followers.map((f)=>f.followerId)
     };
   } catch (err) {
     throw new ApiError(

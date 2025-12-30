@@ -43,5 +43,6 @@ export type CreatorProfile = {
 
 export type UserDataType ={
   savedRecipes:string[];
-  followingData:string[]
+  followingData:string[];
+  followersData:string[]
 }

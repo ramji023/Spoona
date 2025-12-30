@@ -6,10 +6,12 @@ type AuthState = {
   id: string | null;
   savedRecipeData: string[] | null; // store all the saved recipe data
   followingData: string[] | null; // store all the following data
+  followersData:string[] | null;// store all the  followers data
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   setToken: (token: string | null, id: string | null) => void;
   setSavedRecipe: (savedRecipeData: string[]) => void;
   setFollowingData: (followingData: string[]) => void;
+  setFollowersData:(followersData:string[])=>void;
 };
 export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
@@ -17,8 +19,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   id: null,
   savedRecipeData: null,
   followingData: null,
+  followersData:null,
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   setToken: (token: string | null, id: string | null) => set({ token, id }),
   setSavedRecipe: (savedRecipeData) => set({ savedRecipeData }),
   setFollowingData: (followingData) => set({ followingData }),
+  setFollowersData:(followersData)=>set({followersData})
 }));

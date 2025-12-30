@@ -29,6 +29,7 @@ function App() {
   const id = useAuthStore((s) => s.id);
   const setSavedRecipe = useAuthStore((s) => s.setSavedRecipe); // function to store user saved recipes
   const setFollowingData = useAuthStore((s) => s.setFollowingData); // function to store user following data
+  const setFollowersData = useAuthStore((s) => s.setFollowersData); // fucntion to store user followers data
   const [loading, setLoading] = useState(true);
 
   const {
@@ -77,9 +78,14 @@ function App() {
 
   // run this effect to fetch user interactions if user is authenticated
   useEffect(() => {
-    if (userRecipeData?.savedRecipes && userRecipeData.followingData) {
+    if (
+      userRecipeData?.savedRecipes &&
+      userRecipeData.followingData &&
+      userRecipeData.followersData
+    ) {
       setSavedRecipe(userRecipeData.savedRecipes);
       setFollowingData(userRecipeData.followingData);
+      setFollowersData(userRecipeData.followersData);
     }
   }, [userRecipeData, setSavedRecipe]);
 
