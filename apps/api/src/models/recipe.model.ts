@@ -16,7 +16,7 @@ export const createNewRecipe = async (
         cookTime: userData.cookTime,
         prepTime: userData.prepTime,
         imageUrl: userData.imageUrl,
-        tags: userData.diets,
+        tags: userData.tags,
         cuisines: userData.cuisines,
         categories: userData.categories,
         ingredients: {
@@ -48,7 +48,7 @@ export const updateNewRecipe = async (recipeData: CreateRecipeInput) => {
       cookTime: recipeData.cookTime,
       prepTime: recipeData.prepTime,
       imageUrl: recipeData.imageUrl,
-      tags: recipeData.diets,
+      tags: recipeData.tags,
       ingredients: {
         deleteMany: {},
         create: recipeData.ingredients.map((ingredient) => ({
