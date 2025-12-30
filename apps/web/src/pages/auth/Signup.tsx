@@ -82,7 +82,7 @@ export default function Signup() {
                 {...register("email", {
                   required: { value: true, message: "Email is required" },
                   maxLength: {
-                    value: 20,
+                    value: 50,
                     message: "Email should be less than 20 characters",
                   },
                   minLength: {
@@ -104,7 +104,7 @@ export default function Signup() {
                 {...register("password", {
                   required: { value: true, message: "Password is required" },
                   maxLength: {
-                    value: 20,
+                    value: 50,
                     message: "Password should be less than 12 characters",
                   },
                   minLength: {
