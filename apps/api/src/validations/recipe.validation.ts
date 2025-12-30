@@ -27,7 +27,7 @@ export const createRecipeValidation = z.object({
   cookTime: z.string("Cook time is required").max(10, "Cook time is too long"),
   prepTime: z.string("Prep time is required").max(10, "Prep time is too long"),
   imageUrl: z.string("Image URL is required").url("Invalid image URL"),
-  diets: z.array(
+  tags: z.array(
     z.string("Diet must be a string"),
     "Diets must be an array of strings"
   ),

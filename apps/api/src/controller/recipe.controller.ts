@@ -54,7 +54,7 @@ export const createRecipe = async (req: Request, res: Response) => {
         parseInt(normalizeObject.prepMinutes)
     ),
     imageUrl: normalizeObject.imageUrl,
-    tags: convertIntoArray(normalizeObject.tags),
+    tags: convertIntoArray(normalizeObject.diets),
     cuisines: convertIntoArray(normalizeObject.cuisines),
     categories: convertIntoArray(normalizeObject.categories),
   });
