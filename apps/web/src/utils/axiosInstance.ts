@@ -2,11 +2,11 @@ import axios from "axios";
 import { useAuthStore } from "../stores/authStore";
 export const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL ?? "http://localhost:3000",
+  withCredentials: true,
 });
 
 api.interceptors.request.use(
   (config) => {
-    config.withCredentials = true;
     const token = useAuthStore.getState().token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -27,9 +27,7 @@ api.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const storedToken = await axios.post("/api/v1/user/refresh", {
-          withCredentials: true,
-        });
+        const storedToken = await api.post("/api/v1/user/refresh");
         console.log("axios refres token request");
         useAuthStore.setState({
           token: storedToken.data.data,
