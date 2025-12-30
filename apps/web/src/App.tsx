@@ -11,7 +11,6 @@ import { useAuthStore } from "./stores/authStore";
 import { useEffect, useState } from "react";
 import Signup from "./pages/auth/Signup";
 import Signin from "./pages/auth/Signin";
-import axios from "axios";
 import RecipeBox from "./pages/recipePage/RecipeBox";
 import Community from "./pages/communityPage/Community";
 import { GlobalLoader } from "./loaders/Loaders";
