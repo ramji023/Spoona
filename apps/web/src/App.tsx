@@ -23,6 +23,7 @@ import { useUserRecipeData } from "./react_queries/queries";
 import { useFailureMsgStore } from "./stores/failureMsgStore";
 import User from "./pages/users/User";
 import Users from "./pages/users/Users";
+import { api } from "./utils/axiosInstance";
 
 const MIN_LOADING_TIME = 1000;
 function App() {
@@ -44,11 +45,7 @@ function App() {
     const refreshAuth = async () => {
       const startTime = Date.now();
       try {
-        const storedToken = await axios.post(
-          "http://localhost:3000/api/v1/user/refresh",
-          null,
-          { withCredentials: true }
-        );
+        const storedToken = await api.post("/api/v1/user/refresh");
         // console.log(storedToken.data.data.accessToken)
         // console.log(storedToken.data)
         useAuthStore.setState({
