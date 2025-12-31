@@ -100,7 +100,7 @@ const SavedRecipe = () => {
           </div>
         </div>
         {/* forth div  */}
-        {recipes ? (
+        {recipes && recipes.length !== 0 ? (
           <>
             <Recipes
               recipes={recipes.map((s) => ({
