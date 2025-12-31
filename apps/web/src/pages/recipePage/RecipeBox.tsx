@@ -5,7 +5,7 @@ import { SaveIcon } from "@repo/ui/icons/SaveIcon";
 import { ShareIcon } from "@repo/ui/icons/ShareIcon";
 import { ProfileIcon } from "@repo/ui/icons/profileIcon";
 import { NotesSection } from "./NotesSection";
-import { useRecipe } from "../../react_queries/queries";
+import { useRecipe, useUserRecipeData } from "../../react_queries/queries";
 import { ingredientsMap } from "../../utils/ingredientsMap";
 import { api } from "../../utils/axiosInstance";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -23,6 +23,14 @@ import { useAuthStore } from "../../stores/authStore";
 const RecipeBox = () => {
   const navigate = useNavigate();
   const id = useAuthStore((s) => s.id); // state to store id of authenticated user
+
+  // write query to fetch updated user data
+  const userQuery = useUserRecipeData(useAuthStore.getState().id);
+  const { isLoading: userRecipeLoading } = useMinLoader({
+    query: userQuery,
+    loadingTime: 200,
+  });
+
   const queryClient = useQueryClient();
   // fetch all the savedRecipe data if user is authenticate
   const savedRecipe = useAuthStore((s) => s.savedRecipeData);
@@ -141,24 +149,27 @@ const RecipeBox = () => {
                     </button>
                     <button
                       onClick={sendSavedRecipe}
-                      disabled={savedRecipeMutation.isPending}
+                      disabled={
+                        savedRecipeMutation.isPending || userRecipeLoading
+                      }
                       className={`
     ${saveButton ? "bg-orange-400 text-white" : "bg-transparent text-gray-800 outline outline-gray-400"}
     text-lg font-semibold cursor-pointer rounded-3xl px-6 py-2 mx-3
   `}
                     >
                       <span
-                        className={`${savedRecipeMutation.isPending ? "opacity-0" : "opacity-100"}`}
+                        className={`${savedRecipeMutation.isPending || userRecipeLoading ? "opacity-0" : "opacity-100"}`}
                       >
                         {" "}
                         {saveButton ? "Saved" : "Save"}
                       </span>
                       {/* Spinner */}
-                      {savedRecipeMutation.isPending && (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Spinner />
-                        </div>
-                      )}
+                      {savedRecipeMutation.isPending ||
+                        (userRecipeLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Spinner />
+                          </div>
+                        ))}
                     </button>
                   </div>
                 </div>

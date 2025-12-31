@@ -1,6 +1,6 @@
 import EmptyPage from "@repo/ui/components/EmptyPage";
 import { useParams } from "react-router-dom";
-import { useCreatorData } from "../../react_queries/queries";
+import { useCreatorData, useUserRecipeData } from "../../react_queries/queries";
 import useMinLoader from "../../hooks/useMinLoader";
 import { UserProfileSkeleton } from "../../loaders/Loaders";
 import Err from "../../errors/ErrorBoundary";
@@ -13,6 +13,9 @@ export default function User() {
   // fetch user following data
   const followingData = useAuthStore((s) => s.followingData);
 
+  // write query to fetch updated user data
+  const userQuery = useUserRecipeData(useAuthStore.getState().id)
+  const {isLoading:userRecipeLoading} = useMinLoader({query:userQuery,loadingTime:200})
   // fetch creator id data
   const creatorId = useParams().creatorId;
   //  console.log("creator id : ",creatorId)
@@ -81,14 +84,14 @@ export default function User() {
                 onClick={() => {
                   followMutation.mutate(data.id);
                 }}
-                disabled={followMutation.isPending}
+                disabled={followMutation.isPending || isLoading || userRecipeLoading}
                 className={`${
                   followingData?.includes(data.id)
                     ? "text-orange-400 outline-orange-400"
                     : "outline-gray-400"
                 } outline-1 px-4 py-2 rounded-3xl text-md hover:text-orange-400 hover:outline-orange-400 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[100px]`}
               >
-                {followMutation.isPending ? (
+                {followMutation.isPending || isLoading || userRecipeLoading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
                     <span>Processing</span>

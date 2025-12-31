@@ -100,7 +100,7 @@ export const useAllCommunities = () => {
       return response.data.data;
     },
     staleTime: 1000 * 60 * 5,
-    refetchOnMount: false,
+    refetchOnMount: true,
   });
 };
 

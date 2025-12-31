@@ -21,6 +21,7 @@ export const useFollowMutation = (creatorId: string | undefined) => {
     onSuccess: (data) => {
       console.log("response data:", data);
       setSuccessMsg(data.msg || "Success!");
+      queryClient.invalidateQueries({ queryKey: ["Popular_creator"] });
       queryClient.invalidateQueries({ queryKey: ["creator", creatorId] });
       queryClient.invalidateQueries({
         queryKey: [useAuthStore.getState().id],

@@ -44,6 +44,7 @@ export default function Community() {
       console.log(data);
       setSuccessMsg("You have left this community successfully");
       queryClient.invalidateQueries({ queryKey: ["community", communityId] });
+      queryClient.invalidateQueries({ queryKey: ["communities"] });
     },
     onError: (err: Error | any) => {
       console.log(err);
@@ -69,6 +70,7 @@ export default function Community() {
       console.log(data);
       setSuccessMsg("You have joined this community successfully");
       queryClient.invalidateQueries({ queryKey: ["community", communityId] });
+      queryClient.invalidateQueries({ queryKey: ["communities"] });
     },
     onError: (err: Error | any) => {
       console.log(err);
@@ -126,13 +128,32 @@ export default function Community() {
                 {joined ? (
                   <button
                     onClick={() => removeUserMutation.mutate()}
-                    className="cursor-pointer outline-2 outline-white text-white px-5 py-2 rounded-3xl hover:outline-orange-400 hover:bg-orange-400"
+                    disabled={removeUserMutation.isPending || isLoading}
+                    className="cursor-pointer outline-2 outline-white text-white px-5 py-2 rounded-3xl hover:outline-orange-400 hover:bg-orange-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[100px]"
                   >
-                    <span className="font-semibold">Leave</span>
+                    {removeUserMutation.isPending || isLoading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Leaving</span>
+                      </>
+                    ) : (
+                      <span className="font-semibold">Leave</span>
+                    )}
                   </button>
                 ) : (
-                  <Button onClick={() => addUserMutation.mutate()}>
-                    <span className="font-normal">join</span>
+                  <Button
+                    onClick={() => addUserMutation.mutate()}
+                    disabled={isLoading || addUserMutation.isPending}
+                    className="disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[100px]"
+                  >
+                    {addUserMutation.isPending || isLoading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Joining</span>
+                      </>
+                    ) : (
+                      <span className="font-normal">join</span>
+                    )}
                   </Button>
                 )}
               </div>
@@ -197,31 +218,29 @@ export default function Community() {
 
           {/* fifth div  */}
 
-          <div className="flex flex-row justify-center">
-            {data.CommunityRecipe.length !== 0 ? (
-              <>
-                <Recipes
-                  recipes={data.CommunityRecipe.map((s) => ({
-                    id: s.recipe.id,
-                    title: s.recipe.title,
-                    cookTime: s.recipe.cookTime,
-                    imageUrl: s.recipe.imageUrl,
-                    tags: s.recipe.tags,
-                    cuisines: s.recipe.cuisines,
-                    categories: s.recipe.categories,
-                    user: s.recipe.user,
-                  }))}
-                />
-              </>
-            ) : (
-              <div className="py-10 flex flex-row justify-center">
-                <EmptyPage
-                  message="There is no recipe"
-                  button="Post first Recipe in this community"
-                />
-              </div>
-            )}
-          </div>
+          {data.CommunityRecipe.length !== 0 ? (
+            <>
+              <Recipes
+                recipes={data.CommunityRecipe.map((s) => ({
+                  id: s.recipe.id,
+                  title: s.recipe.title,
+                  cookTime: s.recipe.cookTime,
+                  imageUrl: s.recipe.imageUrl,
+                  tags: s.recipe.tags,
+                  cuisines: s.recipe.cuisines,
+                  categories: s.recipe.categories,
+                  user: s.recipe.user,
+                }))}
+              />
+            </>
+          ) : (
+            <div className="py-10 flex flex-row justify-center">
+              <EmptyPage
+                message="There is no recipe"
+                button="Post first Recipe in this community"
+              />
+            </div>
+          )}
         </div>
       </>
     );

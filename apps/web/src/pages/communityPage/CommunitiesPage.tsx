@@ -16,8 +16,11 @@ export default function CommunitiesPage() {
   const setFailureMsg = useFailureMsgStore((s) => s.setFailureMsg);
   const navigate = useNavigate();
   // react query to fetch all the communities data
-  const query = useAllCommunities()
-  const { data, isLoading, error } = useMinLoader({query,loadingTime:800});
+  const query = useAllCommunities();
+  const { data, isLoading, error, isFetching } = useMinLoader({
+    query,
+    loadingTime: 800,
+  });
 
   // manage state to open the community form
   const [formOpen, setFormClose] = useState(false);
@@ -30,7 +33,7 @@ export default function CommunitiesPage() {
 
   if (error) {
     setFailureMsg("Can't get communities for you. Please try again.");
-    return <Err/>
+    return <Err />;
   }
   return (
     <>
@@ -73,7 +76,7 @@ export default function CommunitiesPage() {
           </div>
           <div className="flex flex-row justify-center items-center">
             <AnimatePresence mode="wait">
-              {isLoading ? (
+              {isLoading || isFetching ? (
                 <motion.div
                   key="skeleton"
                   initial={{ opacity: 0 }}

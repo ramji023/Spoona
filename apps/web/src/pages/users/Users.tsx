@@ -2,7 +2,10 @@ import { ProfileIcon } from "@repo/ui/icons/profileIcon";
 import Err from "../../errors/ErrorBoundary";
 import useMinLoader from "../../hooks/useMinLoader";
 import { UsersPageSkeleton } from "../../loaders/Loaders";
-import { usePopularCreators } from "../../react_queries/queries";
+import {
+  usePopularCreators,
+  useUserRecipeData,
+} from "../../react_queries/queries";
 import { PopularCreator } from "../../types/user";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
@@ -10,6 +13,14 @@ import { useFollowMutation } from "../../react_queries/mutation";
 
 export default function Users() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  // write query to fetch updated user data
+  const userQuery = useUserRecipeData(useAuthStore.getState().id);
+  const { isLoading: userRecipeLoading } = useMinLoader({
+    query: userQuery,
+    loadingTime: 200,
+  });
+
   // react query to fetch all creators data
   const query = usePopularCreators();
   const { data, isLoading, error } = useMinLoader({ query, loadingTime: 800 });
@@ -46,7 +57,7 @@ export default function Users() {
         </div>
         <div className="mx-10">
           {filteredData?.map((user) => (
-            <UserBox key={user.id} user={user} />
+            <UserBox key={user.id} user={user} isLoading={isLoading || userRecipeLoading}/>
           ))}
         </div>
       </div>
@@ -55,7 +66,7 @@ export default function Users() {
 }
 
 // userbox component to show user data
-function UserBox({ user }: { user: PopularCreator }) {
+function UserBox({ user,isLoading }: { user: PopularCreator,isLoading:boolean }) {
   const navigate = useNavigate();
   const followingData = useAuthStore((s) => s.followingData); // user following data
   const followMutation = useFollowMutation(user.id); // call mutation function to handle subcriber based function
@@ -106,12 +117,12 @@ function UserBox({ user }: { user: PopularCreator }) {
             onClick={() => {
               followMutation.mutate(user.id);
             }}
-            disabled={followMutation.isPending}
+            disabled={followMutation.isPending || isLoading}
             className={`${
               followingData?.includes(user.id) ? "text-orange-400" : ""
             } px-4 py-2 rounded-3xl text-md hover:text-orange-400 hover:outline-orange-400 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
           >
-            {followMutation.isPending ? (
+            {followMutation.isPending || isLoading ? (
               <>
                 <div className="w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
                 <span>Processing</span>
