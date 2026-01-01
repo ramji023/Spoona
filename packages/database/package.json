@@ -1,8 +1,10 @@
+
+
 {
   "name": "@repo/database",
   "version": "1.0.0",
   "exports": {
-    ".": "./dist/client.js"
+    ".": "./src/client.ts"
   },
   "main": "index.js",
   "scripts": {
@@ -13,7 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^24.8.1",
+    "@types/node": "^24.10.4",
     "@types/pg": "^8.15.6",
     "prisma": "^7.1.0"
   },

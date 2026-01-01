@@ -1,0 +1,37 @@
+
+# create base image 
+FROM node:22-alpine  
+
+# initialize the working directory 
+WORKDIR /usr/web
+
+#install pnpm globally
+RUN npm install -g pnpm
+
+# copy all the workspace configuration 
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+
+# copy all packages.json from  web/typescript/tailwind/eslint and ui
+COPY apps/web/package.json ./apps/web/
+COPY packages/eslint-config/package.json ./packages/eslint-config/
+COPY packages/tailwind-config/package.json ./packages/tailwind-config/
+COPY packages/typescript-config/package.json ./packages/typescript-config/
+COPY packages/ui/package.json ./packages/ui/
+
+# run pnpm install to install dependencies
+RUN pnpm install 
+
+# copy all the source code
+COPY ./packages/eslint-config ./packages/eslint-config 
+COPY ./packages/tailwind-config ./packages/tailwind-config 
+COPY ./packages/typescript-config ./packages/typescript-config 
+COPY ./packages/ui ./packages/ui
+
+#copy main web code 
+COPY ./apps/web ./apps/web
+
+# export the container port
+EXPOSE 5173
+
+# run the docker image
+CMD [ "pnpm","run","dev:web" ]

@@ -7,9 +7,10 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "start:web":"cd apps/web && pnpm run preview --port 5173 --host 0.0.0.0",
-    "db:generate":"cd packages/database && pnpm dlx prisma generate && cd ../../",
-    "start:backend":"cd apps/api && node dist/index.js"
+    "dev:web": "cd apps/web && pnpm run dev --host 0.0.0.0",
+    "start:web": "cd apps/web && pnpm run preview --port 5173 --host 0.0.0.0",
+    "db:generate": "cd packages/database && pnpm dlx prisma generate",
+    "dev:backend": "cd packages/database && pnpm dlx prisma migrate dev && cd ../../apps/api && pnpm run dev:mode"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

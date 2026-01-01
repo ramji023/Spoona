@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc -b",
     "dev": "pnpm build && node dist/index.js",
+    "dev:mode":"tsx src/index.ts",
     "lint": "eslint . --ext .ts",
     "check-types": "tsc --noEmit",
     "prod:build": "pnpm install && cd ../../packages/database && pnpm dlx prisma migrate deploy --config ./src/prisma.config.ts && pnpm prisma generate && tsc -b && cd ../../apps/api && tsc -b"
@@ -32,6 +33,7 @@
     "@types/cors": "^2.8.19",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.3",
-    "dotenv": "^17.2.2"
+    "dotenv": "^17.2.2",
+    "tsx": "^4.21.0"
   }
 }
