@@ -9,7 +9,7 @@
     "dev:mode":"tsx src/index.ts",
     "lint": "eslint . --ext .ts",
     "check-types": "tsc --noEmit",
-    "prod:build": "pnpm install && cd ../../packages/database && pnpm dlx prisma migrate deploy --config ./src/prisma.config.ts && pnpm prisma generate && tsc -b && cd ../../apps/api && tsc -b"
+    "prod:build": "pnpm install && cd ../../packages/database && pnpm dlx prisma migrate deploy --config prisma.config.ts && pnpm prisma generate && tsc -b && cd ../../apps/api && tsc -b"
   },
   "keywords": [],
   "author": "",
